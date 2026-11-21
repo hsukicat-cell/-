@@ -30,7 +30,7 @@
             void: '#050505',
             card: '#111113',
             elevated: '#18181B',
-            muted: '#9CA3AF',
+            muted: '#A1A1AA',
             neonGreen: '#39FF14',
             neonOrange: '#FF5E00',
           }
@@ -43,7 +43,7 @@
     :root {
       --bg-void: #050505;
       --bg-card: #111113;
-      --border-subtle: rgba(255, 255, 255, 0.1);
+      --border-subtle: rgba(255, 255, 255, 0.12);
       --neon-green: #39FF14;
       --neon-orange: #FF5E00;
       --pad-x: clamp(0.75rem, 3.8vw, 1.125rem);
@@ -67,7 +67,7 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* 全機型自適應主容器：手機滿版（320px–480px），大螢幕與桌機居中 */
+    /* 全機型自適應容器：320px–480px 滿版，大螢幕與桌機置中 */
     .app-shell {
       width: 100%;
       max-width: 480px;
@@ -86,7 +86,7 @@
       }
     }
 
-    /* 四邊完整安全區適配（動態島、挖孔、底部手勢條） */
+    /* 四邊完整安全區（動態島、挖孔、底部手勢條） */
     .header-safe {
       padding-top: calc(0.75rem + env(safe-area-inset-top));
       padding-left: calc(var(--pad-x) + env(safe-area-inset-left));
@@ -110,7 +110,7 @@
     .text-fluid-card  { font-size: clamp(0.875rem, 3.8vw, 0.96875rem); }
     .text-fluid-stat  { font-size: clamp(1rem, 4.4vw, 1.1875rem); }
 
-    /* 輸入元件固定 16px 防止 iOS Safari 自動縮放 */
+    /* 輸入元件固定 16px，防止 iOS Safari 自動縮放 */
     input, textarea, select {
       font-size: 16px !important;
     }
@@ -126,10 +126,10 @@
 
     /* 極細白框線 */
     .border-hairline {
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.12);
     }
 
-    /* 螢光綠細線微光（僅限 1.5px 線條、2px 進度條與小圓點） */
+    /* 螢光綠微細光暈（僅限細線、2px 進度條與小圓點） */
     .line-glow-green {
       box-shadow: 0 0 6px rgba(57, 255, 20, 0.32);
     }
@@ -251,7 +251,7 @@
             <span id="headerClock" class="text-[11px] font-medium text-muted tabular-nums shrink-0">--:--</span>
           </div>
           <div class="flex items-center gap-1.5 mt-0.5 text-[11px] text-muted min-w-0">
-            <span id="headerTripTitle" class="text-white/80 font-medium truncate">尚未建立行程</span>
+            <span id="headerTripTitle" class="text-white/85 font-medium truncate">尚未建立行程</span>
             <span id="headerStampWrap" class="hidden items-center gap-1 shrink-0 text-neonOrange font-semibold">
               <span class="text-white/25">·</span>
               <span class="w-1.5 h-1.5 rounded-full bg-neonOrange"></span>
@@ -282,14 +282,14 @@
           <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-white/10">
             <div class="min-w-0">
               <h2 class="text-fluid-title font-bold text-white">規劃行程（1–7 天）</h2>
-              <p class="text-[11px] text-muted mt-0.5">輸入地點清單，自動排序動線並標註車資與支付方式</p>
+              <p class="text-[11px] text-muted mt-0.5">輸入地點清單，自動排序動線、估算車資與店家支付方式</p>
             </div>
             <button
               id="fillExampleBtn"
               type="button"
               class="shrink-0 min-h-[44px] px-3 rounded-xl bg-elevated border-hairline text-[11px] font-semibold text-white active:scale-95 transition hover:border-white/30"
             >
-              填入範例文字
+              填入範例
             </button>
           </div>
 
@@ -333,11 +333,11 @@
                 </div>
               </div>
               <div id="dayQuickBtns" class="grid grid-cols-5 gap-1.5">
-                <button type="button" data-days="1" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-white text-void border-white">1 天</button>
-                <button type="button" data-days="2" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">2 天</button>
-                <button type="button" data-days="3" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">3 天</button>
-                <button type="button" data-days="5" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">5 天</button>
-                <button type="button" data-days="7" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">7 天</button>
+                <button type="button" data-days="1" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-white text-black border-white">1 天</button>
+                <button type="button" data-days="2" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/12">2 天</button>
+                <button type="button" data-days="3" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/12">3 天</button>
+                <button type="button" data-days="5" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/12">5 天</button>
+                <button type="button" data-days="7" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/12">7 天</button>
               </div>
             </div>
 
@@ -388,12 +388,12 @@
               ></textarea>
             </div>
 
-            <!-- 集章模式（低刺眼 1px 細框） -->
+            <!-- 集章模式（嚴守低刺眼 1px 細框） -->
             <div>
               <label class="block text-xs font-semibold text-muted mb-1.5">集章模式</label>
               <div id="passportModeGroup" class="grid grid-cols-2 gap-2">
                 <button type="button" data-pmode="auto" class="pmode-btn min-h-[44px] px-2 rounded-xl text-xs font-semibold border transition bg-neonOrange/[0.08] text-neonOrange border-neonOrange">自動挑選集章點</button>
-                <button type="button" data-pmode="all" class="pmode-btn min-h-[44px] px-2 rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">全站皆可蓋章</button>
+                <button type="button" data-pmode="all" class="pmode-btn min-h-[44px] px-2 rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/12">全站皆可蓋章</button>
               </div>
             </div>
 
@@ -404,13 +404,13 @@
                 <span class="text-[10px] text-muted/75">不選也可送出</span>
               </div>
               <p class="text-[11px] text-muted/80 mb-2 leading-relaxed">
-                僅作為 AI 推薦地點與車資計算參考；各店家實際支付方式一律自動標註。
+                作為推薦地點與車資估算參考；各店家實際支付方式一律自動標註。
               </p>
               <div id="paymentPrefGroup" class="flex flex-wrap gap-2">
-                <button type="button" data-pay="TPASS 月票" class="pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">TPASS 月票</button>
-                <button type="button" data-pay="悠遊卡/一卡通" class="pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">悠遊卡/一卡通</button>
-                <button type="button" data-pay="現金" class="pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">現金</button>
-                <button type="button" data-pay="信用卡/行動支付" class="pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">信用卡/行動支付</button>
+                <button type="button" data-pay="TPASS 月票" class="pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/12 bg-void text-muted transition">TPASS 月票</button>
+                <button type="button" data-pay="悠遊卡/一卡通" class="pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/12 bg-void text-muted transition">悠遊卡/一卡通</button>
+                <button type="button" data-pay="現金" class="pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/12 bg-void text-muted transition">現金</button>
+                <button type="button" data-pay="信用卡/行動支付" class="pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/12 bg-void text-muted transition">信用卡/行動支付</button>
               </div>
             </div>
 
@@ -418,11 +418,11 @@
             <div>
               <label class="block text-xs font-semibold text-muted mb-1.5">偏好標籤</label>
               <div id="prefTagGroup" class="flex flex-wrap gap-2">
-                <button type="button" data-pref="蔬食友善" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">蔬食友善</button>
-                <button type="button" data-pref="不走回頭路" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">不走回頭路</button>
-                <button type="button" data-pref="書店/文具" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">書店/文具</button>
-                <button type="button" data-pref="咖啡/甜品" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">咖啡/甜品</button>
-                <button type="button" data-pref="步調輕鬆" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">步調輕鬆</button>
+                <button type="button" data-pref="蔬食友善" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/12 bg-void text-muted transition">蔬食友善</button>
+                <button type="button" data-pref="不走回頭路" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/12 bg-void text-muted transition">不走回頭路</button>
+                <button type="button" data-pref="書店/文具" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/12 bg-void text-muted transition">書店/文具</button>
+                <button type="button" data-pref="咖啡/甜品" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/12 bg-void text-muted transition">咖啡/甜品</button>
+                <button type="button" data-pref="步調輕鬆" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/12 bg-void text-muted transition">步調輕鬆</button>
               </div>
             </div>
 
@@ -443,7 +443,7 @@
               <button
                 id="plannerGoLibraryBtn"
                 type="button"
-                class="hidden min-h-[44px] px-4 rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+                class="hidden min-h-[44px] px-4 rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition"
               >
                 前往行程庫設定 API Key →
               </button>
@@ -453,7 +453,7 @@
             <button
               id="generateBtn"
               type="submit"
-              class="w-full min-h-[48px] py-3 rounded-xl bg-white text-void text-sm font-bold active:scale-[0.98] transition flex items-center justify-center gap-2"
+              class="w-full min-h-[48px] py-3 rounded-xl bg-white text-black text-sm font-bold active:scale-[0.98] transition flex items-center justify-center gap-2"
             >
               <span>產生路線 →</span>
             </button>
@@ -465,7 +465,7 @@
                 type="button"
                 class="min-h-[44px] px-4 text-xs font-medium text-muted hover:text-white underline underline-offset-4 decoration-white/25 transition"
               >
-                載入台南示範行程（含交通費與示範記帳）
+                載入台南示範行程（預覽用）
               </button>
             </div>
           </form>
@@ -474,10 +474,8 @@
 
       <!-- ==================== TAB 2: 行程 (Itinerary) ==================== -->
       <section id="tab-itinerary" class="tab-panel hidden tab-animate">
-        <!-- 空白狀態 -->
         <div id="itineraryEmpty" class="hidden"></div>
 
-        <!-- 有行程時的內容 -->
         <div id="itineraryContent">
           <!-- 多日切換膠囊 -->
           <div id="dayTabsContainer" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 mb-2"></div>
@@ -508,7 +506,7 @@
               </div>
               <div class="mt-2 w-full">
                 <div id="tripTotalExpense" class="text-fluid-stat font-bold text-white tabular-nums leading-none">NT$0</div>
-                <div id="dayExpenseSubtotal" class="text-[10px] text-muted mt-1.5 truncate">點擊查看分類統計</div>
+                <div id="dayExpenseSubtotal" class="text-[10px] text-muted mt-1.5 truncate">點擊查看統計</div>
               </div>
             </button>
           </div>
@@ -614,7 +612,7 @@
           <div class="flex flex-wrap items-center justify-between gap-2 mb-3 px-0.5">
             <div class="min-w-0">
               <h2 class="text-fluid-title font-bold text-white">順路推薦地點</h2>
-              <p class="text-[11px] text-muted mt-0.5">皆標註店家支付方式，支援一鍵加入行程</p>
+              <p class="text-[11px] text-muted mt-0.5">標註店家支付方式，支援一鍵加入行程</p>
             </div>
             <span id="recTotalBadge" class="px-2.5 py-1 rounded-lg bg-card border-hairline text-[11px] font-semibold text-white tabular-nums shrink-0">0 處</span>
           </div>
@@ -651,13 +649,22 @@
         <div class="bg-card rounded-2xl border-hairline p-4">
           <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
             <h2 class="text-fluid-title font-bold text-white">已儲存行程</h2>
-            <button
-              id="loadDemoFromLibBtn"
-              type="button"
-              class="min-h-[44px] px-3 rounded-xl bg-elevated border-hairline text-[11px] font-semibold text-white active:scale-95 transition hover:border-white/30"
-            >
-              載入台南示範行程
-            </button>
+            <div class="flex items-center gap-1.5">
+              <button
+                id="openTextImportBtn"
+                type="button"
+                class="min-h-[44px] px-3 rounded-xl bg-elevated border-hairline text-[11px] font-semibold text-white active:scale-95 transition hover:border-white/30"
+              >
+                貼上文字匯入行程
+              </button>
+              <button
+                id="loadDemoFromLibBtn"
+                type="button"
+                class="min-h-[44px] px-3 rounded-xl bg-void border-hairline text-[11px] font-semibold text-muted hover:text-white active:scale-95 transition"
+              >
+                台南示範
+              </button>
+            </div>
           </div>
           <div id="tripLibraryList" class="space-y-2.5"></div>
         </div>
@@ -669,7 +676,7 @@
             <span id="apiKeyStatus" class="text-[11px] text-muted">未設定</span>
           </div>
           <p class="text-[11px] text-muted mb-3 leading-relaxed">
-            僅存於本機 localStorage，不會上傳或公開。免費取得：<span class="text-white/85 break-all">aistudio.google.com/apikey</span>
+            僅存於本機 localStorage，不會上傳或公開。支援 AIza... 與 AQ.... 等各式 Gemini 金鑰（aistudio.google.com/apikey）。
           </p>
           <div class="space-y-2.5">
             <input
@@ -683,9 +690,9 @@
               <button
                 id="saveApiKeyBtn"
                 type="button"
-                class="min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+                class="min-h-[44px] rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition"
               >
-                儲存金鑰
+                儲存
               </button>
               <button
                 id="clearApiKeyBtn"
@@ -701,14 +708,13 @@
         <!-- 資料備份與還原區 -->
         <div class="bg-card rounded-2xl border-hairline p-4">
           <div class="flex items-center justify-between gap-2 mb-1.5">
-            <h2 class="text-sm font-bold text-white">資料備份與還原</h2>
-            <span class="text-[10px] text-muted">JSON 格式</span>
+            <h2 class="text-sm font-bold text-white">JSON 備份與還原</h2>
+            <span class="text-[10px] text-muted">含行程、記帳與集章</span>
           </div>
           <p class="text-[11px] text-muted mb-3 leading-relaxed">
-            包含所有已規劃行程、記帳紀錄與集章狀態（不含 API Key），更新網頁前可先留存備份。
+            不含 API Key，可於換機或更新網頁前留存備份。
           </p>
 
-          <!-- 匯出按鈕 -->
           <div class="grid grid-cols-2 gap-2 mb-3">
             <button
               id="exportCopyJsonBtn"
@@ -726,7 +732,6 @@
             </button>
           </div>
 
-          <!-- 匯入還原 -->
           <div class="pt-3 border-t border-white/10 space-y-2.5">
             <div class="flex items-center justify-between gap-2">
               <label for="importJsonInput" class="text-xs font-semibold text-muted">匯入還原</label>
@@ -745,7 +750,7 @@
             <button
               id="applyImportJsonBtn"
               type="button"
-              class="w-full min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+              class="w-full min-h-[44px] rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition"
             >
               還原備份資料
             </button>
@@ -805,10 +810,45 @@
 
   </div>
 
+  <!-- ==================== 貼上文字匯入行程 Modal ==================== -->
+  <div id="textImportModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4">
+    <div class="bg-card w-full max-w-[440px] rounded-2xl border-hairline shadow-2xl max-h-[88dvh] flex flex-col overflow-hidden">
+      <div class="px-4 py-3.5 border-b border-white/10 flex items-center justify-between gap-2 shrink-0">
+        <div class="min-w-0">
+          <div class="text-[10px] font-semibold uppercase tracking-wider text-muted">TEXT IMPORT</div>
+          <h3 class="text-sm font-bold text-white mt-0.5">貼上文字匯入行程</h3>
+        </div>
+        <button id="closeTextImportBtn" type="button" class="min-w-[44px] min-h-[44px] -mr-2 flex items-center justify-center rounded-xl text-muted hover:text-white" aria-label="關閉">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="p-4 overflow-y-auto space-y-3">
+        <p class="text-xs text-muted leading-relaxed">
+          將舊版或 Safari 裡按「複製文字」取得的行程內容貼在下方，系統會自動解析標題、天數、時間與站點並匯入行程庫。
+        </p>
+        <textarea
+          id="textImportInput"
+          rows="8"
+          placeholder="貼上複製的純文字行程，例如：&#10;2027生日旅&#10;[Day 1] 花蓮市區&#10;1. 10:30–12:00 花蓮文創園區 [集章]&#10;   地址：花蓮縣花蓮市中華路144號"
+          class="w-full px-3.5 py-2.5 rounded-xl bg-void border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/40 leading-relaxed"
+        ></textarea>
+        <div id="textImportError" class="hidden text-xs text-neonOrange"></div>
+        <button
+          id="confirmTextImportBtn"
+          type="button"
+          class="w-full min-h-[44px] rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition"
+        >
+          解析並匯入行程
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== 地標記帳 Modal ==================== -->
   <div id="expenseModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4">
     <div class="bg-card w-full max-w-[440px] rounded-2xl border-hairline shadow-2xl max-h-[88dvh] flex flex-col overflow-hidden">
-      <!-- 標題列 -->
       <div class="px-4 py-3.5 border-b border-white/10 flex items-center justify-between gap-2 shrink-0">
         <div class="min-w-0 flex-1">
           <div class="text-[10px] font-semibold uppercase tracking-wider text-muted">地標記帳</div>
@@ -827,9 +867,7 @@
         </div>
       </div>
 
-      <!-- 內容區（可捲動） -->
       <div class="p-4 overflow-y-auto space-y-4">
-        <!-- 快速新增表單 -->
         <form id="addExpenseForm" class="space-y-3 bg-void rounded-xl border-hairline p-3.5">
           <div class="grid grid-cols-2 gap-2.5">
             <div>
@@ -837,9 +875,9 @@
               <input
                 id="expAmountInput"
                 type="number"
-                inputmode="numeric"
+                inputmode="decimal"
                 min="1"
-                step="1"
+                step="any"
                 placeholder="例：150"
                 class="w-full min-h-[44px] px-3 py-2 rounded-xl bg-card border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/40 tabular-nums"
               />
@@ -855,15 +893,14 @@
             </div>
           </div>
 
-          <!-- 付款方式快速標籤 -->
           <div>
             <label class="block text-[11px] font-semibold text-muted mb-1.5">付款方式</label>
             <div id="expMethodGroup" class="flex flex-wrap gap-1.5">
-              <button type="button" data-expmethod="現金" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-white text-void border-white">現金</button>
-              <button type="button" data-expmethod="LINE Pay" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-card text-muted border-white/10">LINE Pay</button>
-              <button type="button" data-expmethod="信用卡" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-card text-muted border-white/10">信用卡</button>
-              <button type="button" data-expmethod="悠遊卡/一卡通" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-card text-muted border-white/10">悠遊卡/一卡通</button>
-              <button type="button" data-expmethod="其他" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-card text-muted border-white/10">其他</button>
+              <button type="button" data-expmethod="現金" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-white text-black border-white">現金</button>
+              <button type="button" data-expmethod="LINE Pay" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-card text-muted border-white/12">LINE Pay</button>
+              <button type="button" data-expmethod="信用卡" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-card text-muted border-white/12">信用卡</button>
+              <button type="button" data-expmethod="悠遊卡/一卡通" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-card text-muted border-white/12">悠遊卡/一卡通</button>
+              <button type="button" data-expmethod="其他" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-card text-muted border-white/12">其他</button>
             </div>
           </div>
 
@@ -871,13 +908,12 @@
 
           <button
             type="submit"
-            class="w-full min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+            class="w-full min-h-[44px] rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition"
           >
             新增這筆消費
           </button>
         </form>
 
-        <!-- 本站已記消費清單 -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-semibold text-muted">本站消費紀錄</span>
@@ -892,7 +928,6 @@
   <!-- ==================== 花費明細總覽 Modal ==================== -->
   <div id="overviewModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4">
     <div class="bg-card w-full max-w-[440px] rounded-2xl border-hairline shadow-2xl max-h-[88dvh] flex flex-col overflow-hidden">
-      <!-- 標題列 -->
       <div class="px-4 py-3.5 border-b border-white/10 flex items-center justify-between gap-2 shrink-0">
         <div class="min-w-0">
           <div class="text-[10px] font-semibold uppercase tracking-wider text-muted">EXPENSE OVERVIEW</div>
@@ -905,9 +940,7 @@
         </button>
       </div>
 
-      <!-- 內容區 -->
       <div class="p-4 overflow-y-auto space-y-4">
-        <!-- 頂部三項統計 -->
         <div class="grid grid-cols-3 gap-2">
           <div class="rounded-xl bg-void border-hairline p-2.5 text-center">
             <div class="text-[10px] text-muted">地標實支</div>
@@ -923,13 +956,11 @@
           </div>
         </div>
 
-        <!-- 付款方式統計膠囊 -->
         <div>
           <div class="text-xs font-semibold text-muted mb-2">付款方式統計</div>
           <div id="ovMethodSummary" class="flex flex-wrap gap-1.5"></div>
         </div>
 
-        <!-- 依天數與地標分組列表 -->
         <div>
           <div class="text-xs font-semibold text-muted mb-2">各站消費明細</div>
           <div id="ovGroupedList" class="space-y-3"></div>
@@ -977,7 +1008,7 @@
           href="#"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center justify-center min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+          class="inline-flex items-center justify-center min-h-[44px] rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition"
         >
           Google 導航
         </a>
@@ -1029,7 +1060,7 @@
           </ul>
         </div>
       </div>
-      <button id="okInstallBtn" type="button" class="mt-4 w-full min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition">
+      <button id="okInstallBtn" type="button" class="mt-4 w-full min-h-[44px] rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition">
         關閉
       </button>
     </div>
@@ -1064,7 +1095,7 @@
     (function () {
       'use strict';
 
-      // -------------------- 1. 台南示範行程（1 日 5 站，含交通費、支付方式與 2 筆示範記帳，僅手動觸發） --------------------
+      // -------------------- 1. 台南示範行程（僅在使用者手動點擊時載入，不自動預載） --------------------
       function createTainanDemoTrip() {
         return {
           id: 'demo-tainan-' + Date.now(),
@@ -1073,7 +1104,7 @@
           dateNote: '1 天｜10:30–18:00',
           passportMode: 'auto',
           totalFare: 36,
-          fareSummary: '台南市區公車一段票與步行估算',
+          fareSummary: '市區公車一段票與步行估算',
           days: [
             {
               dayNumber: 1,
@@ -1083,6 +1114,7 @@
               stops: [
                 {
                   id: 'tn-1',
+                  day: 1,
                   name: '林百貨',
                   category: '選品逛街',
                   district: '中西區',
@@ -1092,21 +1124,21 @@
                   paymentMethods: '現金、刷卡、LINE Pay、街口支付',
                   transitMode: '公車 2 路',
                   transitDuration: '約 12 分',
+                  transportCost: 18,
                   transitFare: 18,
+                  transportNote: '一段票',
                   transitNote: '一段票',
                   isStampSpot: true,
                   stampTitle: '林百貨',
                   stampIcon: '🏬',
-                  highlights: [
-                    '頂樓神社與指針式電梯',
-                    '1F 伴手禮、4F 文創選品'
-                  ],
+                  highlights: ['頂樓神社與指針式電梯', '1F 伴手禮、4F 文創選品'],
                   expenses: [
-                    { id: 'demo-exp-1', amount: 180, item: '帆布提袋伴手禮', method: 'LINE Pay', createdAt: '11:20' }
+                    { id: 'demo-exp-1', amount: 180, item: '帆布提袋', method: 'LINE Pay', createdAt: '11:20' }
                   ]
                 },
                 {
                   id: 'tn-2',
+                  day: 1,
                   name: '臺南市美術館二館',
                   category: '展覽文化',
                   district: '中西區',
@@ -1116,21 +1148,21 @@
                   paymentMethods: '現金、刷卡、LINE Pay、悠遊卡',
                   transitMode: '步行',
                   transitDuration: '約 5 分',
+                  transportCost: 0,
                   transitFare: 0,
+                  transportNote: '步行',
                   transitNote: '步行',
                   isStampSpot: true,
                   stampTitle: '南美二館',
                   stampIcon: '🖼️',
-                  highlights: [
-                    '五角碎形屋頂光影中庭',
-                    '週一休館／需購票入場'
-                  ],
+                  highlights: ['五角碎形屋頂光影中庭', '週一休館／需購票入場'],
                   expenses: [
                     { id: 'demo-exp-2', amount: 200, item: '常設展門票', method: '悠遊卡/一卡通', createdAt: '12:05' }
                   ]
                 },
                 {
                   id: 'tn-3',
+                  day: 1,
                   name: '富盛號碗粿',
                   category: '小吃美食',
                   district: '中西區',
@@ -1140,19 +1172,19 @@
                   paymentMethods: '僅收現金',
                   transitMode: '步行',
                   transitDuration: '約 10 分',
+                  transportCost: 0,
                   transitFare: 0,
+                  transportNote: '步行',
                   transitNote: '步行',
                   isStampSpot: false,
                   stampTitle: '富盛號',
                   stampIcon: '🥣',
-                  highlights: [
-                    '黑豆醬油碗粿、魚羹',
-                    '17:00 打烊／售完為止'
-                  ],
+                  highlights: ['黑豆醬油碗粿、魚羹', '17:00 打烊／售完為止'],
                   expenses: []
                 },
                 {
                   id: 'tn-4',
+                  day: 1,
                   name: '神農街',
                   category: '散步地標',
                   district: '中西區',
@@ -1162,19 +1194,19 @@
                   paymentMethods: '免費入場（周邊多收現金、LINE Pay）',
                   transitMode: '步行',
                   transitDuration: '約 6 分',
+                  transportCost: 0,
                   transitFare: 0,
+                  transportNote: '步行',
                   transitNote: '步行',
                   isStampSpot: true,
                   stampTitle: '神農街',
                   stampIcon: '🏮',
-                  highlights: [
-                    '老屋木構街景與手作小店',
-                    '傍晚點燈後適合拍照'
-                  ],
+                  highlights: ['老屋木構街景與手作小店', '傍晚點燈後適合拍照'],
                   expenses: []
                 },
                 {
                   id: 'tn-5',
+                  day: 1,
                   name: '藍晒圖文創園區',
                   category: '選品逛街',
                   district: '南區',
@@ -1184,15 +1216,14 @@
                   paymentMethods: '免費入場（多數品牌支援刷卡、LINE Pay）',
                   transitMode: '公車 5 路',
                   transitDuration: '約 15 分',
+                  transportCost: 18,
                   transitFare: 18,
+                  transportNote: '一段票',
                   transitNote: '一段票',
                   isStampSpot: true,
                   stampTitle: '藍晒圖',
                   stampIcon: '📐',
-                  highlights: [
-                    '3D 藍晒圖入口裝置',
-                    '獨立選品店與手作工作室'
-                  ],
+                  highlights: ['3D 藍晒圖入口裝置', '獨立選品店與手作工作室'],
                   expenses: []
                 }
               ]
@@ -1205,7 +1236,7 @@
               category: '咖啡/甜品',
               address: '台南市中西區正興街92號',
               paymentMethods: '現金、LINE Pay',
-              reason: '距離神農街步行 5 分鐘，每日限定霜淇淋。',
+              reason: '距神農街步行 5 分鐘，每日限定霜淇淋。',
               nearStop: '神農街'
             },
             {
@@ -1223,22 +1254,15 @@
               category: '散步地標',
               address: '台南市中西區永福路二段97巷',
               paymentMethods: '免費入場',
-              reason: '林百貨旁安靜老巷弄，沿途有文學裝置。',
+              reason: '林百貨旁老巷弄，沿途有文學裝置。',
               nearStop: '林百貨'
             }
-          ],
-          deadlines: [
-            { dayNumber: 1, time: '17:00', title: '富盛號碗粿打烊', stopId: 'tn-3' }
-          ],
-          planB: [
-            '若午後下雨，神農街可改去烏邦圖書店或南美館二館室內咖啡廳。'
           ]
         };
       }
 
-      // -------------------- 2. 狀態與向下相容 localStorage --------------------
-      const STORAGE_KEY = 'route_notebook_universal_v1';
-      const LEGACY_KEYS = ['route_notebook_16pm_v2', 'route_notebook_16pm_v1', 'route_notebook_v1'];
+      // -------------------- 2. 狀態與全域 localStorage 資料救援引擎 --------------------
+      const STORAGE_KEY = 'route_notebook_universal_v2';
       const API_KEY_STORAGE = 'route_notebook_gemini_key';
 
       let state = {
@@ -1251,7 +1275,7 @@
         checkedHighlights: {},
         passportFilter: 'stamps',
         recSearch: '',
-        // 規劃表單
+        // 規劃表單狀態
         plannerDays: 1,
         plannerPassportMode: 'auto',
         plannerPrefs: new Set(),
@@ -1264,86 +1288,290 @@
       };
 
       /**
-       * 向下相容正規化：確保舊版行程與站點皆具備 expenses 陣列、paymentMethods、transitFare 等欄位
+       * 防禦性單站正規化：補齊 day (>=1)、expenses、paymentMethods、transportCost、transportNote
        */
-      function normalizeTripData(trip) {
-        if (!trip || typeof trip !== 'object') return null;
-        if (!trip.id) trip.id = 'trip-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
-        if (!trip.title) trip.title = '未命名行程';
-        if (!Array.isArray(trip.days)) trip.days = [];
-        if (!Array.isArray(trip.recommendations)) trip.recommendations = [];
-        if (!Array.isArray(trip.deadlines)) trip.deadlines = [];
-        if (!Array.isArray(trip.planB)) trip.planB = [];
+      function normalizeStop(stop, fallbackDay, idx, tripId) {
+        if (!stop || typeof stop !== 'object') return null;
+        const dayNum = Math.max(1, parseInt(stop.day, 10) || parseInt(fallbackDay, 10) || 1);
+        const stopId = String(stop.id || `d${dayNum}-s${idx + 1}`);
+        const cost = Number(stop.transportCost ?? stop.transitFare ?? 0) || 0;
+        const note = String(stop.transportNote ?? stop.transitNote ?? '').trim();
+        const payment = String(stop.paymentMethods ?? stop.payment ?? '').trim() || '現場確認';
 
-        trip.days.forEach((day, dIdx) => {
-          if (!day.dayNumber) day.dayNumber = dIdx + 1;
-          if (!day.dateLabel) day.dateLabel = `Day ${day.dayNumber}`;
-          if (typeof day.dailyFare !== 'number') day.dailyFare = Number(day.dailyFare) || 0;
-          if (!Array.isArray(day.stops)) day.stops = [];
+        let highlights = [];
+        if (Array.isArray(stop.highlights)) {
+          highlights = stop.highlights.map(h => String(h || '').trim()).filter(Boolean);
+        } else if (typeof stop.notes === 'string' && stop.notes.trim()) {
+          highlights = [stop.notes.trim()];
+        } else if (typeof stop.description === 'string' && stop.description.trim()) {
+          highlights = [stop.description.trim()];
+        }
 
-          day.stops.forEach((stop, sIdx) => {
-            if (!stop.id) stop.id = `d${dIdx + 1}-s${sIdx + 1}`;
-            if (!stop.paymentMethods) stop.paymentMethods = '依現場為主';
-            if (typeof stop.transitFare !== 'number') stop.transitFare = Number(stop.transitFare) || 0;
-            if (!Array.isArray(stop.highlights)) stop.highlights = [];
-            // 核心：確保每個站點都有 expenses 陣列
-            if (!Array.isArray(stop.expenses)) {
-              stop.expenses = [];
-            } else {
-              stop.expenses = stop.expenses.map((exp, eIdx) => ({
-                id: exp.id || `exp-${Date.now()}-${eIdx}`,
-                amount: Math.max(0, Number(exp.amount) || 0),
-                item: exp.item || '消費',
-                method: exp.method || '現金',
-                createdAt: exp.createdAt || ''
-              }));
-            }
-          });
-        });
+        const expenses = Array.isArray(stop.expenses)
+          ? stop.expenses.map((exp, eIdx) => ({
+              id: String(exp.id || `exp-${Date.now()}-${eIdx}`),
+              amount: Math.max(0, Number(exp.amount) || 0),
+              item: String(exp.item || '消費').trim(),
+              method: String(exp.method || '現金').trim(),
+              createdAt: String(exp.createdAt || '')
+            }))
+          : [];
 
-        trip.recommendations.forEach((rec, rIdx) => {
-          if (!rec.id) rec.id = `rec-${rIdx + 1}`;
-          if (!rec.paymentMethods) rec.paymentMethods = '依現場為主';
-        });
+        // 若舊資料把蓋章狀態直接寫在 stop.stamped 或 stop.completed，同步保留至 state
+        if (tripId) {
+          const compositeKey = `${tripId}::${stopId}`;
+          if (stop.stamped && !state.stampedRecords[compositeKey]) {
+            state.stampedRecords[compositeKey] = typeof stop.stamped === 'string' ? stop.stamped : '已蓋章';
+            state.completedStops[compositeKey] = true;
+          }
+          if (stop.completed && !state.completedStops[compositeKey]) {
+            state.completedStops[compositeKey] = true;
+          }
+        }
 
-        return trip;
+        return {
+          id: stopId,
+          day: dayNum,
+          name: String(stop.name || stop.title || '未命名地標').trim(),
+          category: String(stop.category || '').trim(),
+          district: String(stop.district || '').trim(),
+          address: String(stop.address || stop.location || stop.name || '').trim(),
+          startTime: String(stop.startTime || stop.time || '彈性').trim(),
+          endTime: String(stop.endTime || '').trim(),
+          paymentMethods: payment,
+          transitMode: String(stop.transitMode || stop.transport || '').trim(),
+          transitDuration: String(stop.transitDuration || '').trim(),
+          transportCost: cost,
+          transitFare: cost,
+          transportNote: note,
+          transitNote: note,
+          isStampSpot: Boolean(stop.isStampSpot ?? stop.isStamp ?? stop.stampable ?? false),
+          stampTitle: String(stop.stampTitle || (stop.name || '').slice(0, 6) || '印章').trim(),
+          stampIcon: String(stop.stampIcon || '●').trim(),
+          highlights,
+          expenses
+        };
       }
 
-      function loadState() {
+      /**
+       * 防禦性行程正規化：同時相容扁平 `trip.stops` 與巢狀 `trip.days` 結構，徹底避免切換後變空白
+       */
+      function normalizeTripData(rawTrip) {
+        if (!rawTrip || typeof rawTrip !== 'object') return null;
+        const title = String(rawTrip.title || rawTrip.name || '').trim();
+        const hasDays = Array.isArray(rawTrip.days) && rawTrip.days.length > 0;
+        const hasFlatStops = Array.isArray(rawTrip.stops) && rawTrip.stops.length > 0;
+        if (!title && !hasDays && !hasFlatStops) return null;
+
+        const tripId = String(rawTrip.id || ('trip-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6)));
+        let normalizedDays = [];
+
+        if (hasDays) {
+          normalizedDays = rawTrip.days.map((day, dIdx) => {
+            const dayNumber = Math.max(1, parseInt(day.dayNumber ?? day.day, 10) || (dIdx + 1));
+            const rawStops = Array.isArray(day.stops) ? day.stops : [];
+            const stops = rawStops
+              .map((s, sIdx) => normalizeStop(s, dayNumber, sIdx, tripId))
+              .filter(Boolean);
+            const sumFare = stops.reduce((acc, s) => acc + (Number(s.transportCost) || 0), 0);
+            return {
+              dayNumber,
+              dateLabel: String(day.dateLabel || day.label || `Day ${dayNumber}`),
+              routeNote: String(day.routeNote || day.theme || ''),
+              dailyFare: sumFare > 0 ? sumFare : (Number(day.dailyFare) || 0),
+              stops
+            };
+          }).filter(d => d.stops.length > 0 || rawTrip.days.length === 1);
+        }
+
+        // 若沒有有效 days 但有扁平 stops 陣列，依 stop.day 自動分組轉換為 days
+        if (normalizedDays.length === 0 && hasFlatStops) {
+          const dayMap = new Map();
+          rawTrip.stops.forEach((s, idx) => {
+            const norm = normalizeStop(s, s.day || 1, idx, tripId);
+            if (!norm) return;
+            if (!dayMap.has(norm.day)) dayMap.set(norm.day, []);
+            dayMap.get(norm.day).push(norm);
+          });
+          const sortedDayNums = [...dayMap.keys()].sort((a, b) => a - b);
+          normalizedDays = sortedDayNums.map(dayNumber => {
+            const stops = dayMap.get(dayNumber);
+            const sumFare = stops.reduce((acc, s) => acc + (Number(s.transportCost) || 0), 0);
+            return {
+              dayNumber,
+              dateLabel: `Day ${dayNumber}`,
+              routeNote: '',
+              dailyFare: sumFare,
+              stops
+            };
+          });
+        }
+
+        // 過濾掉完全無站點的無效行程
+        const totalStops = normalizedDays.reduce((acc, d) => acc + d.stops.length, 0);
+        if (totalStops === 0) return null;
+
+        const recommendations = Array.isArray(rawTrip.recommendations)
+          ? rawTrip.recommendations.map((rec, rIdx) => ({
+              id: String(rec.id || `rec-${rIdx + 1}`),
+              name: String(rec.name || '').trim(),
+              category: String(rec.category || '').trim(),
+              address: String(rec.address || '').trim(),
+              paymentMethods: String(rec.paymentMethods || rec.payment || '').trim() || '現場確認',
+              reason: String(rec.reason || rec.description || '').trim(),
+              nearStop: String(rec.nearStop || '').trim()
+            })).filter(r => r.name)
+          : [];
+
+        const totalFare = normalizedDays.reduce((acc, d) => acc + (Number(d.dailyFare) || 0), 0);
+
+        return {
+          id: tripId,
+          title: title || '未命名行程',
+          startDate: String(rawTrip.startDate || ''),
+          dateNote: String(rawTrip.dateNote || rawTrip.subtitle || `${normalizedDays.length} 天行程`),
+          passportMode: rawTrip.passportMode === 'all' ? 'all' : 'auto',
+          totalFare: totalFare > 0 ? totalFare : (Number(rawTrip.totalFare) || 0),
+          fareSummary: String(rawTrip.fareSummary || ''),
+          days: normalizedDays,
+          recommendations
+        };
+      }
+
+      /**
+       * 檢查物件是否看起來像是一個行程
+       */
+      function looksLikeTrip(obj) {
+        if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return false;
+        const hasTitle = typeof obj.title === 'string' || typeof obj.name === 'string';
+        const hasStops = (Array.isArray(obj.days) && obj.days.length > 0) || (Array.isArray(obj.stops) && obj.stops.length > 0);
+        return hasTitle && hasStops;
+      }
+
+      /**
+       * 全域 localStorage 掃描與資料救援：
+       * 自動尋找所有舊版儲存的行程、蓋章狀態與 Gemini API Key，安全合併不覆蓋、不重複。
+       */
+      function rescueAndLoadState() {
+        const rescuedTrips = [];
+        const seenSignatures = new Set();
+        let preferredActiveId = '';
+        let rescuedApiKey = getSavedApiKey();
+
+        function addTripSafely(rawTrip) {
+          const norm = normalizeTripData(rawTrip);
+          if (!norm) return;
+          const stopCount = norm.days.reduce((acc, d) => acc + d.stops.length, 0);
+          const idSig = `id:${norm.id}`;
+          const contentSig = `title:${norm.title}::stops:${stopCount}`;
+          if (seenSignatures.has(idSig) || seenSignatures.has(contentSig)) return;
+          seenSignatures.add(idSig);
+          seenSignatures.add(contentSig);
+          rescuedTrips.push(norm);
+        }
+
         try {
-          let raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) {
-            for (const oldKey of LEGACY_KEYS) {
-              const found = localStorage.getItem(oldKey);
-              if (found) {
-                raw = found;
-                break;
+          // 優先讀取新版主 key，再掃描全部 localStorage keys 進行救援
+          const allKeys = Object.keys(localStorage);
+          const orderedKeys = [
+            STORAGE_KEY,
+            ...allKeys.filter(k => k !== STORAGE_KEY)
+          ];
+
+          for (const key of orderedKeys) {
+            const rawVal = localStorage.getItem(key);
+            if (!rawVal) continue;
+            const trimmed = rawVal.trim();
+
+            // 1. 偵測並救援 Gemini API Key（支援 AIza... 與 AQ.... 等格式）
+            if (!rescuedApiKey && /api|key|gemini/i.test(key)) {
+              const cleaned = trimmed.replace(/^["']|["']$/g, '');
+              if (/^(AIza|AQ\.)[A-Za-z0-9._-]{12,}$/.test(cleaned) || (key === API_KEY_STORAGE && cleaned.length > 10)) {
+                rescuedApiKey = cleaned;
               }
             }
-          }
 
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed.trips)) {
-              state.trips = parsed.trips.map(normalizeTripData).filter(Boolean);
-              state.activeTripId = parsed.activeTripId || (state.trips[0] ? state.trips[0].id : '');
-              state.completedStops = parsed.completedStops || {};
-              state.stampedRecords = parsed.stampedRecords || {};
-              state.checkedHighlights = parsed.checkedHighlights || {};
+            // 2. 嘗試解析 JSON 結構並救援行程與集章狀態
+            if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) continue;
+            let parsed = null;
+            try {
+              parsed = JSON.parse(trimmed);
+            } catch (e) {
+              continue;
+            }
+            if (!parsed || typeof parsed !== 'object') continue;
+
+            // 合併蓋章、完成與勾選狀態（若新版尚未有紀錄則補入）
+            if (parsed.completedStops && typeof parsed.completedStops === 'object') {
+              Object.entries(parsed.completedStops).forEach(([k, v]) => {
+                if (v && !state.completedStops[k]) state.completedStops[k] = true;
+              });
+            }
+            if (parsed.stampedRecords && typeof parsed.stampedRecords === 'object') {
+              Object.entries(parsed.stampedRecords).forEach(([k, v]) => {
+                if (v && !state.stampedRecords[k]) state.stampedRecords[k] = v;
+              });
+            }
+            if (parsed.checkedHighlights && typeof parsed.checkedHighlights === 'object') {
+              Object.entries(parsed.checkedHighlights).forEach(([k, v]) => {
+                if (v && !state.checkedHighlights[k]) state.checkedHighlights[k] = true;
+              });
+            }
+
+            // 救援包在 JSON 物件內的 apiKey
+            if (!rescuedApiKey && typeof parsed.apiKey === 'string' && parsed.apiKey.trim().length > 10) {
+              rescuedApiKey = parsed.apiKey.trim();
+            }
+
+            if (key === STORAGE_KEY && typeof parsed.activeTripId === 'string') {
+              preferredActiveId = parsed.activeTripId;
+            } else if (!preferredActiveId && typeof parsed.activeTripId === 'string') {
+              preferredActiveId = parsed.activeTripId;
+            }
+
+            // 支援三種結構：直接是行程陣列 / 物件含 trips 陣列 / 單一行程物件
+            if (Array.isArray(parsed)) {
+              parsed.forEach(item => {
+                if (looksLikeTrip(item)) addTripSafely(item);
+              });
+            } else if (Array.isArray(parsed.trips)) {
+              parsed.trips.forEach(item => {
+                if (looksLikeTrip(item)) addTripSafely(item);
+              });
+            } else if (looksLikeTrip(parsed)) {
+              addTripSafely(parsed);
             }
           }
         } catch (err) {
-          console.warn('localStorage 讀取失敗:', err);
+          console.warn('資料救援掃描發生異常:', err);
         }
 
-        // 若尚無任何行程，預設停留在「規劃」空白表單
+        state.trips = rescuedTrips;
+        if (preferredActiveId && state.trips.some(t => t.id === preferredActiveId)) {
+          state.activeTripId = preferredActiveId;
+        } else {
+          state.activeTripId = state.trips[0] ? state.trips[0].id : '';
+        }
+        state.activeDayIndex = 0;
+
+        // 若救援到 API Key，同步存回標準位置
+        if (rescuedApiKey && !getSavedApiKey()) {
+          try { localStorage.setItem(API_KEY_STORAGE, rescuedApiKey); } catch (e) {}
+        }
+
+        // 若有救援到行程，寫入標準 STORAGE_KEY 以確保穩定
+        if (state.trips.length > 0) {
+          saveState();
+        }
+
+        // 無任何行程時，預設開啟「規劃」空白頁；有行程時開啟「行程」頁
         state.activeTab = state.trips.length > 0 ? 'itinerary' : 'planner';
       }
 
       function saveState() {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify({
-            version: 2,
+            version: 3,
             trips: state.trips,
             activeTripId: state.activeTripId,
             completedStops: state.completedStops,
@@ -1365,17 +1593,17 @@
 
       function getActiveTrip() {
         if (!state.trips.length) return null;
-        let trip = state.trips.find(t => t.id === state.activeTripId);
-        if (!trip) {
-          trip = state.trips[0];
-          state.activeTripId = trip.id;
+        let idx = state.trips.findIndex(t => t.id === state.activeTripId);
+        if (idx === -1) {
+          idx = 0;
+          state.activeTripId = state.trips[0].id;
         }
-        return trip;
+        return state.trips[idx];
       }
 
       function getAllStops(trip) {
         const list = [];
-        if (!trip || !trip.days) return list;
+        if (!trip || !Array.isArray(trip.days)) return list;
         trip.days.forEach((day, dIdx) => {
           (day.stops || []).forEach((stop, sIdx) => {
             list.push({ stop, day, dIdx, sIdx });
@@ -1397,15 +1625,15 @@
         return all;
       }
 
-      // -------------------- 3. 財務計算與工具函式 --------------------
+      // -------------------- 3. 財務計算、純文字匯出與純文字解析 --------------------
       function computeDayFare(day) {
         if (!day) return 0;
-        const sum = (day.stops || []).reduce((acc, s) => acc + (Number(s.transitFare) || 0), 0);
+        const sum = (day.stops || []).reduce((acc, s) => acc + (Number(s.transportCost ?? s.transitFare) || 0), 0);
         return sum > 0 ? sum : (Number(day.dailyFare) || 0);
       }
 
       function computeTripTotalFare(trip) {
-        if (!trip || !trip.days) return 0;
+        if (!trip || !Array.isArray(trip.days)) return 0;
         const sum = trip.days.reduce((acc, d) => acc + computeDayFare(d), 0);
         return sum > 0 ? sum : (Number(trip.totalFare) || 0);
       }
@@ -1426,9 +1654,152 @@
       }
 
       function formatNT(num) {
-        return 'NT$' + (Number(num) || 0).toLocaleString('zh-TW');
+        return 'NT$' + Math.round(Number(num) || 0).toLocaleString('zh-TW');
       }
 
+      function generatePlainTextTrip(trip) {
+        if (!trip) return '';
+        const lines = [];
+        lines.push(`${trip.title}${trip.dateNote ? '｜' + trip.dateNote : ''}`);
+        lines.push(`預估交通費：${formatNT(computeTripTotalFare(trip))}｜地標消費：${formatNT(computeTripTotalExpense(trip))}`);
+        lines.push('--------------------');
+
+        (trip.days || []).forEach(day => {
+          lines.push(`\n[${day.dateLabel || ('Day ' + day.dayNumber)}] ${day.routeNote || ''}`);
+          (day.stops || []).forEach((s, idx) => {
+            const stampMark = s.isStampSpot ? ' [集章]' : '';
+            const timeTxt = s.endTime ? `${s.startTime}–${s.endTime}` : s.startTime;
+            lines.push(`\n${idx + 1}. ${timeTxt} ${s.name}${stampMark}`);
+            if (s.address) lines.push(`   地址：${s.address}`);
+            lines.push(`   支付：${s.paymentMethods || '現場確認'}`);
+            if (s.transitMode) {
+              const cost = Number(s.transportCost ?? s.transitFare) || 0;
+              lines.push(`   交通：${s.transitMode} ${s.transitDuration || ''}｜NT$${cost}`);
+            }
+            (s.highlights || []).forEach(h => lines.push(`   - ${h}`));
+          });
+        });
+        return lines.join('\n');
+      }
+
+      /**
+       * 解析由「複製文字」產出的純文字行程，轉為完整可操作的 trip 物件
+       */
+      function parsePlainTextToTrip(rawText) {
+        const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+        if (lines.length === 0) return null;
+
+        let title = '匯入的行程';
+        let startIdx = 0;
+
+        // 取第一行非分隔線作為行程標題
+        if (!lines[0].startsWith('[') && !/^Day\s*\d+/i.test(lines[0]) && !/^\d+[.)、]/.test(lines[0])) {
+          title = lines[0].split(/[｜|]/)[0].trim() || title;
+          startIdx = 1;
+        }
+
+        const days = [];
+        let currentDay = null;
+        let currentStop = null;
+
+        function ensureDay(dayNum, label, routeNote) {
+          currentDay = {
+            dayNumber: dayNum,
+            dateLabel: label || `Day ${dayNum}`,
+            routeNote: routeNote || '',
+            dailyFare: 0,
+            stops: []
+          };
+          days.push(currentDay);
+        }
+
+        for (let i = startIdx; i < lines.length; i++) {
+          const line = lines[i];
+          if (/^[-=─]{3,}$/.test(line) || /^預估交通費/.test(line)) continue;
+          if (/^順路推薦/.test(line)) break;
+
+          // 偵測天數標題：[Day 1] xxx 或 Day 2 xxx 或 第 2 天
+          const dayMatch = line.match(/^(?:\[)?(?:Day\s*(\d+)|第\s*(\d+)\s*天)(?:\])?\s*(.*)$/i);
+          if (dayMatch) {
+            const dNum = Number(dayMatch[1] || dayMatch[2]) || (days.length + 1);
+            ensureDay(dNum, `Day ${dNum}`, (dayMatch[3] || '').trim());
+            currentStop = null;
+            continue;
+          }
+
+          // 偵測站點起始行：1. 10:30–11:45 店名 [集章] 或 1. 店名 或 10:30–11:45 店名
+          const stopMatch = line.match(/^(?:(\d+)[.)、]\s*)?(?:(\d{1,2}:\d{2})(?:\s*[–—\-~～]\s*(\d{1,2}:\d{2}))?\s+)?(.+)$/);
+          const isSubField = /^(地址|支付|交通|備註|重點)[:：]/.test(line) || /^[-•·▪]\s+/.test(line);
+
+          if (!isSubField && stopMatch && (stopMatch[1] || stopMatch[2] || !currentStop)) {
+            if (!currentDay) ensureDay(1, 'Day 1', '');
+            let rawName = (stopMatch[4] || '').trim();
+            const isStamp = /\[集章\]|集章/.test(rawName);
+            rawName = rawName.replace(/\[集章\]/g, '').trim();
+            if (!rawName) continue;
+
+            currentStop = {
+              id: `imp-d${currentDay.dayNumber}-s${currentDay.stops.length + 1}`,
+              day: currentDay.dayNumber,
+              name: rawName,
+              category: '',
+              district: '',
+              address: rawName,
+              startTime: stopMatch[2] || '彈性',
+              endTime: stopMatch[3] || '',
+              paymentMethods: '現場確認',
+              transitMode: '',
+              transitDuration: '',
+              transportCost: 0,
+              transitFare: 0,
+              transportNote: '',
+              transitNote: '',
+              isStampSpot: isStamp,
+              stampTitle: rawName.slice(0, 6),
+              stampIcon: isStamp ? '★' : '●',
+              highlights: [],
+              expenses: []
+            };
+            currentDay.stops.push(currentStop);
+            continue;
+          }
+
+          // 偵測站點附屬欄位
+          if (currentStop) {
+            if (/^地址[:：]/.test(line)) {
+              currentStop.address = line.replace(/^地址[:：]\s*/, '').trim();
+            } else if (/^支付[:：]/.test(line)) {
+              currentStop.paymentMethods = line.replace(/^支付[:：]\s*/, '').trim() || '現場確認';
+            } else if (/^交通[:：]/.test(line)) {
+              const tText = line.replace(/^交通[:：]\s*/, '').trim();
+              const fareMatch = tText.match(/NT\$\s*(\d+)/i);
+              if (fareMatch) {
+                currentStop.transportCost = Number(fareMatch[1]) || 0;
+                currentStop.transitFare = currentStop.transportCost;
+              }
+              currentStop.transitMode = tText.split(/[｜|]/)[0].trim();
+            } else if (/^[-•·▪]\s+/.test(line)) {
+              currentStop.highlights.push(line.replace(/^[-•·▪]\s+/, '').trim());
+            } else {
+              currentStop.highlights.push(line);
+            }
+          }
+        }
+
+        const validDays = days.filter(d => d.stops.length > 0);
+        if (validDays.length === 0) return null;
+
+        return normalizeTripData({
+          id: 'import-text-' + Date.now(),
+          title,
+          dateNote: `${validDays.length} 天｜文字匯入`,
+          passportMode: 'auto',
+          days: validDays,
+          recommendations: []
+        });
+      }
+
+      // -------------------- 4. 常用工具函式 --------------------
       let toastTimer = null;
       function showToast(msg) {
         const el = document.getElementById('toast');
@@ -1516,7 +1887,6 @@
         return angles[Math.abs(hash) % angles.length];
       }
 
-      // 鏤空雙層木頭章 SVG 產生器（零實心大色塊）
       function buildHollowStampSvg(icon, title, dateStr) {
         const safeTitle = escapeHtml((title || '').slice(0, 6));
         const safeIcon = escapeHtml(icon || '●');
@@ -1545,7 +1915,7 @@
               <button
                 type="button"
                 data-action="empty-go-planner"
-                class="w-full min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+                class="w-full min-h-[44px] rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition"
               >
                 前往規劃
               </button>
@@ -1561,19 +1931,45 @@
         `;
       }
 
-      function loadDemoTripManually() {
-        const demo = createTainanDemoTrip();
-        state.trips.unshift(demo);
-        state.activeTripId = demo.id;
-        state.activeDayIndex = 0;
-        state.passportFilter = 'stamps';
+      function closeAllModals() {
+        ['textImportModal', 'expenseModal', 'overviewModal', 'stampDetailModal', 'installModal', 'deleteModal'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.add('hidden');
+        });
+        state.activeDetailStopId = null;
+        state.activeExpenseStopId = null;
+        state.pendingDeleteTripId = null;
+      }
+
+      /**
+       * 安全切換行程：強制正規化、重設至第一天、關閉彈窗並自動跳轉至「行程」頁，絕不出現空白
+       */
+      function safeSwitchTrip(tripId) {
+        const idx = state.trips.findIndex(t => t.id === tripId);
+        if (idx === -1) return;
+        const normalized = normalizeTripData(state.trips[idx]);
+        if (!normalized) {
+          showToast('此行程資料異常，無法開啟');
+          return;
+        }
+        state.trips[idx] = normalized;
+        state.activeTripId = normalized.id;
+        state.activeDayIndex = 0; // 永遠重設為該行程第一個可用天數（如 Day 1）
+        state.passportFilter = normalized.passportMode === 'all' ? 'all' : 'stamps';
+        closeAllModals();
         saveState();
         renderAll();
         switchTab('itinerary');
-        showToast('已載入台南示範行程');
+        showToast(`已切換：${normalized.title}`);
       }
 
-      // -------------------- 4. 粒子與紙花動畫 --------------------
+      function loadDemoTripManually() {
+        const demo = createTainanDemoTrip();
+        state.trips.unshift(demo);
+        safeSwitchTrip(demo.id);
+      }
+
+      // -------------------- 5. 粒子與紙花動畫 --------------------
       function spawnInkParticles(anchorEl) {
         if (!anchorEl) return;
         const glyphs = ['•', '✦', '•', '✧', '•', '▪'];
@@ -1614,7 +2010,7 @@
         }
       }
 
-      // -------------------- 5. 雙向同步蓋章 --------------------
+      // -------------------- 6. 雙向同步蓋章 --------------------
       function toggleStopStamp(stopId, fromPassport = false) {
         const trip = getActiveTrip();
         if (!trip) return;
@@ -1668,7 +2064,7 @@
         }
       }
 
-      // -------------------- 6. 標頭與時鐘 --------------------
+      // -------------------- 7. 標頭與時鐘 --------------------
       function updateHeader() {
         const trip = getActiveTrip();
         const titleEl = document.getElementById('headerTripTitle');
@@ -1701,14 +2097,14 @@
         if (el) el.textContent = getTaipeiNow().hm;
       }
 
-      // -------------------- 7. TAB 2: 行程（含雙欄財務卡片與地標記帳入口） --------------------
+      // -------------------- 8. TAB 2: 行程 --------------------
       function renderItineraryTab() {
         const trip = getActiveTrip();
         const emptyEl = document.getElementById('itineraryEmpty');
         const contentEl = document.getElementById('itineraryContent');
 
-        if (!trip || !trip.days || trip.days.length === 0) {
-          emptyEl.innerHTML = buildEmptyStateHtml('尚無行程', '前往「規劃」輸入地點清單，或載入台南示範行程體驗記帳與集章功能。');
+        if (!trip || !Array.isArray(trip.days) || trip.days.length === 0) {
+          emptyEl.innerHTML = buildEmptyStateHtml('尚無行程', '前往「規劃」輸入地點清單，或載入台南示範行程預覽。');
           emptyEl.classList.remove('hidden');
           contentEl.classList.add('hidden');
           return;
@@ -1717,7 +2113,10 @@
         emptyEl.classList.add('hidden');
         contentEl.classList.remove('hidden');
 
-        if (state.activeDayIndex >= trip.days.length) state.activeDayIndex = 0;
+        // 防禦性邊界檢查：確保 activeDayIndex 永遠指向有效天數
+        if (state.activeDayIndex < 0 || state.activeDayIndex >= trip.days.length) {
+          state.activeDayIndex = 0;
+        }
         const currentDay = trip.days[state.activeDayIndex];
 
         // 多日切換膠囊
@@ -1732,7 +2131,7 @@
                 data-action="select-day"
                 data-day-idx="${idx}"
                 class="shrink-0 min-h-[44px] px-4 rounded-full text-xs font-semibold border transition active:scale-95 ${
-                  active ? 'bg-white border-white text-void' : 'bg-card border-white/10 text-muted'
+                  active ? 'bg-white border-white text-black' : 'bg-card border-white/12 text-muted'
                 }"
               >
                 ${escapeHtml(d.dateLabel || ('Day ' + d.dayNumber))}
@@ -1758,7 +2157,7 @@
         document.getElementById('tripTotalExpense').textContent = formatNT(totalExp);
         document.getElementById('dayExpenseSubtotal').textContent = trip.days.length > 1
           ? `本日小計 ${formatNT(dayExp)}`
-          : (totalExp > 0 ? '點擊查看分類明細' : '尚無消費紀錄');
+          : (totalExp > 0 ? '點擊查看明細' : '尚無消費紀錄');
 
         // 當日進度
         const stops = currentDay.stops || [];
@@ -1770,8 +2169,17 @@
         document.getElementById('dayProgressText').textContent = `完成 ${doneCount} / ${stops.length} 站（${pct}%）`;
         document.getElementById('dayProgressBar').style.width = `${pct}%`;
 
-        // 時間軸站點卡片
+        // 時間軸渲染
         const container = document.getElementById('timelineContainer');
+        if (stops.length === 0) {
+          container.innerHTML = `
+            <div class="bg-card rounded-2xl border-hairline p-5 text-center text-xs text-muted">
+              本日尚無排定站點
+            </div>
+          `;
+          return;
+        }
+
         container.innerHTML = stops.map((stop, idx) => {
           const stopKey = `${trip.id}::${stop.id}`;
           const isDone = !!state.completedStops[stopKey];
@@ -1779,12 +2187,14 @@
           const isStampable = stop.isStampSpot || trip.passportMode === 'all';
           const isLast = idx === stops.length - 1;
           const highlights = stop.highlights || [];
-          const paymentText = (stop.paymentMethods && stop.paymentMethods.trim()) ? stop.paymentMethods.trim() : '依現場為主';
+          const paymentText = (stop.paymentMethods && stop.paymentMethods.trim()) ? stop.paymentMethods.trim() : '現場確認';
 
           const expenses = Array.isArray(stop.expenses) ? stop.expenses : [];
           const stopExpSum = computeStopExpense(stop);
           const transitLabel = [stop.transitMode, stop.transitDuration].filter(Boolean).join(' ');
-          const fareVal = typeof stop.transitFare === 'number' ? stop.transitFare : 0;
+          const fareVal = Number(stop.transportCost ?? stop.transitFare) || 0;
+          const tNote = stop.transportNote || stop.transitNote || '';
+          const timeText = stop.endTime ? `${stop.startTime}–${stop.endTime}` : stop.startTime;
 
           const highlightsHtml = highlights.map((text, hIdx) => {
             const hKey = `${trip.id}::${stop.id}::${hIdx}`;
@@ -1798,7 +2208,7 @@
                   class="w-full text-left flex items-start gap-2.5 py-1.5 min-h-[40px] group"
                 >
                   <span class="mt-0.5 w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 border transition ${
-                    checked ? 'bg-white border-white text-void' : 'border-white/25 bg-void group-hover:border-white/50'
+                    checked ? 'bg-white border-white text-black' : 'border-white/25 bg-void group-hover:border-white/50'
                   }">
                     ${checked ? `<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>` : ''}
                   </span>
@@ -1812,10 +2222,8 @@
 
           return `
             <article id="stop-card-${escapeHtml(stop.id)}" class="relative pl-5 min-w-0">
-              <!-- 左側 1.5px 螢光綠垂直線 -->
               ${!isLast ? `<div class="absolute left-[6px] top-6 bottom-[-18px] w-[1.5px] bg-neonGreen/65 line-glow-green"></div>` : ''}
 
-              <!-- 左側螢光綠圓點節點 -->
               <button
                 type="button"
                 data-action="toggle-stop"
@@ -1828,7 +2236,6 @@
                 ${isDone ? `<span class="w-1.5 h-1.5 rounded-full bg-void"></span>` : ''}
               </button>
 
-              <!-- 螢光綠 1px 細框交通＋車資膠囊 -->
               ${transitLabel ? `
                 <div class="mb-2 flex flex-wrap items-center gap-1.5">
                   <div class="inline-flex flex-wrap items-center gap-1.5 px-2.5 py-1 rounded-full bg-neonGreen/[0.04] border border-neonGreen/50 text-[11px] font-medium text-neonGreen max-w-full">
@@ -1836,24 +2243,21 @@
                     <span>${escapeHtml(transitLabel)}</span>
                     <span class="text-white/30">·</span>
                     <span class="font-bold tabular-nums">NT$${fareVal}</span>
-                    ${stop.transitNote ? `<span class="text-neonGreen/80 text-[10px]">(${escapeHtml(stop.transitNote)})</span>` : ''}
+                    ${tNote ? `<span class="text-neonGreen/80 text-[10px]">(${escapeHtml(tNote)})</span>` : ''}
                   </div>
                 </div>
               ` : ''}
 
-              <!-- 深黑站點卡片 -->
               <div class="rounded-2xl bg-card border-hairline overflow-hidden min-w-0">
                 <div class="p-3.5">
-                  <!-- 時間、分類、區域 -->
                   <div class="flex flex-wrap items-center justify-between gap-1.5 mb-1.5">
                     <div class="flex flex-wrap items-center gap-1.5 min-w-0">
-                      <span class="text-xs font-bold tabular-nums text-white">${escapeHtml(stop.startTime)}–${escapeHtml(stop.endTime)}</span>
+                      <span class="text-xs font-bold tabular-nums text-white">${escapeHtml(timeText)}</span>
                       ${stop.category ? `<span class="px-1.5 py-0.5 rounded bg-elevated text-[10px] font-medium text-muted">${escapeHtml(stop.category)}</span>` : ''}
                       ${stop.district ? `<span class="text-[10px] text-muted/80">${escapeHtml(stop.district)}</span>` : ''}
                     </div>
                   </div>
 
-                  <!-- 店名與可點擊複製的地址 -->
                   <h3 class="text-fluid-card font-bold leading-snug break-words ${isDone ? 'line-through text-muted' : 'text-white'}">
                     ${escapeHtml(stop.name)}
                   </h3>
@@ -1862,7 +2266,6 @@
                     data-action="copy-address"
                     data-address="${escapeHtml(stop.address)}"
                     class="mt-1 text-left text-xs text-muted hover:text-white/90 leading-snug break-words inline-flex items-start gap-1 transition"
-                    title="點擊複製地址"
                   >
                     <span>${escapeHtml(stop.address)}</span>
                     <svg class="w-3 h-3 mt-0.5 shrink-0 opacity-60" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -1870,7 +2273,7 @@
                     </svg>
                   </button>
 
-                  <!-- 必填：店家支付方式標籤 -->
+                  <!-- 必填：店家支付方式 -->
                   <div class="mt-2.5 flex flex-wrap items-center gap-1.5">
                     <div class="inline-flex flex-wrap items-center gap-1 px-2.5 py-1 rounded-lg bg-void border-hairline text-[11px] max-w-full">
                       <span class="text-muted font-semibold shrink-0">支付：</span>
@@ -1878,7 +2281,7 @@
                     </div>
                   </div>
 
-                  <!-- 若該站已有消費紀錄：極簡單行顯示筆數與小計 -->
+                  <!-- 單行記帳摘要 -->
                   ${expenses.length > 0 ? `
                     <button
                       type="button"
@@ -1891,20 +2294,19 @@
                     </button>
                   ` : ''}
 
-                  <!-- 精簡條列重點 -->
                   ${highlights.length ? `
                     <div class="mt-2.5 pt-2 border-t border-white/10">
                       <ul>${highlightsHtml}</ul>
                     </div>
                   ` : ''}
 
-                  <!-- 底部操作列：導航 / 蓋章 / 記帳 -->
+                  <!-- 操作列：導航 / 蓋章 / 記帳 -->
                   <div class="mt-3 pt-2.5 border-t border-white/10 grid grid-cols-3 gap-1.5">
                     <a
                       href="${getMapsUrl(stop.name, stop.address)}"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="min-h-[44px] inline-flex items-center justify-center rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+                      class="min-h-[44px] inline-flex items-center justify-center rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition"
                     >
                       導航
                     </a>
@@ -1949,12 +2351,12 @@
         }).join('');
       }
 
-      // -------------------- 8. 地標記帳 Modal 邏輯 --------------------
+      // -------------------- 9. 記帳與花費總覽 Modal --------------------
       function updateExpMethodButtons() {
         document.querySelectorAll('.exp-method-btn').forEach(btn => {
           const active = btn.dataset.expmethod === state.selectedExpenseMethod;
           btn.className = `exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition ${
-            active ? 'bg-white text-void border-white' : 'bg-card text-muted border-white/10'
+            active ? 'bg-white text-black border-white' : 'bg-card text-muted border-white/12'
           }`;
         });
       }
@@ -1975,11 +2377,7 @@
 
         const listEl = document.getElementById('expModalList');
         if (expenses.length === 0) {
-          listEl.innerHTML = `
-            <div class="rounded-xl bg-void border-hairline p-4 text-center text-xs text-muted">
-              此地標尚未記錄消費
-            </div>
-          `;
+          listEl.innerHTML = `<div class="rounded-xl bg-void border-hairline p-4 text-center text-xs text-muted">此地標尚未記錄消費</div>`;
         } else {
           listEl.innerHTML = expenses.map(exp => `
             <div class="rounded-xl bg-void border-hairline px-3 py-2.5 flex items-center justify-between gap-2">
@@ -2040,7 +2438,6 @@
         showToast('已刪除消費紀錄');
       }
 
-      // -------------------- 9. 花費明細總覽 Modal 邏輯 --------------------
       function renderOverviewModal() {
         const trip = getActiveTrip();
         if (!trip) return;
@@ -2053,7 +2450,6 @@
         document.getElementById('ovTransitTotal').textContent = formatNT(transitTotal);
         document.getElementById('ovGrandTotal').textContent = formatNT(grandTotal);
 
-        // 付款方式統計
         const methodTotals = {};
         getAllStops(trip).forEach(({ stop }) => {
           (stop.expenses || []).forEach(e => {
@@ -2064,23 +2460,19 @@
 
         const methodEl = document.getElementById('ovMethodSummary');
         const methodEntries = Object.entries(methodTotals).filter(([, v]) => v > 0);
-        if (methodEntries.length === 0) {
-          methodEl.innerHTML = `<span class="text-xs text-muted">尚無地標消費紀錄</span>`;
-        } else {
-          methodEl.innerHTML = methodEntries.map(([m, v]) => `
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-void border-hairline text-xs">
-              <span class="text-muted">${escapeHtml(m)}</span>
-              <span class="font-bold text-white tabular-nums">${formatNT(v)}</span>
-            </span>
-          `).join('');
-        }
+        methodEl.innerHTML = methodEntries.length === 0
+          ? `<span class="text-xs text-muted">尚無地標消費紀錄</span>`
+          : methodEntries.map(([m, v]) => `
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-void border-hairline text-xs">
+                <span class="text-muted">${escapeHtml(m)}</span>
+                <span class="font-bold text-white tabular-nums">${formatNT(v)}</span>
+              </span>
+            `).join('');
 
-        // 依天數與地標分組列表
         const groupEl = document.getElementById('ovGroupedList');
         const dayBlocks = (trip.days || []).map((day, dIdx) => {
-          const stopsWithOrWithout = day.stops || [];
           const dayExp = computeDayExpense(day);
-          const stopRows = stopsWithOrWithout.map(stop => {
+          const stopRows = (day.stops || []).map(stop => {
             const exps = stop.expenses || [];
             const sSum = computeStopExpense(stop);
             if (exps.length === 0) {
@@ -2172,7 +2564,7 @@
         document.getElementById('overviewModal').classList.remove('hidden');
       }
 
-      // -------------------- 10. TAB 3: 護照（鏤空雙層木頭章 SVG） --------------------
+      // -------------------- 10. TAB 3: 護照 --------------------
       function renderPassportTab(justStampedStopId = null) {
         const trip = getActiveTrip();
         const emptyEl = document.getElementById('passportEmpty');
@@ -2187,7 +2579,6 @@
 
         emptyEl.classList.add('hidden');
         contentEl.classList.remove('hidden');
-
         document.getElementById('passportTitle').textContent = trip.title;
 
         const isStampsOnly = state.passportFilter === 'stamps';
@@ -2242,7 +2633,7 @@
               <div class="stamp-fx-anchor relative my-2 stamp-ring-box flex items-center justify-center shrink-0">
                 ${isStamped ? `
                   <div class="w-full h-full stamp-tilted ${animateNow ? 'stamp-slam-active' : ''}" style="--tilt: ${tilt}deg;">
-                    ${buildHollowStampSvg(stop.stampIcon, stampLabel, stampedTime.split(' ')[0])}
+                    ${buildHollowStampSvg(stop.stampIcon, stampLabel, String(stampedTime).split(' ')[0])}
                   </div>
                 ` : `
                   <div class="w-[90%] h-[90%] rounded-full border border-dashed border-white/20 flex items-center justify-center p-1 group-hover:border-neonOrange/60 transition">
@@ -2285,7 +2676,7 @@
         document.getElementById('sdTitle').textContent = stop.name;
         document.getElementById('sdStampedAt').textContent = `蓋章時間：${stampedTime}`;
         document.getElementById('sdAddress').textContent = stop.address;
-        document.getElementById('sdPayment').textContent = stop.paymentMethods || '依現場為主';
+        document.getElementById('sdPayment').textContent = stop.paymentMethods || '現場確認';
         document.getElementById('sdNavLink').href = getMapsUrl(stop.name, stop.address);
 
         const hl = stop.highlights || [];
@@ -2312,16 +2703,19 @@
 
         targetDay.stops.push({
           id: 'added-' + Date.now(),
+          day: targetDay.dayNumber,
           name: rec.name,
           category: rec.category || '順路延伸',
           district: '',
           address: rec.address || rec.name,
           startTime: '彈性',
           endTime: '備案',
-          paymentMethods: rec.paymentMethods || '依現場為主',
+          paymentMethods: rec.paymentMethods || '現場確認',
           transitMode: '順路延伸',
           transitDuration: rec.nearStop ? `近 ${rec.nearStop}` : '依現場動線',
+          transportCost: 0,
           transitFare: 0,
+          transportNote: '自訂加入',
           transitNote: '自訂加入',
           isStampSpot: trip.passportMode === 'all',
           stampTitle: rec.name.slice(0, 6),
@@ -2344,7 +2738,7 @@
         const contentEl = document.getElementById('recommendContent');
 
         if (!trip) {
-          emptyEl.innerHTML = buildEmptyStateHtml('尚無推薦地點', '建立行程後，系統會依據動線整理順路地點與店家支付方式。');
+          emptyEl.innerHTML = buildEmptyStateHtml('尚無推薦地點', '建立行程後，系統會整理順路地點與店家支付方式。');
           emptyEl.classList.remove('hidden');
           contentEl.classList.add('hidden');
           return;
@@ -2375,7 +2769,7 @@
         const allStopNames = new Set(getAllStops(trip).map(i => i.stop.name));
 
         listEl.innerHTML = filtered.map(r => {
-          const payTxt = (r.paymentMethods && r.paymentMethods.trim()) ? r.paymentMethods.trim() : '依現場為主';
+          const payTxt = (r.paymentMethods && r.paymentMethods.trim()) ? r.paymentMethods.trim() : '現場確認';
           const alreadyIn = allStopNames.has(r.name);
           return `
             <div class="bg-card rounded-2xl border-hairline p-3.5 min-w-0">
@@ -2399,7 +2793,7 @@
                   href="${getMapsUrl(r.name, r.address)}"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="flex-1 min-w-[100px] min-h-[44px] inline-flex items-center justify-center rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+                  class="flex-1 min-w-[100px] min-h-[44px] inline-flex items-center justify-center rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition"
                 >
                   導航
                 </a>
@@ -2421,7 +2815,7 @@
         }).join('');
       }
 
-      // -------------------- 12. TAB 5: 行程庫（含累計消費與備份還原） --------------------
+      // -------------------- 12. TAB 5: 行程庫 --------------------
       function renderLibraryTab() {
         const trip = getActiveTrip();
         const libEl = document.getElementById('tripLibraryList');
@@ -2433,7 +2827,7 @@
               <button
                 type="button"
                 data-action="empty-go-planner"
-                class="mt-3 min-h-[44px] px-4 rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+                class="mt-3 min-h-[44px] px-4 rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition"
               >
                 前往規劃新行程
               </button>
@@ -2449,34 +2843,36 @@
             const stampedCount = stampPool.filter(i => !!state.stampedRecords[`${t.id}::${i.stop.id}`]).length;
             const totalExp = computeTripTotalExpense(t);
             const totalFare = computeTripTotalFare(t);
-            const dateLabel = [t.startDate, t.dateNote].filter(Boolean).join(' · ');
 
             return `
-              <div class="rounded-xl bg-void border p-3.5 transition min-w-0 ${isActive ? 'border-white/35' : 'border-white/10'}">
+              <div class="rounded-xl bg-void border p-3.5 transition min-w-0 ${isActive ? 'border-white/35' : 'border-white/12'}">
                 <div class="flex flex-wrap items-center justify-between gap-1.5">
-                  <div class="flex items-center gap-1.5 min-w-0">
+                  <div class="flex items-center gap-1.5 min-w-0 text-[11px] text-muted">
                     ${isActive ? `<span class="w-1.5 h-1.5 rounded-full bg-neonGreen shrink-0"></span>` : ''}
-                    <span class="text-[11px] text-muted truncate">${escapeHtml(dateLabel || ((t.days || []).length + ' 天行程'))}</span>
+                    <span class="truncate">${(t.days || []).length} 天 · ${allStops.length} 站</span>
                   </div>
                   <span class="text-[11px] font-semibold text-neonOrange tabular-nums shrink-0">集章 ${stampedCount}/${stampPool.length}</span>
                 </div>
 
                 <h3 class="text-sm font-bold text-white mt-1 truncate">${escapeHtml(t.title)}</h3>
+                ${t.dateNote ? `<div class="text-[11px] text-muted mt-0.5 truncate">${escapeHtml(t.dateNote)}</div>` : ''}
 
                 <div class="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-muted tabular-nums">
                   <span>消費 <strong class="text-white">${formatNT(totalExp)}</strong></span>
                   <span class="text-white/20">·</span>
-                  <span>交通預估 <strong class="text-neonGreen">${formatNT(totalFare)}</strong></span>
+                  <span>交通 <strong class="text-neonGreen">${formatNT(totalFare)}</strong></span>
                 </div>
 
                 <div class="mt-3 flex flex-wrap items-center gap-2">
                   ${!isActive ? `
                     <button type="button" data-action="switch-trip" data-trip-id="${escapeHtml(t.id)}"
-                      class="flex-1 min-w-[96px] min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition">切換使用</button>
+                      class="flex-1 min-w-[84px] min-h-[44px] rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition">切換</button>
                   ` : `
                     <button type="button" data-action="go-itinerary"
-                      class="flex-1 min-w-[96px] min-h-[44px] rounded-xl bg-elevated border-hairline text-white text-xs font-semibold active:scale-95 transition">目前使用中</button>
+                      class="flex-1 min-w-[84px] min-h-[44px] rounded-xl bg-elevated border-hairline text-white text-xs font-semibold active:scale-95 transition">目前使用中</button>
                   `}
+                  <button type="button" data-action="copy-trip" data-trip-id="${escapeHtml(t.id)}"
+                    class="min-h-[44px] px-3 rounded-xl bg-card border-hairline text-white text-xs font-semibold active:scale-95 transition">複製文字</button>
                   <button type="button" data-action="ask-delete" data-trip-id="${escapeHtml(t.id)}" aria-label="刪除行程"
                     class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl bg-card border-hairline text-muted hover:text-neonOrange hover:border-neonOrange/50 active:scale-95 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -2494,17 +2890,16 @@
         const keyStatus = document.getElementById('apiKeyStatus');
         if (keyInput) keyInput.value = savedKey;
         if (keyStatus) {
-          keyStatus.textContent = savedKey ? '已設定（本機）' : '未設定';
+          keyStatus.textContent = savedKey ? '已儲存於本機' : '未設定';
           keyStatus.className = savedKey ? 'text-[11px] font-semibold text-neonGreen' : 'text-[11px] text-neonOrange';
         }
       }
 
-      // 匯出 / 匯入備份 JSON
       function buildBackupJson() {
         return JSON.stringify({
           app: 'route-notebook',
           exportedAt: new Date().toISOString(),
-          version: 2,
+          version: 3,
           trips: state.trips,
           activeTripId: state.activeTripId,
           completedStops: state.completedStops,
@@ -2518,19 +2913,23 @@
         msgEl.classList.add('hidden');
         try {
           const parsed = JSON.parse(rawText);
-          if (!parsed || !Array.isArray(parsed.trips)) {
-            throw new Error('格式不正確，找不到 trips 陣列');
-          }
-          const normalized = parsed.trips.map(normalizeTripData).filter(Boolean);
+          const rawList = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.trips) ? parsed.trips : (looksLikeTrip(parsed) ? [parsed] : null));
+          if (!rawList) throw new Error('格式不正確，找不到行程資料');
+
+          const normalized = rawList.map(normalizeTripData).filter(Boolean);
+          if (normalized.length === 0) throw new Error('匯入資料中無有效站點');
+
           state.trips = normalized;
-          state.activeTripId = parsed.activeTripId || (normalized[0] ? normalized[0].id : '');
+          state.activeTripId = (parsed.activeTripId && normalized.some(t => t.id === parsed.activeTripId))
+            ? parsed.activeTripId
+            : normalized[0].id;
           state.activeDayIndex = 0;
-          state.completedStops = parsed.completedStops || {};
-          state.stampedRecords = parsed.stampedRecords || {};
-          state.checkedHighlights = parsed.checkedHighlights || {};
+          if (parsed.completedStops) state.completedStops = parsed.completedStops;
+          if (parsed.stampedRecords) state.stampedRecords = parsed.stampedRecords;
+          if (parsed.checkedHighlights) state.checkedHighlights = parsed.checkedHighlights;
+
           saveState();
           renderAll();
-
           msgEl.textContent = `已還原 ${normalized.length} 筆行程與記帳資料`;
           msgEl.className = 'text-xs rounded-xl px-3 py-2 bg-elevated border border-neonGreen/50 text-neonGreen';
           msgEl.classList.remove('hidden');
@@ -2543,7 +2942,7 @@
         }
       }
 
-      // -------------------- 13. Gemini API 呼叫（gemini-2.5-flash） --------------------
+      // -------------------- 13. Gemini API 呼叫（gemini-2.5-flash，含指數退避） --------------------
       async function fetchWithBackoff(url, options, maxRetries = 3) {
         const delays = [1000, 2000, 4000];
         let lastErr = null;
@@ -2557,7 +2956,7 @@
             }
             const errTxt = await res.text().catch(() => '');
             if (res.status === 400 || res.status === 403) {
-              throw new Error(`金鑰權限錯誤 (${res.status})，請到「行程庫」確認或填入 Gemini API Key。`);
+              throw new Error(`金鑰權限錯誤 (${res.status})，請到「行程庫」確認 Gemini API Key。`);
             }
             throw new Error(`連線錯誤 (${res.status})${errTxt ? '：' + errTxt.slice(0, 80) : ''}`);
           } catch (err) {
@@ -2569,7 +2968,7 @@
             }
           }
         }
-        throw lastErr || new Error('連線失敗，請檢查網路狀態後重試');
+        throw lastErr || new Error('連線失敗，請檢查網路後重試');
       }
 
       async function generateRouteWithGemini(form, apiKey) {
@@ -2580,18 +2979,18 @@
           : '僅特色店家、展覽、地標或使用者註明集章的站點將 isStampSpot 設為 true，其餘為 false。';
 
         const payPrefNote = form.payPrefs.length > 0
-          ? `使用者期望支付方式（選填偏好，僅作為推薦地點與車資估算參考）：${form.payPrefs.join('、')}。若含 TPASS 月票，涵蓋範圍內大眾運輸車資估為 0 並註明「月票涵蓋」。`
-          : '使用者未指定期望支付方式，請依一般大眾運輸或步行車資估算。';
+          ? `使用者期望支付方式（選填偏好，僅供推薦地點與車資估算參考）：${form.payPrefs.join('、')}。若含 TPASS 月票，涵蓋範圍內大眾運輸車資估為 0 並註明「月票涵蓋」。`
+          : '使用者未指定期望支付方式，請依一般車資估算。';
 
-        const systemPrompt = `你是精簡務實的行程整理工具，負責規劃 1–7 天順路動線、估算車資與整理順路推薦。
+        const systemPrompt = `你是精簡務實的行程整理工具，負責規劃 1–7 天順路動線、估算交通費與順路推薦。
 規則：
 1. 全程台灣繁體中文，極簡條列，無廢話、無形容詞堆砌、無客套話。
 2. 依地理位置與營業時間排序，不走回頭路，遵守每日起訖時間。
-3. 【必填】每個行程站點與推薦地點皆必須填寫 paymentMethods（店家實際接受的支付方式，如「現金、LINE Pay」、「僅收現金」、「刷卡、行動支付」、「免費入場」；不確定填「依現場為主」）。
-4. 【交通費】每站必填 transitMode、transitDuration、transitFare（台幣整數，步行或月票涵蓋填 0）、transitNote（如「一段票」、「月票涵蓋」、「步行」）。每日提供 dailyFare，全程提供 totalFare 與簡短 fareSummary。
+3. 【必填】每個行程站點與推薦地點皆必須填寫 paymentMethods（店家實際接受的支付方式，如「現金、LINE Pay」、「僅收現金」、「刷卡、行動支付」、「免費入場」；不確定填「現場確認」）。
+4. 【交通費】每站必填 transitMode、transitDuration、transportCost（台幣整數，步行或月票涵蓋填 0）、transportNote（如「一段票」、「月票涵蓋」、「步行」）。每日提供 dailyFare，全程提供 totalFare 與簡短 fareSummary。
 5. ${payPrefNote}
 6. 集章規則：${stampRule}；每站提供 stampTitle（4–6字精簡印章名）與 stampIcon（單一 emoji）。
-7. highlights 為該站 2–3 項精簡重點（直接寫招牌品項、展名或打烊時間）。
+7. highlights 為該站 2–3 項精簡重點（招牌品項、展名或打烊時間）。
 8. recommendations 提供 3–5 個順路地點，每筆必填 paymentMethods、簡短 reason 與 nearStop。`;
 
         const userPrompt = `行程名稱：${form.title}
@@ -2640,8 +3039,8 @@ ${form.places}
                             paymentMethods: { type: "STRING" },
                             transitMode: { type: "STRING" },
                             transitDuration: { type: "STRING" },
-                            transitFare: { type: "INTEGER" },
-                            transitNote: { type: "STRING" },
+                            transportCost: { type: "INTEGER" },
+                            transportNote: { type: "STRING" },
                             isStampSpot: { type: "BOOLEAN" },
                             stampTitle: { type: "STRING" },
                             stampIcon: { type: "STRING" },
@@ -2650,7 +3049,7 @@ ${form.places}
                           required: [
                             "id", "name", "category", "district", "address",
                             "startTime", "endTime", "paymentMethods",
-                            "transitMode", "transitDuration", "transitFare", "transitNote",
+                            "transitMode", "transitDuration", "transportCost", "transportNote",
                             "isStampSpot", "stampTitle", "stampIcon", "highlights"
                           ]
                         }
@@ -2689,10 +3088,10 @@ ${form.places}
 
         const result = await res.json();
         const rawText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!rawText) throw new Error('未回傳有效路線資料，請重試');
+        if (!rawText) throw new Error('未回傳有效路線資料');
 
         const parsed = normalizeTripData(JSON.parse(rawText));
-        if (!parsed || !parsed.days.length) throw new Error('回傳格式不完整，請重試');
+        if (!parsed || !parsed.days.length) throw new Error('回傳格式不完整');
 
         parsed.id = 'trip-' + Date.now();
         parsed.startDate = form.startDate || '';
@@ -2741,7 +3140,7 @@ ${form.places}
           btn.addEventListener('click', () => switchTab(btn.dataset.tab));
         });
 
-        // 空白狀態代理按鈕
+        // 空白狀態按鈕代理
         document.querySelector('main').addEventListener('click', e => {
           const btn = e.target.closest('[data-action="empty-go-planner"], [data-action="empty-load-demo"]');
           if (!btn) return;
@@ -2780,7 +3179,40 @@ ${form.places}
           }
         });
 
-        // 地標記帳 Modal 互動
+        // 文字匯入 Modal
+        const textImportModal = document.getElementById('textImportModal');
+        const closeTextImport = () => {
+          textImportModal.classList.add('hidden');
+          document.getElementById('textImportError').classList.add('hidden');
+        };
+        document.getElementById('openTextImportBtn').addEventListener('click', () => {
+          document.getElementById('textImportInput').value = '';
+          document.getElementById('textImportError').classList.add('hidden');
+          textImportModal.classList.remove('hidden');
+        });
+        document.getElementById('closeTextImportBtn').addEventListener('click', closeTextImport);
+        textImportModal.addEventListener('click', e => { if (e.target === textImportModal) closeTextImport(); });
+        document.getElementById('confirmTextImportBtn').addEventListener('click', () => {
+          const raw = document.getElementById('textImportInput').value.trim();
+          const errEl = document.getElementById('textImportError');
+          errEl.classList.add('hidden');
+          if (!raw) {
+            errEl.textContent = '請貼上行程文字內容。';
+            errEl.classList.remove('hidden');
+            return;
+          }
+          const imported = parsePlainTextToTrip(raw);
+          if (!imported) {
+            errEl.textContent = '無法解析出站點，請確認每站有獨立成行。';
+            errEl.classList.remove('hidden');
+            return;
+          }
+          state.trips.unshift(imported);
+          closeTextImport();
+          safeSwitchTrip(imported.id);
+        });
+
+        // 記帳 Modal
         const expModal = document.getElementById('expenseModal');
         document.getElementById('closeExpenseModalBtn').addEventListener('click', closeExpenseModal);
         expModal.addEventListener('click', e => { if (e.target === expModal) closeExpenseModal(); });
@@ -2835,7 +3267,7 @@ ${form.places}
           deleteExpenseRecord(state.activeExpenseStopId, btn.dataset.expId);
         });
 
-        // 花費明細總覽 Modal 互動
+        // 花費總覽 Modal
         const ovModal = document.getElementById('overviewModal');
         const closeOv = () => ovModal.classList.add('hidden');
         document.getElementById('closeOverviewModalBtn').addEventListener('click', closeOv);
@@ -2910,7 +3342,7 @@ ${form.places}
           document.querySelectorAll('.day-quick-btn').forEach(btn => {
             const active = Number(btn.dataset.days) === n;
             btn.className = `day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition ${
-              active ? 'bg-white text-void border-white' : 'bg-void text-muted border-white/10'
+              active ? 'bg-white text-black border-white' : 'bg-void text-muted border-white/12'
             }`;
           });
         }
@@ -2927,7 +3359,7 @@ ${form.places}
           document.querySelectorAll('.pmode-btn').forEach(b => {
             const active = b.dataset.pmode === state.plannerPassportMode;
             b.className = `pmode-btn min-h-[44px] px-2 rounded-xl text-xs font-semibold border transition ${
-              active ? 'bg-neonOrange/[0.08] text-neonOrange border-neonOrange' : 'bg-void text-muted border-white/10'
+              active ? 'bg-neonOrange/[0.08] text-neonOrange border-neonOrange' : 'bg-void text-muted border-white/12'
             }`;
           });
         });
@@ -2940,7 +3372,7 @@ ${form.places}
           else state.plannerPayPrefs.add(pay);
           const active = state.plannerPayPrefs.has(pay);
           btn.className = `pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border transition ${
-            active ? 'bg-white text-void border-white' : 'bg-void text-muted border-white/10'
+            active ? 'bg-white text-black border-white' : 'bg-void text-muted border-white/12'
           }`;
         });
 
@@ -2952,7 +3384,7 @@ ${form.places}
           else state.plannerPrefs.add(pref);
           const active = state.plannerPrefs.has(pref);
           btn.className = `pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border transition ${
-            active ? 'bg-white text-void border-white' : 'bg-void text-muted border-white/10'
+            active ? 'bg-white text-black border-white' : 'bg-void text-muted border-white/12'
           }`;
         });
 
@@ -2989,7 +3421,6 @@ ${form.places}
             return;
           }
 
-          // 優先讀取行程庫本機金鑰；若為空仍嘗試送出（相容預覽環境自動注入）
           const apiKey = getSavedApiKey() || '';
           const title = document.getElementById('inputTripName').value.trim() || `${state.plannerDays} 日路線`;
           const startDate = document.getElementById('inputStartDate').value || '';
@@ -3025,13 +3456,7 @@ ${form.places}
             }, apiKey);
 
             state.trips.unshift(newTrip);
-            state.activeTripId = newTrip.id;
-            state.activeDayIndex = 0;
-            state.passportFilter = newTrip.passportMode === 'all' ? 'all' : 'stamps';
-            saveState();
-            renderAll();
-            switchTab('itinerary');
-            showToast(`已建立：${newTrip.title}`);
+            safeSwitchTrip(newTrip.id);
           } catch (err) {
             errText.textContent = `無法產生路線：${err.message || '請確認 API Key 與網路連線'}`;
             if (!apiKey || String(err.message).includes('金鑰')) {
@@ -3111,14 +3536,14 @@ ${form.places}
           const action = btn.dataset.action;
           const tripId = btn.dataset.tripId;
           if (action === 'switch-trip') {
-            state.activeTripId = tripId;
-            state.activeDayIndex = 0;
-            saveState();
-            renderAll();
-            switchTab('itinerary');
-            showToast('已切換行程');
+            safeSwitchTrip(tripId);
           } else if (action === 'go-itinerary') {
+            state.activeDayIndex = 0;
+            renderItineraryTab();
             switchTab('itinerary');
+          } else if (action === 'copy-trip') {
+            const target = state.trips.find(t => t.id === tripId);
+            if (target) copyToClipboard(generatePlainTextTrip(target), '已複製純文字行程');
           } else if (action === 'ask-delete') {
             const target = state.trips.find(t => t.id === tripId);
             if (!target) return;
@@ -3159,7 +3584,7 @@ ${form.places}
 
       // -------------------- 16. 初始化 --------------------
       function init() {
-        loadState();
+        rescueAndLoadState();
         bindEvents();
         renderAll();
         switchTab(state.activeTab);
