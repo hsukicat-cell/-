@@ -505,30 +505,6 @@
       font-weight: 700;
     }
 
-    /* 細緻低調的背景自動同步提示列 */
-    .auto-sync-bar {
-      border-radius: var(--r-md);
-      background: var(--bg-card);
-      border: 1px solid rgba(57, 255, 20, 0.32);
-      padding: 10px 12px;
-      margin-bottom: 12px;
-    }
-
-    /* 簡潔、可關閉的免費額度提示列（絕不破壞站點卡片版面） */
-    .quota-notice-bar {
-      border-radius: var(--r-md);
-      background: var(--bg-card);
-      border: 1px solid var(--border-strong);
-      padding: 8px 8px 8px 12px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
     .progress-panel {
       border-radius: var(--r-md);
       background: var(--bg-input);
@@ -887,7 +863,7 @@
           <div class="section-head">
             <div class="min-w-0 flex-1">
               <h2 class="title-fluid">規劃行程（1–7 天）</h2>
-              <p class="text-11 muted" style="margin-top:2px;">自動分批查核 Google 地圖真實地址、營業與支付方式</p>
+              <p class="text-11 muted" style="margin-top:2px;">單次 Google 搜尋即時查核真實地址、營業與支付方式（省額度模式）</p>
             </div>
             <button id="fillExampleBtn" type="button" class="btn btn-surface shrink-0" style="font-size:11px;">
               填入範例
@@ -1003,13 +979,13 @@
               <div class="flex-between">
                 <div class="flex-row min-w-0 flex-1">
                   <span class="spinner-xs shrink-0"></span>
-                  <span id="plannerProgressStage" class="text-xs text-green truncate" style="font-weight:700;">查核店家真實資訊中</span>
+                  <span id="plannerProgressStage" class="text-xs text-green truncate" style="font-weight:700;">單次 Google 搜尋查核與排程中...</span>
                 </div>
                 <span id="plannerProgressPct" class="text-11 muted tabular shrink-0">0%</span>
               </div>
-              <div id="plannerProgressDetail" class="text-xs break-words" style="color:var(--text-soft);">準備分批查詢...</div>
+              <div id="plannerProgressDetail" class="text-xs break-words" style="color:var(--text-soft);">僅消耗 1 次搜尋額度，同步完成地址查核與動線排序...</div>
               <div class="progress-track">
-                <div id="plannerProgressFill" class="progress-fill" style="width:8%;"></div>
+                <div id="plannerProgressFill" class="progress-fill" style="width:15%;"></div>
               </div>
             </div>
 
@@ -1040,30 +1016,6 @@
         <div id="itineraryEmpty" class="hidden"></div>
 
         <div id="itineraryContent">
-          <!-- 背景自動更新細緻進度條（完成後自動消失，無任何手動重查按鈕） -->
-          <div id="autoSyncBar" class="auto-sync-bar hidden stack-2">
-            <div class="flex-between">
-              <div class="flex-row min-w-0 flex-1">
-                <span class="spinner-xs shrink-0"></span>
-                <span id="autoSyncText" class="text-11 text-green truncate" style="font-weight:600;">自動更新店家真實資訊中...</span>
-              </div>
-              <span id="autoSyncPct" class="text-10 muted tabular shrink-0">0%</span>
-            </div>
-            <div class="progress-track">
-              <div id="autoSyncFill" class="progress-fill" style="width:10%;"></div>
-            </div>
-          </div>
-
-          <!-- 免費額度暫達上限時的可關閉人性化提示（不干擾任何站點卡片） -->
-          <div id="quotaNoticeBar" class="quota-notice-bar hidden">
-            <span class="min-w-0 flex-1">Google 免費查詢額度暫達上限，稍後開啟將自動完成同步</span>
-            <button id="dismissQuotaNoticeBtn" type="button" class="btn-icon muted" style="min-width:34px;min-height:34px;" aria-label="關閉提示">
-              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
-            </button>
-          </div>
-
           <!-- 多日切換列 -->
           <div id="dayTabsContainer" class="day-tabs no-scrollbar"></div>
 
@@ -1247,7 +1199,7 @@
             <span id="apiKeyStatus" class="text-11 muted">未設定</span>
           </div>
           <p class="text-11 muted" style="margin-bottom:10px;">
-            僅存於本機瀏覽器（localStorage），絕不公開。系統會自動建立可用 Flash 模型備援池，遇限流時自動退避或切換。
+            僅存於本機瀏覽器（localStorage），絕不公開。已啟用省額度單次搜尋模式，且切換或開啟舊行程絕不在背景消耗額度。
           </p>
           <div class="sub-box flex-between" style="margin-bottom:10px;padding:8px 11px;">
             <span class="text-11 muted shrink-0">目前連線模型</span>
@@ -1385,6 +1337,10 @@
         </button>
       </div>
       <form id="editStopForm" class="modal-body stack-3">
+        <div class="field">
+          <label for="editStopName" class="field-label">地標／店家名稱</label>
+          <input id="editStopName" type="text" class="field-input" placeholder="輸入地標名稱" />
+        </div>
         <div class="grid-form-2">
           <div class="field">
             <label for="editStopStart" class="field-label">開始時間</label>
@@ -1430,7 +1386,7 @@
         </button>
       </div>
       <div class="modal-body stack-3">
-        <p class="text-xs muted">貼上由「複製文字」取得的純文字行程，匯入後若已設定 API Key，系統會自動在背景補齊各站真實地址與支付方式。</p>
+        <p class="text-xs muted">貼上由「複製文字」取得的純文字行程即可快速還原，匯入後可隨時點擊各站「編輯」微調地址、時間或支付方式。</p>
         <div class="field">
           <textarea id="textImportInput" rows="8" class="field-textarea" placeholder="貼上純文字行程..."></textarea>
         </div>
@@ -1466,7 +1422,7 @@
           <div class="grid-form-2">
             <div class="field">
               <label for="expAmountInput" class="field-label text-11">金額 (NT$) <span class="text-orange">*</span></label>
-              <input id="expAmountInput" type="number" inputmode="decimal" min="1" step="any" class="field-input tabular" placeholder="例：150" />
+              <input id="expAmountInput" type="number" inputmode="numeric" min="1" step="any" class="field-input tabular" placeholder="例：150" />
             </div>
             <div class="field">
               <label for="expItemInput" class="field-label text-11">品項備註 (選填)</label>
@@ -1803,14 +1759,14 @@
       const MODEL_CACHE_KEY = 'route_notebook_resolved_model';
       const MODEL_POOL_KEY = 'route_notebook_model_pool';
       const UNKNOWN_PAYMENT = '公開資訊未載明（建議備現金）';
-      const BATCH_SIZE = 3;
-      const BATCH_INTERVAL_MS = 1500;
+      const QUOTA_LIMIT_MSG = 'Google 免費查詢額度暫達上限，請稍候 1–2 分鐘後再按一次「產生路線 →」，或於行程庫更換另一組 API Key。';
 
       const DEFAULT_MODEL_POOL = [
         'gemini-flash-latest',
         'gemini-2.5-flash',
         'gemini-2.0-flash',
-        'gemini-2.5-flash-lite'
+        'gemini-2.5-flash-lite',
+        'gemini-2.0-flash-lite'
       ];
 
       let state = {
@@ -1832,15 +1788,10 @@
         activeExpenseStopId: null,
         activeEditStopId: null,
         selectedExpenseMethod: '現金',
-        // 模型與背景靜默同步狀態
+        // 模型動態解析快取（絕不於背景自動呼叫 API）
         resolvedModelName: '',
         modelPool: DEFAULT_MODEL_POOL.slice(),
-        deadModelsSession: new Set(),
-        isAutoSyncing: false,
-        autoSyncTripId: '',
-        autoSyncAttemptedTrips: new Set(),
-        quotaExhaustedInSession: false,
-        quotaNoticeDismissed: false
+        deadModelsSession: new Set()
       };
 
       // -------------------- 3. 資料正規化與非破壞性智慧救援 --------------------
@@ -2808,128 +2759,219 @@ ${listLines}
         // 嚴格遵守：使用 google_search 時只傳 contents、tools 與 generationConfig(temperature: 0)
         const payload = {
           contents: [{ parts: [{ text: promptText }] }],
-          tools: [{ google_search: {} }],
-          generationConfig: { temperature: 0 }
-        };
+      // -------------------- 6. 動態模型解析 + 嚴格防 429 單次備援 --------------------
+      function updateActiveModelDisplay() {
+        const el = document.getElementById('activeModelDisplay');
+        if (!el) return;
+        if (state.resolvedModelName) {
+          el.textContent = state.resolvedModelName;
+          el.className = 'text-11 tabular text-green truncate';
+        } else {
+          el.textContent = '自動偵測（待測試）';
+          el.className = 'text-11 tabular muted truncate';
+        }
+      }
 
-        const data = await callGeminiWithFallback(payload, apiKey);
-        const candidate = data?.candidates?.[0];
-        const parts = candidate?.content?.parts || [];
-        const fullText = parts.map(p => p.text || '').join('\n').trim();
+      function scoreFlashModel(modelId) {
+        const id = modelId.toLowerCase();
+        if (/(image|tts|audio|live|embedding|vision|aqa|robotics|computer-use|thinking)/i.test(id)) return -100;
+        if (id === 'gemini-flash-latest') return 1000;
+        if (id === 'gemini-2.5-flash') return 940;
+        if (/^gemini-3(\.\d+)?-flash/.test(id) && !id.includes('lite')) return 920;
+        if (/^gemini-2\.5-flash/.test(id) && !id.includes('lite')) return 900;
+        if (id === 'gemini-2.0-flash') return 860;
+        if (/^gemini-2\.0-flash/.test(id) && !id.includes('lite')) return 820;
+        if (id === 'gemini-2.5-flash-lite') return 780;
+        if (id === 'gemini-2.0-flash-lite') return 750;
+        if (id.includes('flash-lite')) return 720;
+        if (id.includes('flash')) return 650;
+        return 0;
+      }
 
-        const gm = candidate?.groundingMetadata || {};
-        const hasGrounding = (Array.isArray(gm.webSearchQueries) && gm.webSearchQueries.length > 0)
-          || (Array.isArray(gm.groundingChunks) && gm.groundingChunks.length > 0)
-          || (Array.isArray(gm.groundingAttributions) && gm.groundingAttributions.length > 0);
-
-        let parsedList = [];
+      async function discoverModelPool(apiKey, forceRefresh = false) {
+        if (!forceRefresh && Array.isArray(state.modelPool) && state.modelPool.length > 0 && state.resolvedModelName) {
+          return state.modelPool;
+        }
         try {
-          const parsed = extractJSON(fullText);
-          parsedList = Array.isArray(parsed.places) ? parsed.places : (Array.isArray(parsed) ? parsed : []);
-        } catch (e) {
-          parsedList = [];
-        }
+          const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`;
+          const res = await fetch(listUrl);
+          if (!res.ok) return state.modelPool.length ? state.modelPool : DEFAULT_MODEL_POOL.slice();
+          const data = await res.json();
+          const models = Array.isArray(data.models) ? data.models : [];
 
-        const resultMap = new Map();
-        batchItems.forEach(item => {
-          const found = parsedList.find(p => p && p.refId === item.refId)
-            || parsedList.find(p => p && normalizeNameKey(p.name) === normalizeNameKey(item.name));
+          const ranked = models
+            .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
+            .map(m => String(m.name || '').replace(/^models\//, '').trim())
+            .filter(Boolean)
+            .map(id => ({ id, score: scoreFlashModel(id) }))
+            .filter(item => item.score > 0)
+            .sort((a, b) => b.score - a.score || b.id.localeCompare(a.id))
+            .map(item => item.id);
 
-          if (found) {
-            const addr = String(found.address || '').trim();
-            const addrOk = Boolean(hasGrounding && addr && found.addressVerified !== false);
-            resultMap.set(item.refId, {
-              name: String(found.name || item.name).trim(),
-              address: addrOk ? addr : (found.addressVerified !== false ? addr : ''),
-              district: String(found.district || '').trim(),
-              hours: String(found.hours || '').trim(),
-              payment: sanitizePaymentText(found.payment),
-              category: String(found.category || '').trim(),
-              note: String(found.note || '').trim(),
-              verified: addrOk
-            });
-          } else {
-            resultMap.set(item.refId, {
-              name: item.name,
-              address: '',
-              district: '',
-              hours: '',
-              payment: UNKNOWN_PAYMENT,
-              category: '',
-              note: '',
-              verified: false
-            });
+          if (ranked.length > 0) {
+            setCachedModelPool(ranked);
+            return ranked;
           }
-        });
-
-        return resultMap;
-      }
-
-      // 循序小批次查核（每批 3 店，批次間隔 1.5 秒）
-      async function verifyPlacesInBatches(items, defaultRegion, apiKey, onProgress) {
-        const mergedMap = new Map();
-        const total = items.length;
-        let done = 0;
-
-        for (let i = 0; i < total; i += BATCH_SIZE) {
-          const batch = items.slice(i, i + BATCH_SIZE);
-          if (i > 0) await sleep(BATCH_INTERVAL_MS);
-
-          const batchResult = await verifyBatchWithSearch(batch, defaultRegion, apiKey);
-          batchResult.forEach((val, key) => mergedMap.set(key, val));
-          done = Math.min(total, i + batch.length);
-          if (onProgress) onProgress(done, total, batchResult, batch);
+        } catch (e) {
+          console.warn('偵測模型池失敗，改用預設清單:', e);
         }
-        return mergedMap;
+        return state.modelPool.length ? state.modelPool : DEFAULT_MODEL_POOL.slice();
       }
 
-      // 排程與車資估算（程式碼層級強制鎖定查核後的真實地址、營業時間與支付方式）
-      async function planRouteWithVerifiedData(form, verifiedPlaces, apiKey) {
+      async function resolveGeminiModel(apiKey, forceRefresh = false) {
+        if (!forceRefresh && state.resolvedModelName && !state.deadModelsSession.has(state.resolvedModelName)) {
+          return state.resolvedModelName;
+        }
+        if (!forceRefresh && !state.deadModelsSession.has('gemini-flash-latest')) {
+          return 'gemini-flash-latest';
+        }
+        const pool = await discoverModelPool(apiKey, forceRefresh);
+        const picked = pool.find(m => !state.deadModelsSession.has(m)) || 'gemini-flash-latest';
+        return picked;
+      }
+
+      // 遇 404/400 自動切換有效模型；遇 429 最多僅切換 1 個備援 Flash/Lite 模型，絕不重複空轉重試
+      async function callGeminiWithFallback(payload, apiKey) {
+        const primaryModel = await resolveGeminiModel(apiKey, false);
+        const triedModels = new Set();
+        let poolRefreshed = false;
+        let quotaFallbackUsed = false;
+        let currentModel = primaryModel;
+        let lastErr = null;
+
+        while (currentModel && !triedModels.has(currentModel)) {
+          triedModels.add(currentModel);
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(currentModel)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+          try {
+            const res = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+              const data = await res.json();
+              setCachedModel(currentModel);
+              return data;
+            }
+
+            const errBody = await res.text().catch(() => '');
+            const status = res.status;
+
+            if (status === 401 || status === 403) {
+              const authErr = new Error('API Key 無效或權限不足，請至行程庫檢查金鑰設定');
+              authErr.status = status;
+              throw authErr;
+            }
+
+            if (status === 404 || (status === 400 && /(model|not found|not supported|no longer available)/i.test(errBody))) {
+              state.deadModelsSession.add(currentModel);
+              if (state.resolvedModelName === currentModel) setCachedModel('');
+              if (!poolRefreshed) {
+                await discoverModelPool(apiKey, true);
+                poolRefreshed = true;
+              }
+              currentModel = state.modelPool.find(m => !triedModels.has(m) && !state.deadModelsSession.has(m)) || '';
+              lastErr = new Error(`模型暫無法使用 (${status})`);
+              continue;
+            }
+
+            if (status === 429) {
+              const quotaErr = new Error(QUOTA_LIMIT_MSG);
+              quotaErr.status = 429;
+              quotaErr.isQuotaExhausted = true;
+              lastErr = quotaErr;
+
+              if (quotaFallbackUsed) {
+                throw quotaErr;
+              }
+              quotaFallbackUsed = true;
+              if (!poolRefreshed) {
+                await discoverModelPool(apiKey, true);
+                poolRefreshed = true;
+              }
+              const altModel = state.modelPool.find(m => !triedModels.has(m) && !state.deadModelsSession.has(m)) || '';
+              if (!altModel) throw quotaErr;
+              currentModel = altModel;
+              continue;
+            }
+
+            const otherErr = new Error(`連線異常 (${status})，請稍後再試`);
+            otherErr.status = status;
+            throw otherErr;
+          } catch (err) {
+            if (err.status === 401 || err.status === 403 || err.isQuotaExhausted || err.status >= 400) {
+              throw err;
+            }
+            throw new Error(err.message || '網路連線失敗，請檢查連線後再試');
+          }
+        }
+
+        throw lastErr || new Error('暫時無法連線至查詢服務，請稍後再試');
+      }
+
+      // -------------------- 7. 省額度單次 Google 搜尋查核與排程引擎 --------------------
+      function extractJSON(rawText) {
+        const text = String(rawText || '').trim();
+        const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+        if (fenced && fenced[1]) {
+          try { return JSON.parse(fenced[1].trim()); } catch (e) {}
+        }
+        try { return JSON.parse(text); } catch (e) {}
+        const firstBrace = text.indexOf('{');
+        const lastBrace = text.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace > firstBrace) {
+          return JSON.parse(text.slice(firstBrace, lastBrace + 1));
+        }
+        throw new Error('回傳內容無法解析為有效 JSON');
+      }
+
+      function parsePlaceLine(rawLine, index) {
+        const line = String(rawLine || '').trim().replace(/^[-•·▪\d.)、\s]+/, '').trim();
+        if (!line) return null;
+        const noteMatch = line.match(/[（(]([^）)]+)[）)]/);
+        const cleanName = line.replace(/[（(][^）)]+[）)]/g, '').trim() || line;
+        return { refId: `p${index + 1}`, rawLine: line, cleanName, userNote: noteMatch ? noteMatch[1].trim() : '' };
+      }
+
+      // 單次呼叫：同時完成 Google 搜尋逐店查核（地址/營業/支付）與多日動線車資排程
+      async function generateRouteSingleCall(form, parsedLines, apiKey) {
         const stampRule = form.passportMode === 'all'
           ? '所有站點的 isStampSpot 皆設為 true。'
-          : '僅特色店家、展覽、地標或使用者註明集章的站點將 isStampSpot 設為 true，其餘為 false。';
+          : '僅特色店家、展覽、地標或使用者註明「集章」的站點將 isStampSpot 設為 true，其餘為 false。';
 
         const payPrefNote = form.payPrefs.length > 0
           ? `使用者期望支付方式（選填軟性參考）：${form.payPrefs.join('、')}。若包含 TPASS 月票，涵蓋範圍內大眾運輸車資估為 0 並於 transportNote 註明「月票涵蓋」。`
-          : '使用者未指定期望支付方式，請依一般大眾運輸或步行估算車資。';
+          : '使用者未指定期望支付方式，請依一般大眾運輸或步行估算合理車資。';
 
-        const promptText = `你是精簡務實的台灣行程動線排序與交通費估算工具。
-下方「已查核店家清單」附有唯一 refId（p1, p2...）與 Google 查核後之真實地址、營業時間、支付方式。
+        const placesListText = parsedLines.map((p, idx) =>
+          `${idx + 1}. ${p.cleanName}${p.userNote ? `（使用者備註：${p.userNote}）` : ''}`
+        ).join('\n');
 
-【排程規則】
-1. 每個站點必須帶回對應的 refId，不可省略清單中的任何地點。
-2. 依真實地址的地理距離與營業時間排序，避免走回頭路，合理分配至 ${form.days} 天（每日 ${form.startTime}–${form.endTime}）。
-3. 依據真實地址距離估算每站間合理的 transitMode、transitDuration（如「約 10 分」）、transportCost（整數台幣，步行填 0）、transportNote（步行、一段票、月票涵蓋等）。
-4. ${payPrefNote}
-5. 集章規則：${stampRule}；每站提供 4–6 字 stampTitle 與單一 emoji 的 stampIcon。
-6. highlights 為 2–3 條極簡重點（零廢話、零 AI 套話）。
-7. planB 提供 1–2 條簡短雨天或超時備案。
-8. recommendations 提供 2–3 個鄰近順路備案地點，須包含地址與具體支付方式（嚴禁填現場確認或依現場指示）。
-9. 只回傳單一有效 JSON 物件，不要加額外說明文字。
+        const promptText = `你是一位嚴謹、精簡務實的台灣旅遊行程規劃與店家資訊查核專家。請使用 Google 搜尋一次性查核下方所有地點的真實資訊，並直接完成順路排程與交通費預估。
 
-輸入資料：
-${JSON.stringify({
-  title: form.title,
-  cityHint: form.cityHint,
-  startDate: form.startDate || '',
-  days: form.days,
-  dailyWindow: `${form.startTime}–${form.endTime}`,
-  preferredPaymentsOptional: form.payPrefs,
-  preferences: form.prefs || '無',
-  verifiedPlaces: verifiedPlaces.map(p => ({
-    refId: p.refId,
-    userInput: p.rawLine,
-    userNote: p.userNote,
-    name: p.name,
-    address: p.address || `${form.cityHint || ''} ${p.name}`.trim(),
-    hours: p.hours,
-    payment: p.payment,
-    category: p.category,
-    note: p.note
-  }))
-}, null, 2)}
+【使用者需求】
+- 行程名稱：${form.title}
+- 縣市／地區提示：${form.cityHint || '請依地點名稱判斷'}
+- 出發日期：${form.startDate || '未指定'}
+- 天數：${form.days} 天（每日活動時段 ${form.startTime}–${form.endTime}）
+- 偏好與其他條件：${form.prefs || '無'}
+- ${payPrefNote}
+- 集章規則：${stampRule}
 
-回傳 JSON 格式：
+【想去的地點清單（不可遺漏任何一站）】
+${placesListText}
+
+【強制查核與輸出規則】
+1. 地址與營業：務必透過 Google 搜尋核對每一間店的 Google 地圖官方完整地址（含郵遞區號或縣市、區鄉鎮、路街巷弄門牌號）以及實際營業時間與公休日。嚴禁編造假地址。
+2. 支付方式（必填）：明確列出每間店與每個順路推薦地點實際支援的支付方式（如「現金、信用卡、金融卡、NFC 行動支付、LINE Pay」或「僅收現金」或「免費入場」）。嚴禁輸出「現場確認」、「依現場指示」、「依店家公告」等敷衍說法；唯有公開資料完全未載明支付方式時，才可填「公開資訊未載明（建議備現金）」。
+3. 動線與車資：依真實地址的地理距離與營業時間排序，不走回頭路，計算每站間合理的 transitMode、transitDuration（如「約 12 分」）、transportCost（整數台幣，步行或月票涵蓋填 0）與 transportNote。
+4. 內容精簡：全繁體中文（台灣用語），highlights 每站 2–3 條精簡重點；planB 提供 1–2 條雨天或超時備案；recommendations 提供 2–3 個鄰近順路備案地點（皆須含真實地址與明確支付方式）。
+5. 僅輸出單一 \`\`\`json ... \`\`\` 程式碼區塊，不要輸出其他前言或說明文字。
+
+回傳 JSON 結構：
+\`\`\`json
 {
   "title": "行程標題",
   "dateNote": "精簡天數與時段摘要",
@@ -2943,24 +2985,23 @@ ${JSON.stringify({
       "dailyFare": 0,
       "stops": [
         {
-          "refId": "p1",
           "id": "d1-s1",
-          "name": "店名",
+          "name": "Google 地圖完整店名",
           "category": "分類",
-          "district": "區",
-          "address": "地址",
-          "hours": "營業時間",
+          "district": "所在行政區",
+          "address": "真實完整台灣地址",
+          "hours": "營業時間與公休日",
           "startTime": "10:00",
           "endTime": "11:15",
-          "payment": "支付方式",
-          "transitMode": "公車 / 步行",
+          "payment": "明確支付方式清單",
+          "transitMode": "公車 / 捷運 / 步行",
           "transitDuration": "約 10 分",
           "transportCost": 0,
-          "transportNote": "步行 / 一段票",
+          "transportNote": "步行 / 一段票 / 月票涵蓋",
           "isStampSpot": true,
-          "stampTitle": "精簡章名",
+          "stampTitle": "4至6字印章名",
           "stampIcon": "📍",
-          "highlights": ["重點1", "重點2"]
+          "highlights": ["精簡重點1", "精簡重點2"]
         }
       ]
     }
@@ -2968,56 +3009,55 @@ ${JSON.stringify({
   "recommendations": [
     {
       "id": "rec-1",
-      "name": "順路店名",
+      "name": "順路推薦店名",
       "category": "分類",
-      "address": "地址",
+      "address": "真實完整地址",
       "hours": "營業時間",
-      "payment": "具體支付方式",
+      "payment": "明確支付方式",
       "reason": "精簡一行推薦理由",
       "nearStop": "鄰近站名"
     }
   ],
-  "planB": ["備案1"]
-}`;
+  "planB": ["精簡備案提醒"]
+}
+\`\`\``;
 
+        // 嚴格遵守：搭配 google_search 時不可設定 responseMimeType
         const payload = {
           contents: [{ parts: [{ text: promptText }] }],
-          generationConfig: { temperature: 0.2, responseMimeType: 'application/json' }
+          tools: [{ google_search: {} }],
+          generationConfig: { temperature: 0.1 }
         };
 
         const data = await callGeminiWithFallback(payload, apiKey);
-        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!rawText) throw new Error('排程階段未回傳有效行程資料');
+        const candidate = data?.candidates?.[0];
+        const parts = candidate?.content?.parts || [];
+        const fullText = parts.map(p => p.text || '').join('\n').trim();
+        if (!fullText) throw new Error('未回傳有效行程資料，請稍後再試');
 
-        const parsedRaw = extractJSON(rawText);
+        const gm = candidate?.groundingMetadata || {};
+        const hasGrounding = (Array.isArray(gm.webSearchQueries) && gm.webSearchQueries.length > 0)
+          || (Array.isArray(gm.groundingChunks) && gm.groundingChunks.length > 0)
+          || (Array.isArray(gm.groundingAttributions) && gm.groundingAttributions.length > 0);
 
-        const byRef = new Map();
-        const byNormName = new Map();
-        verifiedPlaces.forEach(vp => {
-          byRef.set(vp.refId, vp);
-          byNormName.set(normalizeNameKey(vp.name), vp);
-          byNormName.set(normalizeNameKey(vp.cleanName), vp);
-        });
-
-        // 程式碼層級強制鎖定查核後的真實地址、營業時間與支付方式
+        const parsedRaw = extractJSON(fullText);
         if (Array.isArray(parsedRaw.days)) {
           parsedRaw.days.forEach(d => {
             (d.stops || []).forEach(s => {
-              const vp = (s.refId && byRef.get(s.refId)) || byNormName.get(normalizeNameKey(s.name)) || null;
-              if (vp) {
-                s.name = vp.name || s.name;
-                if (vp.address) s.address = vp.address;
-                if (vp.hours) s.hours = vp.hours;
-                s.payment = vp.payment;
-                s.verified = vp.verified;
-                if (vp.district && !s.district) s.district = vp.district;
-              }
+              s.verified = Boolean(hasGrounding && s.address);
+              s.payment = sanitizePaymentText(s.payment || s.paymentMethods);
             });
+          });
+        }
+        if (Array.isArray(parsedRaw.recommendations)) {
+          parsedRaw.recommendations.forEach(r => {
+            r.verified = Boolean(hasGrounding && r.address);
+            r.payment = sanitizePaymentText(r.payment || r.paymentMethods);
           });
         }
 
         const parsed = normalizeTripData(parsedRaw);
-        if (!parsed || !parsed.days.length) throw new Error('行程結構解析失敗');
+        if (!parsed || !parsed.days.length) throw new Error('行程結構解析失敗，請再試一次');
 
         parsed.id = 'trip-' + Date.now();
         parsed.cityHint = form.cityHint;
@@ -3029,95 +3069,7 @@ ${JSON.stringify({
         return parsed;
       }
 
-      // -------------------- 8. 舊行程背景無縫自動同步（零手動重查按鈕） --------------------
-      function updateQuotaNoticeUI() {
-        const el = document.getElementById('quotaNoticeBar');
-        if (!el) return;
-        const shouldShow = state.quotaExhaustedInSession && !state.quotaNoticeDismissed;
-        el.classList.toggle('hidden', !shouldShow);
-      }
-
-      async function autoSyncActiveTripIfNeeded() {
-        const trip = getActiveTrip();
-        if (!trip || state.isAutoSyncing) return;
-
-        const apiKey = getSavedApiKey();
-        if (!apiKey) return;
-
-        if (state.quotaExhaustedInSession) {
-          updateQuotaNoticeUI();
-          return;
-        }
-
-        if (state.autoSyncAttemptedTrips.has(trip.id)) return;
-
-        const all = getAllStops(trip);
-        const pending = all.filter(i => !i.stop.verified);
-        if (!pending.length) return;
-
-        state.isAutoSyncing = true;
-        state.autoSyncTripId = trip.id;
-        state.autoSyncAttemptedTrips.add(trip.id);
-
-        const bar = document.getElementById('autoSyncBar');
-        const textEl = document.getElementById('autoSyncText');
-        const pctEl = document.getElementById('autoSyncPct');
-        const fillEl = document.getElementById('autoSyncFill');
-
-        bar.classList.remove('hidden');
-        textEl.textContent = `自動更新店家真實資訊中 (0/${pending.length})...`;
-        pctEl.textContent = '0%';
-        fillEl.style.width = '8%';
-
-        const batchInputs = pending.map((item, idx) => ({
-          refId: `sync-${idx}`,
-          stopRef: item.stop,
-          name: item.stop.name,
-          region: inferRegion(trip, item.stop)
-        }));
-
-        try {
-          await verifyPlacesInBatches(batchInputs, trip.cityHint || '', apiKey, (done, total, batchResult, batch) => {
-            // 每完成一批立即就地更新並存檔（絕不覆蓋記帳、完成狀態與集章）
-            batch.forEach(bItem => {
-              const res = batchResult.get(bItem.refId);
-              if (!res) return;
-              const stop = bItem.stopRef;
-              if (res.address) stop.address = res.address;
-              if (res.hours) stop.hours = res.hours;
-              if (!isPaymentMissing(res.payment) || isPaymentMissing(stop.payment)) {
-                stop.payment = res.payment;
-              }
-              if (res.district && !stop.district) stop.district = res.district;
-              if (res.verified) stop.verified = true;
-            });
-
-            saveState();
-            const pct = Math.round((done / total) * 100);
-            textEl.textContent = `自動更新店家真實資訊中 (${done}/${total})...`;
-            pctEl.textContent = `${pct}%`;
-            fillEl.style.width = `${Math.max(10, pct)}%`;
-
-            if (state.activeTab === 'itinerary' && state.activeTripId === trip.id) {
-              renderItineraryTab();
-            }
-          });
-        } catch (err) {
-          if (err && err.isQuotaExhausted) {
-            state.quotaExhaustedInSession = true;
-            state.quotaNoticeDismissed = false;
-            updateQuotaNoticeUI();
-          } else {
-            console.warn('背景自動同步暫停:', err);
-          }
-        } finally {
-          state.isAutoSyncing = false;
-          state.autoSyncTripId = '';
-          bar.classList.add('hidden');
-          if (state.activeTab === 'itinerary') renderItineraryTab();
-        }
-      }
-
+      // -------------------- 8. API 連線測試（絕不於背景自動呼叫 API） --------------------
       async function testApiConnection() {
         const inputKey = document.getElementById('inputApiKey').value.trim();
         const apiKey = inputKey || getSavedApiKey();
@@ -3137,11 +3089,10 @@ ${JSON.stringify({
 
         btn.disabled = true;
         box.className = 'sub-box text-xs muted';
-        box.textContent = '正在偵測可用 Gemini Flash 模型池並測試連線...';
+        box.textContent = '正在偵測可用 Gemini Flash 模型並測試連線...';
 
         try {
           state.deadModelsSession.clear();
-          state.quotaExhaustedInSession = false;
           setCachedModel('');
           await discoverModelPool(apiKey, true);
           await callGeminiWithFallback({
@@ -3150,12 +3101,12 @@ ${JSON.stringify({
           }, apiKey);
 
           box.className = 'alert-green';
-          box.textContent = `連線成功！目前模型：${state.resolvedModelName}（備援池共 ${state.modelPool.length} 個模型）`;
+          box.textContent = `連線成功！目前模型：${state.resolvedModelName}（省額度單次搜尋模式已啟用）`;
           renderLibraryTab();
         } catch (err) {
           box.className = 'alert-orange';
           box.textContent = err.isQuotaExhausted
-            ? 'Google 免費查詢額度暫達上限，請稍候幾分鐘再試。'
+            ? QUOTA_LIMIT_MSG
             : `連線失敗：${err.message || '請確認金鑰是否正確'}`;
         } finally {
           btn.disabled = false;
@@ -3812,19 +3763,23 @@ ${JSON.stringify({
         emptyEl.classList.add('hidden');
         contentEl.classList.remove('hidden');
 
-        const recs = trip.recommendations || [];
-        const q = state.recSearch.trim().toLowerCase();
-        const filtered = q
-          ? recs.filter(r => [r.name, r.category, r.address, r.payment, r.reason, r.nearStop].join(' ').toLowerCase().includes(q))
-          : recs;
-
-        document.getElementById('recTotalBadge').textContent = `${filtered.length} 處`;
-
-        const listEl = document.getElementById('recListContainer');
-        if (!filtered.length) {
-          listEl.innerHTML = `<div class="card" style="text-align:center;"><div style="font-weight:600;">無符合的推薦地點</div><div class="text-xs muted" style="margin-top:4px;">${q ? '請嘗試其他關鍵字' : '此行程未附帶順路推薦'}</div></div>`;
-          return;
-        }
+        if (state.activeDayIndex < 0 || state.activeDayIndex >= trip.days.length) state.activeDayIndex = 0;
+      // -------------------- 13. 手動微調站點 Modal --------------------
+      function openEditStopModal(stopId) {
+        const trip = getActiveTrip();
+        if (!trip) return;
+        const found = findStopInTrip(trip, stopId);
+        if (!found) return;
+        state.activeEditStopId = stopId;
+        document.getElementById('editStopTitle').textContent = found.stop.name;
+        document.getElementById('editStopName').value = found.stop.name || '';
+        document.getElementById('editStopStart').value = /^\d{2}:\d{2}$/.test(found.stop.startTime) ? found.stop.startTime : '';
+        document.getElementById('editStopEnd').value = /^\d{2}:\d{2}$/.test(found.stop.endTime) ? found.stop.endTime : '';
+        document.getElementById('editStopAddress').value = found.stop.address || '';
+        document.getElementById('editStopHours').value = found.stop.hours || '';
+        document.getElementById('editStopPayment').value = found.stop.payment || '';
+        document.getElementById('editStopModal').classList.remove('hidden');
+      }
 
         const allStopNames = new Set(getAllStops(trip).map(i => i.stop.name));
         const region = inferRegion(trip, null);
@@ -3991,7 +3946,6 @@ ${JSON.stringify({
 
         if (tabName === 'itinerary') {
           renderItineraryTab();
-          autoSyncActiveTripIfNeeded();
         }
         if (tabName === 'passport') renderPassportTab();
         if (tabName === 'recommend') renderRecommendTab();
@@ -4021,10 +3975,6 @@ ${JSON.stringify({
         });
 
         document.getElementById('plannerLoadDemoBtn').addEventListener('click', loadDemoTripManually);
-        document.getElementById('dismissQuotaNoticeBtn').addEventListener('click', () => {
-          state.quotaNoticeDismissed = true;
-          updateQuotaNoticeUI();
-        });
 
         document.getElementById('dayTabsContainer').addEventListener('click', e => {
           const btn = e.target.closest('[data-action="select-day"]');
@@ -4082,11 +4032,13 @@ ${JSON.stringify({
           const trip = getActiveTrip();
           const found = trip && state.activeEditStopId ? findStopInTrip(trip, state.activeEditStopId) : null;
           if (!found) return;
+          const nameVal = document.getElementById('editStopName').value.trim();
           const st = document.getElementById('editStopStart').value.trim();
           const et = document.getElementById('editStopEnd').value.trim();
           const addr = document.getElementById('editStopAddress').value.trim();
           const hours = document.getElementById('editStopHours').value.trim();
           const pay = document.getElementById('editStopPayment').value.trim();
+          if (nameVal) found.stop.name = nameVal;
           if (st) found.stop.startTime = st;
           found.stop.endTime = et;
           found.stop.address = addr;
@@ -4095,7 +4047,7 @@ ${JSON.stringify({
           if (addr) found.stop.verified = true;
           saveState();
           closeEditStopModal();
-          renderItineraryTab();
+          renderAll();
           showToast('已儲存站點修改');
         });
 
@@ -4325,71 +4277,43 @@ ${JSON.stringify({
 
           genBtn.disabled = true;
           progPanel.classList.remove('hidden');
+          progStage.textContent = '單次 Google 搜尋查核與排程中...';
+          progDetail.textContent = `一次查詢 ${parsedLines.length} 個地點的真實地址、營業與支付方式並排序動線...`;
+          progPct.textContent = '30%';
+          progFill.style.width = '30%';
 
-          const totalPlaces = parsedLines.length;
-          progStage.textContent = `Google 地圖小批次查核中 (0/${totalPlaces})`;
-          progDetail.textContent = `正在查詢：${parsedLines.slice(0, BATCH_SIZE).map(x => x.cleanName).join('、')}...`;
-          progPct.textContent = '10%';
-          progFill.style.width = '10%';
+          let fakePct = 30;
+          const progressTimer = setInterval(() => {
+            if (fakePct < 88) {
+              fakePct += 6;
+              progPct.textContent = `${fakePct}%`;
+              progFill.style.width = `${fakePct}%`;
+            }
+          }, 900);
 
           try {
-            const batchInputs = parsedLines.map(item => ({
-              refId: item.refId,
-              name: item.cleanName,
-              region: cityHint
-            }));
-
-            const verifiedMap = await verifyPlacesInBatches(batchInputs, cityHint, apiKey, (done, total) => {
-              const pct = Math.round((done / total) * 72);
-              progStage.textContent = `Google 地圖小批次查核中 (${done}/${total})`;
-              const nextSlice = parsedLines.slice(done, done + BATCH_SIZE);
-              progDetail.textContent = nextSlice.length
-                ? `接下來查詢：${nextSlice.map(x => x.cleanName).join('、')}...`
-                : '已完成所有店家真實資訊查核';
-              progPct.textContent = `${pct}%`;
-              progFill.style.width = `${Math.max(12, pct)}%`;
-            });
-
-            const verifiedPlaces = parsedLines.map(item => {
-              const v = verifiedMap.get(item.refId) || {};
-              return {
-                ...item,
-                name: v.name || item.cleanName,
-                address: v.address || '',
-                district: v.district || '',
-                hours: v.hours || '',
-                payment: v.payment || UNKNOWN_PAYMENT,
-                category: v.category || '',
-                note: v.note || '',
-                verified: Boolean(v.verified)
-              };
-            });
-
-            progStage.textContent = '正在排序動線與估算交通費';
-            progDetail.textContent = '鎖定已查核地址與支付方式，整理最終行程...';
-            progPct.textContent = '86%';
-            progFill.style.width = '86%';
-
-            const newTrip = await planRouteWithVerifiedData({
+            const newTrip = await generateRouteSingleCall({
               title, cityHint, startDate, days: state.plannerDays, startTime, endTime,
               passportMode: state.plannerPassportMode, payPrefs: [...state.plannerPayPrefs], prefs
-            }, verifiedPlaces, apiKey);
+            }, parsedLines, apiKey);
 
+            clearInterval(progressTimer);
             progPct.textContent = '100%';
             progFill.style.width = '100%';
 
             state.trips.unshift(newTrip);
-            state.autoSyncAttemptedTrips.add(newTrip.id);
             safeSwitchTrip(newTrip.id);
           } catch (err) {
+            clearInterval(progressTimer);
             errText.textContent = err.isQuotaExhausted
-              ? 'Google 免費查詢額度暫達上限，請稍候幾分鐘後再按一次「產生路線 →」。'
+              ? QUOTA_LIMIT_MSG
               : `無法產生路線：${err.message || '請確認 API Key 與網路連線'}`;
             if (err.status === 401 || err.status === 403) {
               goLibBtn.classList.remove('hidden');
             }
             errBox.classList.remove('hidden');
           } finally {
+            clearInterval(progressTimer);
             genBtn.disabled = false;
             progPanel.classList.add('hidden');
           }
@@ -4403,8 +4327,6 @@ ${JSON.stringify({
           try {
             localStorage.setItem(API_KEY_STORAGE, val);
             state.deadModelsSession.clear();
-            state.quotaExhaustedInSession = false;
-            state.autoSyncAttemptedTrips.clear();
             setCachedModel('');
             showToast('已儲存 API Key 至本機');
           } catch (e) { showToast('儲存失敗'); }
