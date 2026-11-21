@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
   <title>路線手札</title>
 
-  <!-- 跨系統 PWA / 手機桌面全螢幕設定 -->
+  <!-- 跨系統 PWA / 手機主畫面全螢幕設定 -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="路線手札" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="theme-color" content="#050505" />
 
-  <!-- 零外部 CDN 依賴：純手寫內聯 CSS + 系統原生字體，0.1 秒內瞬開 -->
+  <!-- 零外部 CDN 依賴：純手寫內聯 CSS + 系統原生字體，行動網路下毫秒瞬開 -->
   <style>
     :root {
       --bg-outer: #000000;
@@ -24,7 +24,7 @@
       --text-main: #FFFFFF;
       --text-soft: rgba(255, 255, 255, 0.88);
       --text-muted: #A1A1AA;
-      --text-dim: rgba(161, 161, 170, 0.65);
+      --text-dim: #71717A;
       --neon-green: #39FF14;
       --neon-orange: #FF5E00;
       --pad-x: clamp(0.75rem, 3.8vw, 1.125rem);
@@ -67,8 +67,9 @@
       cursor: pointer;
     }
     button:active { transform: scale(0.97); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    /* 輸入元件固定 16px，徹底防止 iOS Safari 點擊自動縮放 */
+    /* 輸入元件固定 16px，徹底防止 iOS Safari 自動縮放 */
     input, textarea, select {
       font-family: inherit;
       font-size: 16px !important;
@@ -125,7 +126,7 @@
       }
     }
 
-    /* 頂部標頭（避開動態島／挖孔） */
+    /* 頂部標頭（避開瀏海／動態島／挖孔） */
     .app-header {
       position: sticky;
       top: 0;
@@ -248,7 +249,7 @@
       background: var(--neon-orange);
     }
 
-    /* 小圓點與光暈 */
+    /* 小圓點與微光 */
     .dot-green {
       width: 6px;
       height: 6px;
@@ -320,6 +321,7 @@
       line-height: 1.1;
     }
     .muted { color: var(--text-muted); }
+    .dim { color: var(--text-dim); }
     .text-green { color: var(--neon-green); }
     .text-orange { color: var(--neon-orange); }
     .text-xs { font-size: 12px; }
@@ -341,7 +343,7 @@
     .flex-wrap-gap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
     .flex-row { display: flex; align-items: center; gap: 6px; }
 
-    /* 按鈕樣式（嚴格遵守 >=44px 觸控熱區，無大面積螢光橘填色） */
+    /* 按鈕樣式（全部 >=44px 觸控熱區，絕無大面積螢光橘填色） */
     .btn {
       min-height: 44px;
       padding: 0 13px;
@@ -380,7 +382,7 @@
       color: rgba(255, 255, 255, 0.9);
       border: 1px solid var(--border);
     }
-    /* 嚴守低刺眼：深黑底 + 1px 螢光橘細框（最多 8% 透底） */
+    /* 低刺眼螢光橘：僅 1px 細框＋最多 8% 透底 */
     .btn-orange-outline {
       background: var(--bg-void);
       color: var(--neon-orange);
@@ -447,21 +449,22 @@
       line-height: 1.55;
       resize: vertical;
     }
-    .field-num-sm {
-      width: 62px;
-      min-height: 44px;
-      padding: 6px;
-      text-align: center;
-      font-weight: 600;
+
+    /* 兩階段即時進度面板 */
+    .progress-panel {
+      border-radius: var(--r-md);
+      background: var(--bg-void);
+      border: 1px solid rgba(57, 255, 20, 0.35);
+      padding: 12px 13px;
     }
 
-    /* 查核狀態徽章 */
+    /* 查核狀態列 */
     .verify-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      padding: 9px 12px;
+      padding: 8px 10px 8px 12px;
       border-radius: var(--r-md);
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -483,7 +486,7 @@
       height: 100%;
       background: var(--neon-green);
       box-shadow: 0 0 6px rgba(57, 255, 20, 0.45);
-      transition: width 0.35s ease;
+      transition: width 0.3s ease;
     }
 
     /* 多日切換列 */
@@ -570,51 +573,59 @@
       font-weight: 500;
       color: var(--text-muted);
     }
+    .tag-verified {
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(57, 255, 20, 0.06);
+      border: 1px solid rgba(57, 255, 20, 0.42);
+      box-shadow: 0 0 6px rgba(57, 255, 20, 0.16);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--neon-green);
+    }
+    .tag-unverified {
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(255, 94, 0, 0.06);
+      border: 1px solid rgba(255, 94, 0, 0.55);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--neon-orange);
+    }
     .addr-btn {
-      margin-top: 4px;
+      margin-top: 5px;
       text-align: left;
       font-size: 12px;
       color: var(--text-muted);
-      line-height: 1.4;
+      line-height: 1.45;
       display: inline-flex;
       align-items: flex-start;
       gap: 5px;
     }
-    .addr-btn:hover { color: rgba(255, 255, 255, 0.9); }
+    .addr-btn:hover { color: rgba(255, 255, 255, 0.92); }
+    .addr-warn {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--neon-orange);
+    }
     .hours-line {
       margin-top: 4px;
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.72);
+      color: rgba(255, 255, 255, 0.78);
     }
-    .pay-badge-row {
+    .pay-row {
       margin-top: 9px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-    }
-    .pay-badge {
-      display: inline-flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 9px;
+      padding: 7px 10px;
       border-radius: var(--r-sm);
       background: var(--bg-void);
       border: 1px solid var(--border);
-      font-size: 11px;
-      max-width: 100%;
+      font-size: 12px;
+      line-height: 1.45;
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
     }
-    .verify-link {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      padding: 4px 2px;
-      flex-shrink: 0;
-    }
-    .verify-link:hover { color: #FFFFFF; }
+    .pay-row.is-missing { border-color: rgba(255, 94, 0, 0.38); }
 
     .exp-inline-bar {
       margin-top: 8px;
@@ -674,6 +685,12 @@
       padding-top: 10px;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
+    .stop-sub-actions {
+      margin-top: 7px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+    }
     .line-through { text-decoration: line-through; color: var(--text-muted) !important; }
 
     /* 集章護照紙紋與裝訂線 */
@@ -704,9 +721,7 @@
         transparent 12px
       );
     }
-    .passport-inner {
-      padding: 15px 14px 16px 20px;
-    }
+    .passport-inner { padding: 15px 14px 16px 20px; }
     .passport-cell {
       position: relative;
       display: flex;
@@ -763,16 +778,14 @@
       filter: drop-shadow(0 0 6px rgba(255, 94, 0, 0.24));
     }
 
-    /* 落印動畫與粒子 */
+    /* 落印動畫、粒子、紙花與旋轉 */
     @keyframes stampSlam {
       0% { transform: scale(2.15) rotate(calc(var(--tilt, -5deg) - 14deg)); opacity: 0; filter: blur(2px); }
       50% { transform: scale(0.91) rotate(calc(var(--tilt, -5deg) + 2deg)); opacity: 1; filter: blur(0); }
       74% { transform: scale(1.04) rotate(calc(var(--tilt, -5deg) - 1deg)); opacity: 1; }
       100% { transform: scale(1) rotate(var(--tilt, -5deg)); opacity: 0.96; }
     }
-    .stamp-slam-active {
-      animation: stampSlam 0.44s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
+    .stamp-slam-active { animation: stampSlam 0.44s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 
     @keyframes inkBurst {
       0% { transform: translate(0, 0) scale(0.4) rotate(0deg); opacity: 1; }
@@ -801,17 +814,15 @@
       animation: confettiFall var(--dur, 2.2s) ease-in var(--delay, 0s) forwards;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .spinner {
-      width: 36px;
-      height: 36px;
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner-xs {
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.16);
-      border-top-color: #FFFFFF;
-      margin: 0 auto 14px;
-      animation: spin 0.8s linear infinite;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      border-top-color: var(--neon-green);
+      display: inline-block;
+      animation: spin 0.7s linear infinite;
     }
 
     @keyframes tabFade {
@@ -887,13 +898,11 @@
       padding: 15px;
       overflow-y: auto;
     }
-    .modal-center {
-      align-items: center;
-    }
+    .modal-center { align-items: center; }
     .modal-box-sm {
       background: var(--bg-card);
       width: 100%;
-      max-width: 320px;
+      max-width: 330px;
       border: 1px solid var(--border);
       border-radius: var(--r-lg);
       padding: 22px 18px;
@@ -986,7 +995,7 @@
           <div class="section-head">
             <div class="min-w-0">
               <h2 class="title-fluid">規劃行程（1–7 天）</h2>
-              <p class="text-11 muted" style="margin-top:2px;">啟用 Google 即時搜尋查核真實地址、營業與支付方式</p>
+              <p class="text-11 muted" style="margin-top:2px;">逐店即時查核 Google 地圖真實地址、營業與支付方式後排程</p>
             </div>
             <button id="fillExampleBtn" type="button" class="btn btn-surface shrink-0" style="font-size:11px;">
               填入範例
@@ -994,34 +1003,39 @@
           </div>
 
           <form id="plannerForm" class="stack-4">
-            <!-- 行程名稱 + 出發日期 -->
+            <!-- 行程名稱 + 縣市／地區提示 -->
             <div class="grid-resp-2">
               <div>
                 <label for="inputTripName" class="field-label">行程名稱</label>
-                <input id="inputTripName" type="text" class="field-input" placeholder="例：台南一日散步" />
+                <input id="inputTripName" type="text" class="field-input" placeholder="例：花蓮一日散步" />
               </div>
+              <div>
+                <label for="inputCityHint" class="field-label">縣市／地區提示（建議填寫）</label>
+                <input id="inputCityHint" type="text" class="field-input" placeholder="例：花蓮市、嘉義市、台南" />
+              </div>
+            </div>
+
+            <!-- 出發日期 + 天數 -->
+            <div class="grid-resp-2">
               <div>
                 <label for="inputStartDate" class="field-label">出發日期（選填）</label>
                 <input id="inputStartDate" type="date" class="field-input" />
               </div>
+              <div>
+                <div class="flex-between" style="margin-bottom:6px;">
+                  <label for="inputDaysCustom" class="field-label" style="margin:0;">天數（1–7 天）</label>
+                  <span class="text-10 muted">可點下方快選</span>
+                </div>
+                <input id="inputDaysCustom" type="number" min="1" max="7" value="1" class="field-input tabular" />
+              </div>
             </div>
 
-            <!-- 天數 1-7 -->
-            <div>
-              <div class="flex-between" style="margin-bottom:6px;">
-                <label class="field-label" style="margin:0;">天數（1–7 天）</label>
-                <div class="flex-row">
-                  <span class="text-11 muted">自訂</span>
-                  <input id="inputDaysCustom" type="number" min="1" max="7" value="1" aria-label="自訂天數" class="field-num-sm" />
-                </div>
-              </div>
-              <div id="dayQuickBtns" class="grid-5">
-                <button type="button" data-days="1" class="day-quick-btn btn btn-primary" style="padding:0;">1 天</button>
-                <button type="button" data-days="2" class="day-quick-btn btn btn-ghost" style="padding:0;">2 天</button>
-                <button type="button" data-days="3" class="day-quick-btn btn btn-ghost" style="padding:0;">3 天</button>
-                <button type="button" data-days="5" class="day-quick-btn btn btn-ghost" style="padding:0;">5 天</button>
-                <button type="button" data-days="7" class="day-quick-btn btn btn-ghost" style="padding:0;">7 天</button>
-              </div>
+            <div id="dayQuickBtns" class="grid-5">
+              <button type="button" data-days="1" class="day-quick-btn btn btn-primary" style="padding:0;">1 天</button>
+              <button type="button" data-days="2" class="day-quick-btn btn btn-ghost" style="padding:0;">2 天</button>
+              <button type="button" data-days="3" class="day-quick-btn btn btn-ghost" style="padding:0;">3 天</button>
+              <button type="button" data-days="5" class="day-quick-btn btn btn-ghost" style="padding:0;">5 天</button>
+              <button type="button" data-days="7" class="day-quick-btn btn btn-ghost" style="padding:0;">7 天</button>
             </div>
 
             <!-- 每日起訖時間 -->
@@ -1036,23 +1050,17 @@
               </div>
             </div>
 
-            <!-- 出發地點 -->
-            <div>
-              <label for="inputOrigin" class="field-label">出發地（選填）</label>
-              <input id="inputOrigin" type="text" class="field-input" placeholder="例：台南火車站 / 住宿地點" />
-            </div>
-
             <!-- 地點清單 -->
             <div>
               <div class="flex-between" style="margin-bottom:6px;">
-                <label for="inputPlaces" class="field-label" style="margin:0;">地點清單 <span class="text-orange">*</span></label>
-                <span class="text-10 muted">每行一個，可註明縣市、必達或集章</span>
+                <label for="inputPlaces" class="field-label" style="margin:0;">地點／店家清單 <span class="text-orange">*</span></label>
+                <span class="text-10 muted">每行一個，逐店查核真實地址</span>
               </div>
               <textarea
                 id="inputPlaces"
                 rows="5"
                 class="field-textarea"
-                placeholder="林百貨（台南／集章）&#10;臺南市美術館二館（集章）&#10;富盛號碗粿&#10;神農街（集章）"
+                placeholder="豆茶寮（集章）&#10;花蓮文創園區（集章）&#10;松園別館&#10;廟口紅茶"
               ></textarea>
             </div>
 
@@ -1072,20 +1080,19 @@
                 <span class="text-10 muted">不選也可送出</span>
               </div>
               <p class="text-11 muted" style="margin-bottom:8px;">
-                僅作為推薦地點與車資估算參考；各店家實際支付方式會透過 Google 搜尋逐一查核標註。
+                僅作為推薦地點與交通計費參考；各店家實際支付方式會逐店以 Google 搜尋查核。
               </p>
               <div id="paymentPrefGroup" class="flex-wrap-gap">
-                <button type="button" data-pay="現金" class="pay-btn chip">現金</button>
-                <button type="button" data-pay="LINE Pay" class="pay-btn chip">LINE Pay</button>
-                <button type="button" data-pay="信用卡" class="pay-btn chip">信用卡</button>
                 <button type="button" data-pay="TPASS 月票" class="pay-btn chip">TPASS 月票</button>
                 <button type="button" data-pay="悠遊卡/一卡通" class="pay-btn chip">悠遊卡/一卡通</button>
+                <button type="button" data-pay="現金" class="pay-btn chip">現金</button>
+                <button type="button" data-pay="信用卡/行動支付" class="pay-btn chip">信用卡/行動支付</button>
               </div>
             </div>
 
             <!-- 偏好標籤 -->
             <div>
-              <label class="field-label">偏好標籤</label>
+              <label class="field-label">偏好標籤（選填）</label>
               <div id="prefTagGroup" class="flex-wrap-gap">
                 <button type="button" data-pref="蔬食友善" class="pref-btn chip">蔬食友善</button>
                 <button type="button" data-pref="不走回頭路" class="pref-btn chip">不走回頭路</button>
@@ -1095,10 +1102,25 @@
               </div>
             </div>
 
-            <!-- 其他備註 -->
+            <!-- 其他條件 -->
             <div>
-              <label for="inputCustomPref" class="field-label">其他備註（選填）</label>
-              <input id="inputCustomPref" type="text" class="field-input" placeholder="例：大眾運輸為主、少走路、避開週一公休" />
+              <label for="inputCustomPref" class="field-label">其他條件（選填）</label>
+              <input id="inputCustomPref" type="text" class="field-input" placeholder="例：公車與步行為主、17:00 必達海邊" />
+            </div>
+
+            <!-- 兩階段即時進度面板 -->
+            <div id="plannerProgressPanel" class="progress-panel hidden stack-2">
+              <div class="flex-between">
+                <div class="flex-row min-w-0">
+                  <span class="spinner-xs shrink-0"></span>
+                  <span id="plannerProgressStage" class="text-xs text-green truncate" style="font-weight:700;">Stage 1｜Google 地圖資訊查核</span>
+                </div>
+                <span id="plannerProgressPct" class="text-11 muted tabular shrink-0">0%</span>
+              </div>
+              <div id="plannerProgressDetail" class="text-xs break-words" style="color:var(--text-soft);">準備查核...</div>
+              <div class="progress-track">
+                <div id="plannerProgressFill" class="progress-fill" style="width:8%;"></div>
+              </div>
             </div>
 
             <!-- 錯誤與金鑰引導框 -->
@@ -1111,7 +1133,7 @@
 
             <!-- 純白主行動按鈕 -->
             <button id="generateBtn" type="submit" class="btn btn-primary btn-lg">
-              <span>產生路線並查核 →</span>
+              <span>產生路線 →</span>
             </button>
 
             <!-- 手動載入台南示範行程 -->
@@ -1129,13 +1151,29 @@
         <div id="itineraryEmpty" class="hidden"></div>
 
         <div id="itineraryContent">
-          <!-- Google 搜尋查核狀態列 -->
+          <!-- Google 逐店查核狀態列 + 重查全部店家 -->
           <div id="verifyStatusBar" class="verify-bar is-verified">
-            <div class="flex-row min-w-0">
+            <div class="flex-row min-w-0 flex-1">
               <span id="verifyStatusDot" class="dot-green"></span>
-              <span id="verifyStatusText" class="truncate" style="font-weight:600;">已透過 Google 搜尋查核地址與支付方式</span>
+              <span id="verifyStatusText" class="truncate" style="font-weight:600;">Google 查核 0/0 站</span>
             </div>
-            <span id="verifySourceCount" class="text-10 muted shrink-0"></span>
+            <button id="reverifyAllBtn" type="button" class="btn btn-surface shrink-0" style="min-height:44px;padding:0 12px;font-size:11px;">
+              重查全部店家
+            </button>
+          </div>
+
+          <!-- 批次重查進度列 -->
+          <div id="reverifyProgressPanel" class="progress-panel hidden stack-2" style="margin-bottom:10px;">
+            <div class="flex-between">
+              <div class="flex-row min-w-0">
+                <span class="spinner-xs shrink-0"></span>
+                <span id="reverifyProgressText" class="text-xs text-green truncate" style="font-weight:600;">Google 地圖資訊查核中...</span>
+              </div>
+              <span id="reverifyProgressPct" class="text-11 muted tabular shrink-0">0%</span>
+            </div>
+            <div class="progress-track">
+              <div id="reverifyProgressFill" class="progress-fill" style="width:0%;"></div>
+            </div>
           </div>
 
           <!-- 多日切換列 -->
@@ -1246,7 +1284,7 @@
           <div class="flex-between" style="margin-bottom:12px;flex-wrap:wrap;">
             <div class="min-w-0">
               <h2 class="title-fluid">順路推薦地點</h2>
-              <p class="text-11 muted" style="margin-top:2px;">皆標註真實地址與支付方式，可一鍵加入行程</p>
+              <p class="text-11 muted" style="margin-top:2px;">皆標註地址與支付方式，可一鍵加入行程</p>
             </div>
             <span id="recTotalBadge" class="tag-muted tabular" style="padding:5px 10px;font-size:11px;color:#fff;border:1px solid var(--border);">0 處</span>
           </div>
@@ -1292,7 +1330,7 @@
             <span id="apiKeyStatus" class="text-11 muted">未設定</span>
           </div>
           <p class="text-11 muted" style="margin-bottom:12px;">
-            僅存於手機本機（localStorage），絕不公開。支援 AIza... 與 AQ.... 等金鑰（aistudio.google.com/apikey）。
+            僅存於本機瀏覽器（localStorage），絕不公開。前往 aistudio.google.com/apikey 可免費取得。
           </p>
           <div class="stack-2">
             <input id="inputApiKey" type="password" autocomplete="off" class="field-input" placeholder="貼上 Gemini API Key..." />
@@ -1383,6 +1421,41 @@
 
   </div>
 
+  <!-- ==================== 手動編輯站點 Modal ==================== -->
+  <div id="editStopModal" class="modal-backdrop hidden">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div class="min-w-0 flex-1">
+          <div class="text-10 muted" style="font-weight:600;">編輯站點資訊</div>
+          <h3 id="editStopTitle" class="truncate" style="font-size:14px;font-weight:700;margin-top:2px;">地標名稱</h3>
+        </div>
+        <button id="closeEditStopBtn" type="button" class="btn-icon muted" aria-label="關閉">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <form id="editStopForm" class="modal-body stack-3">
+        <div>
+          <label for="editStopAddress" class="field-label">Google 地圖完整地址</label>
+          <input id="editStopAddress" type="text" class="field-input" placeholder="例：970花蓮縣花蓮市北濱街27-1號" />
+        </div>
+        <div>
+          <label for="editStopHours" class="field-label">營業時間與公休日</label>
+          <input id="editStopHours" type="text" class="field-input" placeholder="例：週一至四 13:00–19:00、週五至日 13:00–21:00" />
+        </div>
+        <div>
+          <label for="editStopPayment" class="field-label">支付方式</label>
+          <input id="editStopPayment" type="text" class="field-input" placeholder="例：現金、信用卡、金融卡、NFC 行動支付" />
+        </div>
+        <div class="grid-2" style="padding-top:4px;">
+          <button id="cancelEditStopBtn" type="button" class="btn btn-ghost-white">取消</button>
+          <button type="submit" class="btn btn-primary">儲存修改</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ==================== 貼上文字匯入行程 Modal ==================== -->
   <div id="textImportModal" class="modal-backdrop hidden">
     <div class="modal-sheet">
@@ -1398,7 +1471,7 @@
         </button>
       </div>
       <div class="modal-body stack-3">
-        <p class="text-xs muted">將舊版按「複製文字」取得的行程內容貼在下方，自動解析並匯入行程庫。</p>
+        <p class="text-xs muted">將舊版按「複製文字」取得的行程貼在下方，匯入後可直接按「重查全部店家」補齊 Google 地圖地址與支付方式。</p>
         <textarea id="textImportInput" rows="8" class="field-textarea" placeholder="貼上純文字行程..."></textarea>
         <div id="textImportError" class="text-xs text-orange hidden"></div>
         <button id="confirmTextImportBtn" type="button" class="btn btn-primary w-full">解析並匯入行程</button>
@@ -1548,15 +1621,6 @@
     </div>
   </div>
 
-  <!-- ==================== 路線查核載入遮罩 ==================== -->
-  <div id="loadingModal" class="modal-backdrop modal-center hidden">
-    <div class="modal-box-sm">
-      <div class="spinner"></div>
-      <h3 style="font-size:14px;font-weight:700;">即時查核與排程中</h3>
-      <p id="loadingStepText" class="text-xs muted" style="margin-top:8px;min-height:18px;">正在透過 Google 搜尋查核店家地址與支付方式…</p>
-    </div>
-  </div>
-
   <!-- ==================== 加到桌面教學 Modal ==================== -->
   <div id="installModal" class="modal-backdrop hidden">
     <div class="modal-sheet">
@@ -1609,16 +1673,15 @@
     (function () {
       'use strict';
 
-      // -------------------- 1. 台南示範行程（真實查核地址、營業時間與明確支付方式；僅手動點擊載入） --------------------
+      // -------------------- 1. 台南示範行程（僅手動點擊載入，絕不預載個人行程） --------------------
       function createTainanDemoTrip() {
         return {
           id: 'demo-tainan-' + Date.now(),
           title: '台南中西區一日散步（示範）',
+          cityHint: '台南市',
           startDate: '2026-11-28',
-          dateNote: '1 天｜10:30–18:00',
+          dateNote: '1 天｜11:00–18:00',
           passportMode: 'auto',
-          searchVerified: true,
-          searchSourceCount: 5,
           totalFare: 36,
           fareSummary: '市區公車一段票與步行估算',
           days: [
@@ -1635,10 +1698,12 @@
                   category: '選品逛街',
                   district: '中西區',
                   address: '700台南市中西區忠義路二段63號',
-                  openingHours: '11:00–21:00',
+                  hours: '11:00–21:00',
                   startTime: '11:00',
                   endTime: '12:00',
-                  paymentMethods: '現金、信用卡、LINE Pay、街口支付、Apple Pay',
+                  payment: '現金、信用卡、LINE Pay、街口支付、Apple Pay',
+                  verified: true,
+                  verifyReason: '',
                   transitMode: '公車 2 路',
                   transitDuration: '約 12 分',
                   transportCost: 18,
@@ -1658,10 +1723,12 @@
                   category: '展覽文化',
                   district: '中西區',
                   address: '700台南市中西區忠義路二段1號',
-                  openingHours: '10:00–18:00（週一休館）',
+                  hours: '10:00–18:00（週一休館）',
                   startTime: '12:10',
                   endTime: '13:40',
-                  paymentMethods: '現金、信用卡、LINE Pay、悠遊卡、一卡通',
+                  payment: '現金、信用卡、LINE Pay、悠遊卡、一卡通',
+                  verified: true,
+                  verifyReason: '',
                   transitMode: '步行',
                   transitDuration: '約 4 分',
                   transportCost: 0,
@@ -1681,10 +1748,12 @@
                   category: '小吃美食',
                   district: '中西區',
                   address: '700台南市中西區民族路三段11號',
-                  openingHours: '07:00–17:00（週四公休）',
+                  hours: '07:00–17:00（週四公休）',
                   startTime: '13:55',
                   endTime: '14:40',
-                  paymentMethods: '僅收現金',
+                  payment: '僅收現金',
+                  verified: true,
+                  verifyReason: '',
                   transitMode: '步行',
                   transitDuration: '約 11 分',
                   transportCost: 0,
@@ -1702,10 +1771,12 @@
                   category: '散步地標',
                   district: '中西區',
                   address: '700台南市中西區神農街',
-                  openingHours: '全天開放（店家多為 14:00–21:00）',
+                  hours: '全天開放（店家多為 14:00–21:00）',
                   startTime: '14:50',
                   endTime: '16:15',
-                  paymentMethods: '免費入場（沿街獨立小店以現金、LINE Pay 為主）',
+                  payment: '免費入場（沿街獨立小店以現金、LINE Pay 為主）',
+                  verified: true,
+                  verifyReason: '',
                   transitMode: '步行',
                   transitDuration: '約 6 分',
                   transportCost: 0,
@@ -1723,10 +1794,12 @@
                   category: '選品逛街',
                   district: '南區',
                   address: '702台南市南區西門路一段689巷12號',
-                  openingHours: '園區全天開放（品牌店家 13:00–21:00，週二公休）',
+                  hours: '園區全天開放（店家 13:00–21:00，週二公休）',
                   startTime: '16:35',
                   endTime: '18:00',
-                  paymentMethods: '免費入場（園區品牌支援現金、信用卡、LINE Pay）',
+                  payment: '免費入場（園區品牌支援現金、信用卡、LINE Pay）',
+                  verified: true,
+                  verifyReason: '',
                   transitMode: '公車 5 路',
                   transitDuration: '約 14 分',
                   transportCost: 18,
@@ -1746,8 +1819,9 @@
               name: '蜷尾家甘味處',
               category: '咖啡/甜品',
               address: '700台南市中西區正興街92號',
-              openingHours: '11:00–18:00（週二、三公休）',
-              paymentMethods: '現金、LINE Pay',
+              hours: '11:00–18:00（週二、三公休）',
+              payment: '現金、LINE Pay',
+              verified: true,
               reason: '距神農街步行 5 分鐘，每日限定口味霜淇淋。',
               nearStop: '神農街'
             },
@@ -1756,28 +1830,20 @@
               name: '烏邦圖書店 UBUNTU 環河店',
               category: '書店/文具',
               address: '700台南市中西區環河街129巷27號2樓',
-              openingHours: '08:30–20:30（週二公休）',
-              paymentMethods: '現金、信用卡、LINE Pay',
+              hours: '08:30–20:30（週二公休）',
+              payment: '現金、信用卡、LINE Pay',
+              verified: true,
               reason: '運河旁純白獨立書店，適合避暑或雨天備案。',
               nearStop: '神農街'
-            },
-            {
-              id: 'rec-tn-3',
-              name: '蝸牛巷',
-              category: '散步地標',
-              address: '700台南市中西區永福路二段97巷',
-              openingHours: '全天開放',
-              paymentMethods: '免費入場',
-              reason: '林百貨旁安靜老巷弄，沿途有葉石濤文學裝置。',
-              nearStop: '林百貨'
             }
           ]
         };
       }
 
-      // -------------------- 2. 狀態與全域 localStorage 自動救援 --------------------
-      const STORAGE_KEY = 'route_notebook_universal_v2';
+      // -------------------- 2. 狀態管理與跨版本舊資料自動救援 --------------------
+      const STORAGE_KEY = 'route_notebook_universal_v3';
       const API_KEY_STORAGE = 'route_notebook_gemini_key';
+      const UNKNOWN_PAYMENT = '公開資訊未載明（建議備現金）';
 
       let state = {
         trips: [],
@@ -1796,29 +1862,62 @@
         pendingDeleteTripId: null,
         activeDetailStopId: null,
         activeExpenseStopId: null,
-        selectedExpenseMethod: '現金'
+        activeEditStopId: null,
+        selectedExpenseMethod: '現金',
+        verifyingStopIds: new Set(),
+        isBatchVerifying: false
       };
 
-      // 過濾禁止出現的敷衍字眼，統一轉為明確誠實標註
+      // 過濾敷衍字眼，保留具體支付方式
       function sanitizePaymentText(raw) {
         const txt = String(raw || '').trim();
-        if (!txt || /^(現場確認|依現場指示|依店家公告|依現場為主|現場為主|請洽現場|未知|不確定)$/i.test(txt)) {
-          return '公開資訊未註明（建議備現金）';
+        if (
+          !txt ||
+          /^(現場確認|依現場指示|依店家公告|依現場為主|現場為主|請洽現場|未知|不確定|無資料|未提供|查無公開支付資訊|查無公開支付資訊（建議備現金）|公開資訊未註明|公開資訊未註明（建議備現金）|公開資訊未載明|公開資訊未載明（建議備現金）)$/i.test(txt)
+        ) {
+          return UNKNOWN_PAYMENT;
         }
         return txt;
       }
 
+      function isPaymentMissing(txt) {
+        return !txt || txt.includes('公開資訊未載明') || txt.includes('查無公開支付資訊');
+      }
+
+      // 正規化名稱以利比對鎖定
+      function normalizeNameKey(name) {
+        return String(name || '').toLowerCase().replace(/[\s\-_・·（）()「」『』]/g, '');
+      }
+
+      // 推測行程所屬縣市（用於導航降級與逐店搜尋）
+      function inferRegion(trip, stop) {
+        if (trip && trip.cityHint && trip.cityHint.trim()) return trip.cityHint.trim();
+        const pool = [
+          stop && stop.address,
+          stop && stop.district,
+          trip && trip.title,
+          trip && trip.dateNote
+        ].filter(Boolean).join(' ');
+        const m = pool.match(/(臺北市|台北市|新北市|基隆市|桃園市|新竹市|新竹縣|苗栗縣|臺中市|台中市|彰化縣|南投縣|雲林縣|嘉義市|嘉義縣|臺南市|台南市|高雄市|屏東縣|宜蘭縣|花蓮縣|花蓮市|臺東縣|台東縣|澎湖縣|金門縣|連江縣|台北|新北|桃園|新竹|台中|彰化|嘉義|台南|高雄|屏東|宜蘭|花蓮|台東)/);
+        return m ? m[1] : '';
+      }
+
+      // 單站正規化（相容先前所有版本的欄位名稱）
       function normalizeStop(stop, fallbackDay, idx, tripId) {
         if (!stop || typeof stop !== 'object') return null;
         const dayNum = Math.max(1, parseInt(stop.day, 10) || parseInt(fallbackDay, 10) || 1);
         const stopId = String(stop.id || `d${dayNum}-s${idx + 1}`);
         const cost = Number(stop.transportCost ?? stop.transitFare ?? 0) || 0;
-        const note = String(stop.transportNote ?? stop.transitNote ?? '').trim();
-        const payment = sanitizePaymentText(stop.paymentMethods ?? stop.payment);
+        const tNote = String(stop.transportNote ?? stop.transitNote ?? '').trim();
+        const payment = sanitizePaymentText(stop.payment ?? stop.paymentMethods);
+        const rawAddr = String(stop.address ?? stop.location ?? '').trim();
+        const isVerified = Boolean(stop.verified ?? stop.groundingVerified ?? false) && Boolean(rawAddr);
 
         let highlights = [];
         if (Array.isArray(stop.highlights)) {
           highlights = stop.highlights.map(h => String(h || '').trim()).filter(Boolean);
+        } else if (typeof stop.note === 'string' && stop.note.trim()) {
+          highlights = [stop.note.trim()];
         } else if (typeof stop.notes === 'string' && stop.notes.trim()) {
           highlights = [stop.notes.trim()];
         }
@@ -1850,17 +1949,18 @@
           name: String(stop.name || stop.title || '未命名地標').trim(),
           category: String(stop.category || '').trim(),
           district: String(stop.district || '').trim(),
-          address: String(stop.address || stop.location || stop.name || '').trim(),
-          openingHours: String(stop.openingHours || stop.hours || '').trim(),
+          address: rawAddr,
+          hours: String(stop.hours || stop.openingHours || '').trim(),
           startTime: String(stop.startTime || stop.time || '彈性').trim(),
           endTime: String(stop.endTime || '').trim(),
-          paymentMethods: payment,
+          payment,
+          verified: isVerified,
+          verifyReason: isVerified ? '' : String(stop.verifyReason || '').trim(),
+          groundingSources: Array.isArray(stop.groundingSources) ? stop.groundingSources : [],
           transitMode: String(stop.transitMode || stop.transport || '').trim(),
           transitDuration: String(stop.transitDuration || '').trim(),
           transportCost: cost,
-          transitFare: cost,
-          transportNote: note,
-          transitNote: note,
+          transportNote: tNote,
           isStampSpot: Boolean(stop.isStampSpot ?? stop.isStamp ?? stop.stampable ?? false),
           stampTitle: String(stop.stampTitle || (stop.name || '').slice(0, 6) || '印章').trim(),
           stampIcon: String(stop.stampIcon || '●').trim(),
@@ -1869,6 +1969,7 @@
         };
       }
 
+      // 整趟行程正規化（支援 days 巢狀結構與舊版扁平 stops 陣列）
       function normalizeTripData(rawTrip) {
         if (!rawTrip || typeof rawTrip !== 'object') return null;
         const title = String(rawTrip.title || rawTrip.name || '').trim();
@@ -1924,8 +2025,9 @@
               name: String(rec.name || '').trim(),
               category: String(rec.category || '').trim(),
               address: String(rec.address || '').trim(),
-              openingHours: String(rec.openingHours || rec.hours || '').trim(),
-              paymentMethods: sanitizePaymentText(rec.paymentMethods || rec.payment),
+              hours: String(rec.hours || rec.openingHours || '').trim(),
+              payment: sanitizePaymentText(rec.payment || rec.paymentMethods),
+              verified: Boolean(rec.verified && rec.address),
               reason: String(rec.reason || rec.description || '').trim(),
               nearStop: String(rec.nearStop || '').trim()
             })).filter(r => r.name)
@@ -1936,11 +2038,10 @@
         return {
           id: tripId,
           title: title || '未命名行程',
+          cityHint: String(rawTrip.cityHint || '').trim(),
           startDate: String(rawTrip.startDate || ''),
           dateNote: String(rawTrip.dateNote || rawTrip.subtitle || `${normalizedDays.length} 天行程`),
           passportMode: rawTrip.passportMode === 'all' ? 'all' : 'auto',
-          searchVerified: rawTrip.searchVerified === true,
-          searchSourceCount: Number(rawTrip.searchSourceCount) || 0,
           totalFare: totalFare > 0 ? totalFare : (Number(rawTrip.totalFare) || 0),
           fareSummary: String(rawTrip.fareSummary || ''),
           days: normalizedDays,
@@ -1955,6 +2056,7 @@
         return hasTitle && hasStops;
       }
 
+      // 啟動時掃描所有 localStorage key，無痛救援既有行程、集章狀態與 API Key
       function rescueAndLoadState() {
         const rescuedTrips = [];
         const seen = new Set();
@@ -2032,13 +2134,14 @@
           try { localStorage.setItem(API_KEY_STORAGE, rescuedApiKey); } catch (e) {}
         }
         if (state.trips.length > 0) saveState();
+        // 隱私空白預設：無任何行程時預設停在「規劃」表單
         state.activeTab = state.trips.length > 0 ? 'itinerary' : 'planner';
       }
 
       function saveState() {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify({
-            version: 4,
+            version: 6,
             trips: state.trips,
             activeTripId: state.activeTripId,
             completedStops: state.completedStops,
@@ -2086,10 +2189,10 @@
         return all;
       }
 
-      // -------------------- 3. 財務計算與文字匯出／解析 --------------------
+      // -------------------- 3. 財務計算與純文字匯出／匯入 --------------------
       function computeDayFare(day) {
         if (!day) return 0;
-        const sum = (day.stops || []).reduce((acc, s) => acc + (Number(s.transportCost ?? s.transitFare) || 0), 0);
+        const sum = (day.stops || []).reduce((acc, s) => acc + (Number(s.transportCost) || 0), 0);
         return sum > 0 ? sum : (Number(day.dailyFare) || 0);
       }
       function computeTripTotalFare(trip) {
@@ -2127,11 +2230,10 @@
             const timeTxt = s.endTime ? `${s.startTime}–${s.endTime}` : s.startTime;
             lines.push(`\n${idx + 1}. ${timeTxt} ${s.name}${stampMark}`);
             if (s.address) lines.push(`   地址：${s.address}`);
-            if (s.openingHours) lines.push(`   營業：${s.openingHours}`);
-            lines.push(`   支付：${s.paymentMethods}`);
+            if (s.hours) lines.push(`   營業：${s.hours}`);
+            lines.push(`   支付：${s.payment}`);
             if (s.transitMode) {
-              const cost = Number(s.transportCost ?? s.transitFare) || 0;
-              lines.push(`   交通：${s.transitMode} ${s.transitDuration || ''}｜NT$${cost}`);
+              lines.push(`   交通：${s.transitMode} ${s.transitDuration || ''}｜NT$${Number(s.transportCost) || 0}`);
             }
             (s.highlights || []).forEach(h => lines.push(`   - ${h}`));
           });
@@ -2188,11 +2290,13 @@
               name: rawName,
               category: '',
               district: '',
-              address: rawName,
-              openingHours: '',
+              address: '',
+              hours: '',
               startTime: stopMatch[2] || '彈性',
               endTime: stopMatch[3] || '',
-              paymentMethods: '公開資訊未註明（建議備現金）',
+              payment: UNKNOWN_PAYMENT,
+              verified: false,
+              verifyReason: '文字匯入，建議點擊重查',
               transitMode: '',
               transitDuration: '',
               transportCost: 0,
@@ -2209,8 +2313,8 @@
 
           if (currentStop) {
             if (/^地址[:：]/.test(line)) currentStop.address = line.replace(/^地址[:：]\s*/, '').trim();
-            else if (/^營業[:：]/.test(line)) currentStop.openingHours = line.replace(/^營業[:：]\s*/, '').trim();
-            else if (/^支付[:：]/.test(line)) currentStop.paymentMethods = sanitizePaymentText(line.replace(/^支付[:：]\s*/, ''));
+            else if (/^營業[:：]/.test(line)) currentStop.hours = line.replace(/^營業[:：]\s*/, '').trim();
+            else if (/^支付[:：]/.test(line)) currentStop.payment = sanitizePaymentText(line.replace(/^支付[:：]\s*/, ''));
             else if (/^交通[:：]/.test(line)) {
               const tText = line.replace(/^交通[:：]\s*/, '').trim();
               const fareMatch = tText.match(/NT\$\s*(\d+)/i);
@@ -2232,13 +2336,12 @@
           title,
           dateNote: `${validDays.length} 天｜文字匯入`,
           passportMode: 'auto',
-          searchVerified: false,
           days: validDays,
           recommendations: []
         });
       }
 
-      // -------------------- 4. 常用工具 --------------------
+      // -------------------- 4. 工具函式 --------------------
       let toastTimer = null;
       function showToast(msg) {
         const el = document.getElementById('toast');
@@ -2246,7 +2349,7 @@
         el.textContent = msg;
         el.classList.add('is-show');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => el.classList.remove('is-show'), 1900);
+        toastTimer = setTimeout(() => el.classList.remove('is-show'), 2100);
       }
 
       function copyToClipboard(text, msg) {
@@ -2273,14 +2376,14 @@
           .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       }
 
-      // 導航定位防錯：一律採用「店名 + 地址」組合查詢，直接鎖定 Google Maps 真實地標 POI
-      function getMapsUrl(name, address) {
-        return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent((name || '') + ' ' + (address || ''));
+      // Google Maps 導航連結：嚴格鎖定「店名 + (已查核地址 || 地區)」確保對齊真實 POI
+      function getMapsNavUrl(stop, region) {
+        const query = `${stop.name || ''} ${(stop.verified && stop.address) ? stop.address : (region || '')}`.trim();
+        return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
       }
 
-      // 單站 Google 二次查核連結
-      function getGoogleVerifyUrl(name, district) {
-        return 'https://www.google.com/search?q=' + encodeURIComponent(`${name || ''} ${district || ''} 地址 支付方式 營業時間`.trim());
+      function getGoogleVerifyUrl(name, region) {
+        return `https://www.google.com/search?q=${encodeURIComponent(`${name || ''} ${region || ''} 地址 營業時間 支付方式`.trim())}`;
       }
 
       function getTaipeiNow() {
@@ -2335,12 +2438,13 @@
       }
 
       function closeAllModals() {
-        ['textImportModal', 'expenseModal', 'overviewModal', 'stampDetailModal', 'installModal', 'deleteModal'].forEach(id => {
+        ['editStopModal', 'textImportModal', 'expenseModal', 'overviewModal', 'stampDetailModal', 'installModal', 'deleteModal'].forEach(id => {
           const el = document.getElementById(id);
           if (el) el.classList.add('hidden');
         });
         state.activeDetailStopId = null;
         state.activeExpenseStopId = null;
+        state.activeEditStopId = null;
         state.pendingDeleteTripId = null;
       }
 
@@ -2366,7 +2470,454 @@
         safeSwitchTrip(demo.id);
       }
 
-      // -------------------- 5. 粒子與紙花特效 --------------------
+      // -------------------- 5. Gemini REST API + Google Search Grounding 兩階段查核引擎 --------------------
+      async function fetchWithBackoff(url, options, maxRetries = 2) {
+        const delays = [1000, 2000, 4000];
+        let lastErr = null;
+        for (let attempt = 0; attempt <= maxRetries; attempt++) {
+          try {
+            const res = await fetch(url, options);
+            if (res.ok) return res;
+            const errTxt = await res.text().catch(() => '');
+            if ((res.status === 429 || res.status >= 500) && attempt < maxRetries) {
+              await new Promise(r => setTimeout(r, delays[attempt] || 2000));
+              continue;
+            }
+            const err = new Error(`連線錯誤 (${res.status})${errTxt ? '：' + errTxt.slice(0, 120) : ''}`);
+            err.status = res.status;
+            err.rawBody = errTxt;
+            throw err;
+          } catch (err) {
+            lastErr = err;
+            if (attempt < maxRetries && (!err.status || err.status === 429 || err.status >= 500)) {
+              await new Promise(r => setTimeout(r, delays[attempt] || 2000));
+            } else {
+              break;
+            }
+          }
+        }
+        throw lastErr || new Error('連線失敗，請檢查網路後重試');
+      }
+
+      // 並行控制器（Stage 1 上限 4 間並行，維持高速且避免限流）
+      async function runWithConcurrency(items, limit, workerFn) {
+        const results = new Array(items.length);
+        let nextIndex = 0;
+        async function worker() {
+          while (nextIndex < items.length) {
+            const current = nextIndex++;
+            results[current] = await workerFn(items[current], current);
+          }
+        }
+        const workers = [];
+        const count = Math.min(limit, items.length);
+        for (let i = 0; i < count; i++) workers.push(worker());
+        await Promise.all(workers);
+        return results;
+      }
+
+      // 穩定 JSON 區塊解析：優先擷取 ```json ... ```，其次嘗試直接解析或首尾大括號擷取
+      function extractJSON(rawText) {
+        const text = String(rawText || '').trim();
+        const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+        if (fenced && fenced[1]) {
+          try { return JSON.parse(fenced[1].trim()); } catch (e) {}
+        }
+        try { return JSON.parse(text); } catch (e) {}
+        const firstBrace = text.indexOf('{');
+        const lastBrace = text.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace > firstBrace) {
+          return JSON.parse(text.slice(firstBrace, lastBrace + 1));
+        }
+        throw new Error('回傳內容無法解析為有效 JSON');
+      }
+
+      // 拆分單行地點名稱與括號附註（例：「豆茶寮（集章）」）
+      function parsePlaceLine(rawLine, index) {
+        const line = String(rawLine || '').trim().replace(/^[-•·▪\d.)、\s]+/, '').trim();
+        if (!line) return null;
+        const noteMatch = line.match(/[（(]([^）)]+)[）)]/);
+        const cleanName = line.replace(/[（(][^）)]+[）)]/g, '').trim() || line;
+        return {
+          refId: `p${index + 1}`,
+          rawLine: line,
+          cleanName,
+          userNote: noteMatch ? noteMatch[1].trim() : ''
+        };
+      }
+
+      /**
+       * Stage 1：逐店 Google Search Grounding 即時查核
+       * 嚴格遵守：僅傳 contents、tools: [{ google_search: {} }]、generationConfig: { temperature: 0 }
+       * 絕對不與 responseMimeType: "application/json" 混用，避免觸發錯誤或靜默降級
+       */
+      async function verifyPlaceWithSearch(placeName, cityHint, apiKey) {
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+        const queryTarget = `${placeName} ${cityHint || ''}`.trim();
+
+        const promptText = `你是一位嚴謹的台灣店家資訊查核員。請務必使用 Google 搜尋查詢「${queryTarget} Google地圖 地址 營業時間 支付方式 信用卡 LINE Pay 行動支付 現金」，完整閱讀 Google 地圖商家資訊、AI 摘要與公開資料後，回傳純 JSON 區塊。
+
+【嚴格查核規則】
+1. 地址（address）：必須一字不差擷取 Google 地圖商家資訊與搜尋結果中的真實完整台灣地址（含郵遞區號或縣市、區鄉鎮、路街巷弄門牌號）。嚴禁猜測或編造門牌！若搜尋結果確實查無確切門牌，請將 address 填為空字串 "" 並將 addressVerified 設為 false。
+2. 營業時間（hours）：填寫 Google 搜尋到的實際營業時間與公休日（簡明扼要）。
+3. 支付方式（payment）：必須完整列出 Google 商家屬性、AI 摘要或評論中提到的所有支付選項（例如：現金、信用卡、金融卡、NFC 行動支付、Apple Pay、LINE Pay、街口支付、台灣Pay、悠遊卡、一卡通、僅收現金、免費入場）。嚴禁敷衍填寫「現場確認」「依現場指示」「依店家公告」。唯有搜尋結果完全未提及任何支付方式時，才填寫「公開資訊未載明（建議備現金）」。
+4. 只輸出單一 \`\`\`json ... \`\`\` 區塊，不要輸出其他前言或結語。
+
+格式：
+\`\`\`json
+{
+  "name": "Google 地圖上的完整店名",
+  "address": "一字不差的完整真實地址，查無確切門牌則填空字串",
+  "addressVerified": true,
+  "district": "所在鄉鎮市區",
+  "hours": "實際營業時間與公休日",
+  "payment": "完整支付方式清單，或 公開資訊未載明（建議備現金）",
+  "category": "精簡分類（如甜品店、展覽文化、小吃美食、選品逛街）",
+  "note": "一句精簡重點"
+}
+\`\`\``;
+
+        const payload = {
+          contents: [{ parts: [{ text: promptText }] }],
+          tools: [{ google_search: {} }],
+          generationConfig: { temperature: 0 }
+        };
+
+        const res = await fetchWithBackoff(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        const candidate = data?.candidates?.[0];
+        const parts = candidate?.content?.parts || [];
+        const fullText = parts.map(p => p.text || '').join('\n').trim();
+
+        // 嚴格驗證 groundingMetadata，絕不靜默假裝已查核
+        const gm = candidate?.groundingMetadata || {};
+        const webQueries = Array.isArray(gm.webSearchQueries) ? gm.webSearchQueries : [];
+        const chunks = gm.groundingChunks || gm.groundingAttributions || [];
+        const sources = Array.isArray(chunks)
+          ? chunks
+              .map(c => ({ uri: c.web?.uri || '', title: c.web?.title || '' }))
+              .filter(s => s.uri)
+          : [];
+        const hasGrounding = webQueries.length > 0 || sources.length > 0;
+
+        let parsed = null;
+        try {
+          parsed = extractJSON(fullText);
+        } catch (e) {
+          return {
+            name: placeName,
+            address: '',
+            district: '',
+            hours: '',
+            payment: UNKNOWN_PAYMENT,
+            category: '',
+            note: '',
+            verified: false,
+            verifyReason: '回傳格式異常，請重查',
+            groundingSources: sources.slice(0, 4)
+          };
+        }
+
+        const addr = String(parsed.address || '').trim();
+        const addrFlag = parsed.addressVerified !== false;
+        const verified = Boolean(hasGrounding && addr && addrFlag);
+
+        let verifyReason = '';
+        if (!hasGrounding) verifyReason = '未觸發 Google 搜尋';
+        else if (!addr || !addrFlag) verifyReason = '查無確切門牌，請點 Google 查核確認';
+
+        return {
+          name: String(parsed.name || placeName).trim(),
+          address: verified ? addr : (addrFlag ? addr : ''),
+          district: String(parsed.district || '').trim(),
+          hours: String(parsed.hours || '').trim(),
+          payment: sanitizePaymentText(parsed.payment),
+          category: String(parsed.category || '').trim(),
+          note: String(parsed.note || '').trim(),
+          verified,
+          verifyReason,
+          groundingSources: sources.slice(0, 4)
+        };
+      }
+
+      /**
+       * Stage 2：動線排序、交通時間與車資估算
+       * 依據 Stage 1 查核後的真實地址與 refId 排程，回傳後於程式碼層級強制鎖定 Stage 1 資料
+       */
+      async function planRouteWithVerifiedData(form, verifiedPlaces, apiKey) {
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+        const stampRule = form.passportMode === 'all'
+          ? '所有站點的 isStampSpot 皆設為 true。'
+          : '僅特色店家、展覽、地標或使用者註明集章的站點將 isStampSpot 設為 true，其餘為 false。';
+
+        const payPrefNote = form.payPrefs.length > 0
+          ? `使用者期望支付方式（選填軟性參考）：${form.payPrefs.join('、')}。若包含 TPASS 月票，涵蓋範圍內大眾運輸車資估為 0 並於 transportNote 註明「月票涵蓋」。`
+          : '使用者未指定期望支付方式，請依一般大眾運輸或步行估算車資。';
+
+        const promptText = `你是精簡務實的台灣行程動線排序與交通費估算工具。
+下方「已查核店家清單」附有唯一 refId（p1, p2...）與 Google 查核後之真實地址、營業時間、支付方式。
+
+【排程規則】
+1. 每個站點必須帶回對應的 refId，並完整保留原店名與地址，不可省略清單中的任何地點。
+2. 依真實地址的地理距離與營業時間排序，避免走回頭路，合理分配至 ${form.days} 天（每日 ${form.startTime}–${form.endTime}）。
+3. 依據真實地址距離估算每站間合理的 transitMode（步行、公車、捷運、計程車等）、transitDuration（如「約 10 分」）、transportCost（整數台幣，步行填 0）、transportNote（步行、一段票、月票涵蓋等）。
+4. ${payPrefNote}
+5. 集章規則：${stampRule}；每站提供 4–6 字 stampTitle 與單一 emoji 的 stampIcon。
+6. highlights 為 2–3 條極簡重點（零廢話、零 AI 套話）。
+7. recommendations 提供 2–3 個鄰近順路備案地點，須包含真實地址與具體支付方式（嚴禁填現場確認）。
+8. 只回傳單一有效 JSON 物件，不要加額外說明文字。
+
+輸入資料：
+${JSON.stringify({
+  title: form.title,
+  cityHint: form.cityHint,
+  startDate: form.startDate || '',
+  days: form.days,
+  dailyWindow: `${form.startTime}–${form.endTime}`,
+  preferredPaymentsOptional: form.payPrefs,
+  preferences: form.prefs || '無',
+  verifiedPlaces: verifiedPlaces.map(p => ({
+    refId: p.refId,
+    userInput: p.rawLine,
+    userNote: p.userNote,
+    name: p.name,
+    address: p.address || `${form.cityHint || ''} ${p.name}`.trim(),
+    hours: p.hours,
+    payment: p.payment,
+    category: p.category,
+    note: p.note
+  }))
+}, null, 2)}
+
+回傳 JSON 格式：
+{
+  "title": "行程標題",
+  "dateNote": "精簡天數與時段摘要",
+  "totalFare": 0,
+  "fareSummary": "一行車資估算說明",
+  "days": [
+    {
+      "dayNumber": 1,
+      "dateLabel": "Day 1",
+      "routeNote": "本日動線主題",
+      "dailyFare": 0,
+      "stops": [
+        {
+          "refId": "p1",
+          "id": "d1-s1",
+          "name": "店名",
+          "category": "分類",
+          "district": "區",
+          "address": "地址",
+          "hours": "營業時間",
+          "startTime": "10:00",
+          "endTime": "11:15",
+          "payment": "支付方式",
+          "transitMode": "公車 / 步行",
+          "transitDuration": "約 10 分",
+          "transportCost": 0,
+          "transportNote": "步行 / 一段票",
+          "isStampSpot": true,
+          "stampTitle": "精簡章名",
+          "stampIcon": "📍",
+          "highlights": ["重點1", "重點2"]
+        }
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "rec-1",
+      "name": "順路店名",
+      "category": "分類",
+      "address": "地址",
+      "hours": "營業時間",
+      "payment": "具體支付方式",
+      "reason": "精簡一行推薦理由",
+      "nearStop": "鄰近站名"
+    }
+  ]
+}`;
+
+        // Stage 2 不使用 google_search，可安全啟用 responseMimeType: "application/json" 加速輸出
+        const payload = {
+          contents: [{ parts: [{ text: promptText }] }],
+          generationConfig: {
+            temperature: 0.2,
+            responseMimeType: 'application/json'
+          }
+        };
+
+        const res = await fetchWithBackoff(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!rawText) throw new Error('排程階段未回傳有效行程資料');
+
+        const parsedRaw = extractJSON(rawText);
+
+        // 建立 Stage 1 索引（refId + 正規化店名雙重比對）
+        const byRef = new Map();
+        const byNormName = new Map();
+        verifiedPlaces.forEach(vp => {
+          byRef.set(vp.refId, vp);
+          byNormName.set(normalizeNameKey(vp.name), vp);
+          byNormName.set(normalizeNameKey(vp.cleanName), vp);
+        });
+
+        // 程式碼層級強制資料鎖定：以 Stage 1 查核到的真實 address / hours / payment / verified 覆蓋
+        if (Array.isArray(parsedRaw.days)) {
+          parsedRaw.days.forEach(d => {
+            (d.stops || []).forEach(s => {
+              const vp = (s.refId && byRef.get(s.refId))
+                || byNormName.get(normalizeNameKey(s.name))
+                || null;
+              if (vp) {
+                s.name = vp.name || s.name;
+                s.address = vp.address; // 即使為空字串也強制鎖定，絕不允許 Stage 2 編造假地址
+                s.hours = vp.hours || s.hours || '';
+                s.payment = vp.payment;
+                s.verified = vp.verified;
+                s.verifyReason = vp.verifyReason;
+                s.groundingSources = vp.groundingSources;
+                if (vp.district && !s.district) s.district = vp.district;
+              } else {
+                // 非 Stage 1 清單內地點一律標記未查核，避免誤導
+                s.verified = false;
+                s.verifyReason = '尚未個別查核';
+              }
+            });
+          });
+        }
+
+        const parsed = normalizeTripData(parsedRaw);
+        if (!parsed || !parsed.days.length) throw new Error('行程結構解析失敗');
+
+        parsed.id = 'trip-' + Date.now();
+        parsed.cityHint = form.cityHint;
+        parsed.startDate = form.startDate || '';
+        parsed.passportMode = form.passportMode;
+        if (form.passportMode === 'all') {
+          parsed.days.forEach(d => d.stops.forEach(s => { s.isStampSpot = true; }));
+        }
+        return parsed;
+      }
+
+      // 單站即時重查
+      async function reverifySingleStop(stopId) {
+        const trip = getActiveTrip();
+        if (!trip) return;
+        const found = findStopInTrip(trip, stopId);
+        if (!found) return;
+
+        const apiKey = getSavedApiKey();
+        if (!apiKey) {
+          showToast('請先至「行程庫」設定 Gemini API Key');
+          switchTab('library');
+          return;
+        }
+        if (state.verifyingStopIds.has(stopId)) return;
+
+        state.verifyingStopIds.add(stopId);
+        renderItineraryTab();
+
+        try {
+          const region = inferRegion(trip, found.stop);
+          const v = await verifyPlaceWithSearch(found.stop.name, region, apiKey);
+          found.stop.address = v.address;
+          if (v.hours) found.stop.hours = v.hours;
+          found.stop.payment = v.payment;
+          found.stop.verified = v.verified;
+          found.stop.verifyReason = v.verifyReason;
+          found.stop.groundingSources = v.groundingSources;
+          saveState();
+          showToast(v.verified ? `已查核更新：${found.stop.name}` : `查核未完成：${v.verifyReason || '請點 Google 查核'}`);
+        } catch (err) {
+          found.stop.verified = false;
+          found.stop.verifyReason = err.message || '查核連線錯誤';
+          saveState();
+          showToast(`重查失敗：${err.message || '請稍後再試'}`);
+        } finally {
+          state.verifyingStopIds.delete(stopId);
+          renderItineraryTab();
+        }
+      }
+
+      // 批次重查目前行程全部店家（原地保留既有集章與記帳紀錄）
+      async function reverifyAllStopsInActiveTrip() {
+        const trip = getActiveTrip();
+        if (!trip || state.isBatchVerifying) return;
+        const apiKey = getSavedApiKey();
+        if (!apiKey) {
+          showToast('請先至「行程庫」設定 Gemini API Key');
+          switchTab('library');
+          return;
+        }
+
+        const all = getAllStops(trip);
+        if (!all.length) return;
+
+        state.isBatchVerifying = true;
+        const panel = document.getElementById('reverifyProgressPanel');
+        const textEl = document.getElementById('reverifyProgressText');
+        const pctEl = document.getElementById('reverifyProgressPct');
+        const fillEl = document.getElementById('reverifyProgressFill');
+        const btn = document.getElementById('reverifyAllBtn');
+
+        panel.classList.remove('hidden');
+        btn.disabled = true;
+        let done = 0;
+
+        const updateProgress = (currentName) => {
+          const pct = Math.round((done / all.length) * 100);
+          textEl.textContent = `Google 地圖資訊查核中 (${done}/${all.length})：${currentName}...`;
+          pctEl.textContent = `${pct}%`;
+          fillEl.style.width = `${Math.max(8, pct)}%`;
+        };
+        updateProgress(all[0].stop.name);
+
+        try {
+          await runWithConcurrency(all, 4, async (item) => {
+            const { stop } = item;
+            try {
+              const region = inferRegion(trip, stop);
+              const v = await verifyPlaceWithSearch(stop.name, region, apiKey);
+              stop.address = v.address;
+              if (v.hours) stop.hours = v.hours;
+              stop.payment = v.payment;
+              stop.verified = v.verified;
+              stop.verifyReason = v.verifyReason;
+              stop.groundingSources = v.groundingSources;
+            } catch (e) {
+              stop.verified = false;
+              stop.verifyReason = e.message || '連線錯誤';
+            } finally {
+              done++;
+              updateProgress(stop.name);
+            }
+          });
+          saveState();
+          const okCount = all.filter(i => i.stop.verified).length;
+          showToast(`已完成重查（成功查核 ${okCount}/${all.length} 站）`);
+        } finally {
+          state.isBatchVerifying = false;
+          btn.disabled = false;
+          panel.classList.add('hidden');
+          renderItineraryTab();
+        }
+      }
+
+      // -------------------- 6. 粒子與紙花特效 --------------------
       function spawnInkParticles(anchorEl) {
         if (!anchorEl) return;
         const glyphs = ['•', '✦', '•', '✧', '•', '▪'];
@@ -2405,7 +2956,7 @@
         }
       }
 
-      // -------------------- 6. 雙向同步蓋章 --------------------
+      // -------------------- 7. 雙向同步蓋章 --------------------
       function toggleStopStamp(stopId, fromPassport = false) {
         const trip = getActiveTrip();
         if (!trip) return;
@@ -2454,7 +3005,7 @@
         }
       }
 
-      // -------------------- 7. 標頭與時鐘 --------------------
+      // -------------------- 8. 標頭與時鐘 --------------------
       function updateHeader() {
         const trip = getActiveTrip();
         const titleEl = document.getElementById('headerTripTitle');
@@ -2485,7 +3036,7 @@
         if (el) el.textContent = getTaipeiNow().hm;
       }
 
-      // -------------------- 8. TAB 2: 行程 --------------------
+      // -------------------- 9. TAB 2: 行程 --------------------
       function renderItineraryTab() {
         const trip = getActiveTrip();
         const emptyEl = document.getElementById('itineraryEmpty');
@@ -2501,23 +3052,28 @@
         emptyEl.classList.add('hidden');
         contentEl.classList.remove('hidden');
 
-        // 查核狀態徽章
+        // 逐店查核狀態統計
+        const allTripStops = getAllStops(trip);
+        const verifiedCount = allTripStops.filter(i => i.stop.verified).length;
         const vBar = document.getElementById('verifyStatusBar');
         const vDot = document.getElementById('verifyStatusDot');
         const vText = document.getElementById('verifyStatusText');
-        const vCount = document.getElementById('verifySourceCount');
-        if (trip.searchVerified) {
+
+        if (verifiedCount === allTripStops.length && allTripStops.length > 0) {
           vBar.className = 'verify-bar is-verified';
           vDot.className = 'dot-green';
-          vText.textContent = '已透過 Google 搜尋查核地址與支付方式';
+          vText.textContent = `Google 地圖查核完成 ${verifiedCount}/${allTripStops.length} 站`;
           vText.style.color = '#FFFFFF';
-          vCount.textContent = trip.searchSourceCount > 0 ? `${trip.searchSourceCount} 筆來源` : '即時查核';
+        } else if (verifiedCount > 0) {
+          vBar.className = 'verify-bar is-verified';
+          vDot.className = 'dot-green';
+          vText.textContent = `已查核 ${verifiedCount}/${allTripStops.length} 站（其餘可點重查）`;
+          vText.style.color = '#FFFFFF';
         } else {
           vBar.className = 'verify-bar is-unverified';
           vDot.className = 'dot-orange';
-          vText.textContent = '未經即時搜尋查核（建議點各站「Google 查核」確認）';
+          vText.textContent = `尚未查核（0/${allTripStops.length} 站），建議重查`;
           vText.style.color = '#FF5E00';
-          vCount.textContent = '';
         }
 
         if (state.activeDayIndex < 0 || state.activeDayIndex >= trip.days.length) state.activeDayIndex = 0;
@@ -2574,13 +3130,16 @@
           const isStamped = !!state.stampedRecords[stopKey];
           const isStampable = stop.isStampSpot || trip.passportMode === 'all';
           const isLast = idx === stops.length - 1;
+          const isVerifying = state.verifyingStopIds.has(stop.id);
           const highlights = stop.highlights || [];
           const expenses = Array.isArray(stop.expenses) ? stop.expenses : [];
           const stopExpSum = computeStopExpense(stop);
           const transitLabel = [stop.transitMode, stop.transitDuration].filter(Boolean).join(' ');
-          const fareVal = Number(stop.transportCost ?? stop.transitFare) || 0;
-          const tNote = stop.transportNote || stop.transitNote || '';
+          const fareVal = Number(stop.transportCost) || 0;
+          const tNote = stop.transportNote || '';
           const timeText = stop.endTime ? `${stop.startTime}–${stop.endTime}` : stop.startTime;
+          const region = inferRegion(trip, stop);
+          const payMissing = isPaymentMissing(stop.payment);
 
           const highlightsHtml = highlights.map((text, hIdx) => {
             const hKey = `${trip.id}::${stop.id}::${hIdx}`;
@@ -2621,30 +3180,33 @@
                   <div class="flex-wrap-gap" style="gap:6px;">
                     <span class="text-xs tabular" style="font-weight:700;">${escapeHtml(timeText)}</span>
                     ${stop.category ? `<span class="tag-muted">${escapeHtml(stop.category)}</span>` : ''}
-                    ${stop.district ? `<span class="text-10 muted">${escapeHtml(stop.district)}</span>` : ''}
+                    ${stop.verified
+                      ? `<span class="tag-verified">已查核</span>`
+                      : `<span class="tag-unverified">未查核</span>`
+                    }
                   </div>
                 </div>
 
                 <h3 class="title-card break-words ${isDone ? 'line-through' : ''}">${escapeHtml(stop.name)}</h3>
 
-                <button type="button" data-action="copy-address" data-address="${escapeHtml(stop.address)}" class="addr-btn break-words">
-                  <span>${escapeHtml(stop.address)}</span>
-                  <svg width="12" height="12" style="margin-top:2px;flex-shrink:0;opacity:0.6;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-                  </svg>
-                </button>
+                ${stop.address ? `
+                  <button type="button" data-action="copy-address" data-address="${escapeHtml(stop.address)}" class="addr-btn break-words">
+                    <span>${escapeHtml(stop.address)}</span>
+                    <svg width="12" height="12" style="margin-top:2px;flex-shrink:0;opacity:0.6;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                    </svg>
+                  </button>
+                ` : `
+                  <div class="addr-warn">尚未取得確切地址（請點下方「重查」或「Google 查核」）</div>
+                `}
 
-                ${stop.openingHours ? `<div class="hours-line">營業：${escapeHtml(stop.openingHours)}</div>` : ''}
+                ${!stop.verified && stop.verifyReason ? `<div class="addr-warn">查核狀態：${escapeHtml(stop.verifyReason)}</div>` : ''}
+                ${stop.hours ? `<div class="hours-line">營業：${escapeHtml(stop.hours)}</div>` : ''}
 
-                <!-- 明確支付方式 + 單站 Google 查核連結 -->
-                <div class="pay-badge-row">
-                  <div class="pay-badge">
-                    <span class="muted" style="font-weight:600;">支付：</span>
-                    <span class="break-words" style="font-weight:500;">${escapeHtml(stop.paymentMethods)}</span>
-                  </div>
-                  <a href="${getGoogleVerifyUrl(stop.name, stop.district)}" target="_blank" rel="noopener noreferrer" class="verify-link">
-                    Google 查核
-                  </a>
+                <!-- 必顯：店家支付方式 -->
+                <div class="pay-row ${payMissing ? 'is-missing' : ''}">
+                  <span class="muted shrink-0" style="font-weight:600;">支付：</span>
+                  <span class="break-words" style="font-weight:500;color:${payMissing ? '#A1A1AA' : '#FFFFFF'};">${escapeHtml(stop.payment)}</span>
                 </div>
 
                 <!-- 單行記帳摘要 -->
@@ -2657,11 +3219,21 @@
 
                 ${highlights.length ? `<div class="hl-list"><ul>${highlightsHtml}</ul></div>` : ''}
 
-                <!-- 底部 3 按鈕：導航 / 蓋章 / + 記帳 -->
+                <!-- 第一排主要操作：導航 / + 記帳 / 蓋章 -->
                 <div class="stop-actions grid-3">
-                  <a href="${getMapsUrl(stop.name, stop.address)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="padding:0 6px;">
+                  <a href="${getMapsNavUrl(stop, region)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="padding:0 6px;">
                     導航
                   </a>
+
+                  <button
+                    type="button"
+                    data-action="open-expense"
+                    data-stop-id="${escapeHtml(stop.id)}"
+                    class="btn tabular truncate ${expenses.length > 0 ? 'btn-surface' : 'btn-ghost-white'}"
+                    style="padding:0 6px;"
+                  >
+                    ${expenses.length > 0 ? formatNT(stopExpSum) : '+ 記帳'}
+                  </button>
 
                   <button
                     type="button"
@@ -2679,16 +3251,40 @@
                       : `<span>${isDone ? '已完成' : '完成'}</span>`
                     }
                   </button>
+                </div>
+
+                <!-- 第二排查核與編輯工具：重查 / 編輯 / Google 查核 -->
+                <div class="stop-sub-actions">
+                  <button
+                    type="button"
+                    data-action="reverify-stop"
+                    data-stop-id="${escapeHtml(stop.id)}"
+                    ${isVerifying ? 'disabled' : ''}
+                    class="btn btn-ghost-white"
+                    style="padding:0 6px;font-size:11px;"
+                  >
+                    ${isVerifying ? `<span class="spinner-xs"></span><span>查核中</span>` : `<span>重查</span>`}
+                  </button>
 
                   <button
                     type="button"
-                    data-action="open-expense"
+                    data-action="edit-stop"
                     data-stop-id="${escapeHtml(stop.id)}"
-                    class="btn tabular truncate ${expenses.length > 0 ? 'btn-surface' : 'btn-ghost-white'}"
-                    style="padding:0 6px;"
+                    class="btn btn-ghost-white"
+                    style="padding:0 6px;font-size:11px;"
                   >
-                    ${expenses.length > 0 ? formatNT(stopExpSum) : '+ 記帳'}
+                    編輯
                   </button>
+
+                  <a
+                    href="${getGoogleVerifyUrl(stop.name, region)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-ghost"
+                    style="padding:0 6px;font-size:11px;"
+                  >
+                    Google 查核
+                  </a>
                 </div>
               </div>
             </article>
@@ -2696,7 +3292,26 @@
         }).join('');
       }
 
-      // -------------------- 9. 記帳與花費明細總覽 --------------------
+      // -------------------- 10. 手動編輯站點 Modal --------------------
+      function openEditStopModal(stopId) {
+        const trip = getActiveTrip();
+        if (!trip) return;
+        const found = findStopInTrip(trip, stopId);
+        if (!found) return;
+        state.activeEditStopId = stopId;
+        document.getElementById('editStopTitle').textContent = found.stop.name;
+        document.getElementById('editStopAddress').value = found.stop.address || '';
+        document.getElementById('editStopHours').value = found.stop.hours || '';
+        document.getElementById('editStopPayment').value = found.stop.payment || '';
+        document.getElementById('editStopModal').classList.remove('hidden');
+      }
+
+      function closeEditStopModal() {
+        document.getElementById('editStopModal').classList.add('hidden');
+        state.activeEditStopId = null;
+      }
+
+      // -------------------- 11. 記帳與花費明細總覽 --------------------
       function updateExpMethodButtons() {
         document.querySelectorAll('.exp-method-btn').forEach(btn => {
           const active = btn.dataset.expmethod === state.selectedExpenseMethod;
@@ -2732,7 +3347,7 @@
               </div>
               <div class="flex-row shrink-0">
                 <span class="text-xs tabular" style="font-weight:700;">${formatNT(exp.amount)}</span>
-                <button type="button" data-action="delete-stop-exp" data-exp-id="${escapeHtml(exp.id)}" class="btn btn-surface" style="min-height:36px;min-width:36px;padding:0;margin-left:4px;" aria-label="刪除">×</button>
+                <button type="button" data-action="delete-stop-exp" data-exp-id="${escapeHtml(exp.id)}" class="btn btn-surface" style="min-height:44px;min-width:44px;padding:0;margin-left:4px;" aria-label="刪除">×</button>
               </div>
             </div>
           `).join('');
@@ -2793,7 +3408,7 @@
         document.getElementById('ovMethodSummary').innerHTML = !methodEntries.length
           ? `<span class="text-xs muted">尚無地標消費紀錄</span>`
           : methodEntries.map(([m, v]) => `
-              <span class="pay-badge" style="border-radius:999px;padding:4px 10px;">
+              <span class="sub-box" style="border-radius:999px;padding:4px 10px;font-size:11px;display:inline-flex;gap:6px;">
                 <span class="muted">${escapeHtml(m)}</span>
                 <strong class="tabular">${formatNT(v)}</strong>
               </span>
@@ -2804,19 +3419,19 @@
             const exps = stop.expenses || [];
             if (!exps.length) {
               return `
-                <div class="flex-between" style="padding:8px 0;border-top:1px solid rgba(255,255,255,0.06);">
+                <div class="flex-between" style="padding:6px 0;border-top:1px solid rgba(255,255,255,0.06);">
                   <span class="text-xs muted truncate">${escapeHtml(stop.name)}</span>
-                  <button type="button" data-action="ov-jump-exp" data-stop-id="${escapeHtml(stop.id)}" data-day-idx="${dIdx}" class="btn btn-ghost-white shrink-0" style="min-height:34px;padding:0 10px;font-size:11px;">+ 補記</button>
+                  <button type="button" data-action="ov-jump-exp" data-stop-id="${escapeHtml(stop.id)}" data-day-idx="${dIdx}" class="btn btn-ghost-white shrink-0" style="padding:0 10px;font-size:11px;">+ 補記</button>
                 </div>
               `;
             }
             return `
               <div style="padding:8px 0;border-top:1px solid rgba(255,255,255,0.06);">
                 <div class="flex-between">
-                  <button type="button" data-action="ov-jump-exp" data-stop-id="${escapeHtml(stop.id)}" data-day-idx="${dIdx}" class="text-xs truncate" style="font-weight:700;text-align:left;">${escapeHtml(stop.name)}</button>
+                  <button type="button" data-action="ov-jump-exp" data-stop-id="${escapeHtml(stop.id)}" data-day-idx="${dIdx}" class="text-xs truncate" style="font-weight:700;text-align:left;min-height:36px;">${escapeHtml(stop.name)}</button>
                   <div class="flex-row shrink-0">
                     <span class="text-xs tabular" style="font-weight:700;">${formatNT(computeStopExpense(stop))}</span>
-                    <button type="button" data-action="ov-jump-exp" data-stop-id="${escapeHtml(stop.id)}" data-day-idx="${dIdx}" class="tag-muted">+ 補記</button>
+                    <button type="button" data-action="ov-jump-exp" data-stop-id="${escapeHtml(stop.id)}" data-day-idx="${dIdx}" class="tag-muted" style="min-height:32px;padding:0 8px;">+ 補記</button>
                   </div>
                 </div>
                 <div class="stack-2" style="margin-top:6px;padding-left:8px;border-left:1px solid rgba(255,255,255,0.12);">
@@ -2828,7 +3443,7 @@
                       </div>
                       <div class="flex-row shrink-0">
                         <span class="tabular">${formatNT(e.amount)}</span>
-                        <button type="button" data-action="ov-del-exp" data-stop-id="${escapeHtml(stop.id)}" data-exp-id="${escapeHtml(e.id)}" class="muted" style="width:24px;height:24px;" aria-label="刪除">×</button>
+                        <button type="button" data-action="ov-del-exp" data-stop-id="${escapeHtml(stop.id)}" data-exp-id="${escapeHtml(e.id)}" class="muted" style="min-width:32px;min-height:32px;" aria-label="刪除">×</button>
                       </div>
                     </div>
                   `).join('')}
@@ -2849,7 +3464,7 @@
         }).join('');
       }
 
-      // -------------------- 10. TAB 3: 護照 --------------------
+      // -------------------- 12. TAB 3: 護照 --------------------
       function renderPassportTab(justStampedStopId = null) {
         const trip = getActiveTrip();
         const emptyEl = document.getElementById('passportEmpty');
@@ -2941,6 +3556,7 @@
         if (!found) return;
 
         const { stop, day } = found;
+        const region = inferRegion(trip, stop);
         state.activeDetailStopId = stop.id;
         document.getElementById('sdBadgeRow').innerHTML = `
           <span class="tag-muted text-orange" style="border:1px solid rgba(255,94,0,0.55);background:rgba(255,94,0,0.08);">${escapeHtml(stop.stampTitle || stop.name)}</span>
@@ -2949,10 +3565,10 @@
         `;
         document.getElementById('sdTitle').textContent = stop.name;
         document.getElementById('sdStampedAt').textContent = `蓋章時間：${state.stampedRecords[`${trip.id}::${stop.id}`] || ''}`;
-        document.getElementById('sdAddress').textContent = stop.address;
-        document.getElementById('sdHours').textContent = stop.openingHours ? `營業時間：${stop.openingHours}` : '';
-        document.getElementById('sdPayment').textContent = stop.paymentMethods;
-        document.getElementById('sdNavLink').href = getMapsUrl(stop.name, stop.address);
+        document.getElementById('sdAddress').textContent = stop.address || '尚未取得確切地址';
+        document.getElementById('sdHours').textContent = stop.hours ? `營業時間：${stop.hours}` : '';
+        document.getElementById('sdPayment').textContent = stop.payment;
+        document.getElementById('sdNavLink').href = getMapsNavUrl(stop, region);
 
         const hl = stop.highlights || [];
         document.getElementById('sdHighlights').innerHTML = hl.length
@@ -2962,7 +3578,7 @@
         document.getElementById('stampDetailModal').classList.remove('hidden');
       }
 
-      // -------------------- 11. TAB 4: 推薦 --------------------
+      // -------------------- 13. TAB 4: 推薦 --------------------
       function addRecommendationToItinerary(recId) {
         const trip = getActiveTrip();
         if (!trip || !trip.days || !trip.days.length) return;
@@ -2982,11 +3598,13 @@
           name: rec.name,
           category: rec.category || '順路延伸',
           district: '',
-          address: rec.address || rec.name,
-          openingHours: rec.openingHours || '',
+          address: rec.address || '',
+          hours: rec.hours || '',
           startTime: '彈性',
           endTime: '備案',
-          paymentMethods: rec.paymentMethods,
+          payment: rec.payment,
+          verified: Boolean(rec.verified && rec.address),
+          verifyReason: rec.verified ? '' : '由推薦加入，可點重查確認',
           transitMode: '順路延伸',
           transitDuration: rec.nearStop ? `近 ${rec.nearStop}` : '依現場動線',
           transportCost: 0,
@@ -3012,7 +3630,7 @@
         const contentEl = document.getElementById('recommendContent');
 
         if (!trip) {
-          emptyEl.innerHTML = buildEmptyStateHtml('尚無推薦地點', '建立行程後將整理順路地點、真實地址與支付方式。');
+          emptyEl.innerHTML = buildEmptyStateHtml('尚無推薦地點', '建立行程後將整理順路地點、地址與支付方式。');
           emptyEl.classList.remove('hidden');
           contentEl.classList.add('hidden');
           return;
@@ -3024,7 +3642,7 @@
         const recs = trip.recommendations || [];
         const q = state.recSearch.trim().toLowerCase();
         const filtered = q
-          ? recs.filter(r => [r.name, r.category, r.address, r.paymentMethods, r.reason, r.nearStop].join(' ').toLowerCase().includes(q))
+          ? recs.filter(r => [r.name, r.category, r.address, r.payment, r.reason, r.nearStop].join(' ').toLowerCase().includes(q))
           : recs;
 
         document.getElementById('recTotalBadge').textContent = `${filtered.length} 處`;
@@ -3036,6 +3654,7 @@
         }
 
         const allStopNames = new Set(getAllStops(trip).map(i => i.stop.name));
+        const region = inferRegion(trip, null);
         listEl.innerHTML = filtered.map(r => {
           const alreadyIn = allStopNames.has(r.name);
           return `
@@ -3043,33 +3662,32 @@
               <div class="flex-wrap-gap" style="gap:6px;margin-bottom:5px;">
                 ${r.category ? `<span class="tag-muted" style="color:rgba(255,255,255,0.88);">${escapeHtml(r.category)}</span>` : ''}
                 ${r.nearStop ? `<span class="text-10 text-green">鄰近 ${escapeHtml(r.nearStop)}</span>` : ''}
+                ${r.verified ? `<span class="tag-verified">已查核</span>` : ''}
               </div>
               <h3 class="title-card break-words">${escapeHtml(r.name)}</h3>
               ${r.address ? `<div class="text-xs muted break-words" style="margin-top:3px;">${escapeHtml(r.address)}</div>` : ''}
-              ${r.openingHours ? `<div class="hours-line">營業：${escapeHtml(r.openingHours)}</div>` : ''}
+              ${r.hours ? `<div class="hours-line">營業：${escapeHtml(r.hours)}</div>` : ''}
 
-              <div class="pay-badge-row">
-                <div class="pay-badge">
-                  <span class="muted" style="font-weight:600;">支付：</span>
-                  <span class="break-words">${escapeHtml(r.paymentMethods)}</span>
-                </div>
-                <a href="${getGoogleVerifyUrl(r.name, '')}" target="_blank" rel="noopener noreferrer" class="verify-link">Google 查核</a>
+              <div class="pay-row">
+                <span class="muted shrink-0" style="font-weight:600;">支付：</span>
+                <span class="break-words">${escapeHtml(r.payment)}</span>
               </div>
 
               <p class="text-xs break-words" style="color:var(--text-soft);margin-top:9px;">${escapeHtml(r.reason || '')}</p>
 
-              <div class="grid-2" style="margin-top:11px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1);">
-                <a href="${getMapsUrl(r.name, r.address)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">導航</a>
-                <button type="button" data-action="add-rec" data-rec-id="${escapeHtml(r.id)}" class="btn ${alreadyIn ? 'btn-green-outline' : 'btn-surface'}">
-                  ${alreadyIn ? '已在行程中' : '加入行程'}
+              <div class="grid-3" style="margin-top:11px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1);">
+                <a href="${getMapsNavUrl(r, region)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="padding:0 6px;">導航</a>
+                <button type="button" data-action="add-rec" data-rec-id="${escapeHtml(r.id)}" class="btn ${alreadyIn ? 'btn-green-outline' : 'btn-surface'}" style="padding:0 6px;">
+                  ${alreadyIn ? '已加入' : '加入行程'}
                 </button>
+                <a href="${getGoogleVerifyUrl(r.name, region)}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost" style="padding:0 6px;font-size:11px;">Google 查核</a>
               </div>
             </div>
           `;
         }).join('');
       }
 
-      // -------------------- 12. TAB 5: 行程庫 --------------------
+      // -------------------- 14. TAB 5: 行程庫 --------------------
       function renderLibraryTab() {
         const trip = getActiveTrip();
         const libEl = document.getElementById('tripLibraryList');
@@ -3138,7 +3756,7 @@
         return JSON.stringify({
           app: 'route-notebook',
           exportedAt: new Date().toISOString(),
-          version: 4,
+          version: 6,
           trips: state.trips,
           activeTripId: state.activeTripId,
           completedStops: state.completedStops,
@@ -3179,196 +3797,7 @@
         }
       }
 
-      // -------------------- 13. Gemini API + Google 搜尋即時查核（gemini-2.5-flash） --------------------
-      async function fetchWithBackoff(url, options, maxRetries = 2) {
-        const delays = [1000, 2000];
-        let lastErr = null;
-        for (let attempt = 0; attempt <= maxRetries; attempt++) {
-          try {
-            const res = await fetch(url, options);
-            if (res.ok) return res;
-            const errTxt = await res.text().catch(() => '');
-            if ((res.status === 429 || res.status >= 500) && attempt < maxRetries) {
-              await new Promise(r => setTimeout(r, delays[attempt] || 2000));
-              continue;
-            }
-            const err = new Error(`連線錯誤 (${res.status})${errTxt ? '：' + errTxt.slice(0, 120) : ''}`);
-            err.status = res.status;
-            err.rawBody = errTxt;
-            throw err;
-          } catch (err) {
-            lastErr = err;
-            if (attempt < maxRetries && (!err.status || err.status === 429 || err.status >= 500)) {
-              await new Promise(r => setTimeout(r, delays[attempt] || 2000));
-            } else {
-              break;
-            }
-          }
-        }
-        throw lastErr || new Error('連線失敗，請檢查網路後重試');
-      }
-
-      // 安全擷取模型回應中的純 JSON 物件（相容 markdown ```json 區塊與前後說明文字）
-      function extractJsonObject(rawText) {
-        const cleaned = String(rawText || '').replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
-        try { return JSON.parse(cleaned); } catch (e) {}
-
-        const firstBrace = cleaned.indexOf('{');
-        const lastBrace = cleaned.lastIndexOf('}');
-        if (firstBrace !== -1 && lastBrace > firstBrace) {
-          const candidate = cleaned.slice(firstBrace, lastBrace + 1);
-          return JSON.parse(candidate);
-        }
-        throw new Error('回傳內容無法解析為有效行程 JSON');
-      }
-
-      async function generateRouteWithGemini(form, apiKey) {
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
-
-        const stampRule = form.passportMode === 'all'
-          ? '所有站點的 isStampSpot 皆設為 true。'
-          : '僅特色店家、展覽、地標或使用者註明集章的站點將 isStampSpot 設為 true，其餘為 false。';
-
-        const payPrefNote = form.payPrefs.length > 0
-          ? `使用者期望支付方式（選填軟性參考）：${form.payPrefs.join('、')}。若包含 TPASS 月票，涵蓋範圍內大眾運輸車資估為 0 並於 transportNote 寫「月票涵蓋」。`
-          : '使用者未指定期望支付方式，請依一般大眾運輸或步行估算車資。';
-
-        const jsonTemplate = `{
-  "title": "行程名稱",
-  "dateNote": "天數與時間摘要",
-  "totalFare": 36,
-  "fareSummary": "簡短車資估算說明",
-  "days": [
-    {
-      "dayNumber": 1,
-      "dateLabel": "Day 1",
-      "routeNote": "本日動線主題",
-      "dailyFare": 36,
-      "stops": [
-        {
-          "id": "d1-s1",
-          "name": "店家或地標真實名稱",
-          "category": "分類（如咖啡/展覽/選品/小吃）",
-          "district": "行政區",
-          "address": "完整真實地址（含縣市、區、路名門牌）",
-          "openingHours": "真實營業時間與公休日",
-          "startTime": "10:30",
-          "endTime": "11:45",
-          "paymentMethods": "明確支付方式（如：僅收現金 / 現金、LINE Pay / 現金、刷卡、Apple Pay）",
-          "transitMode": "交通方式（如：公車 2 路 / 步行 / 捷運紅線）",
-          "transitDuration": "約 10 分",
-          "transportCost": 18,
-          "transportNote": "一段票 / 步行 / 月票涵蓋",
-          "isStampSpot": true,
-          "stampTitle": "4-6字精簡印章名",
-          "stampIcon": "單一emoji",
-          "highlights": ["精簡重點1", "精簡重點2"]
-        }
-      ]
-    }
-  ],
-  "recommendations": [
-    {
-      "id": "rec-1",
-      "name": "順路推薦真實店名",
-      "category": "分類",
-      "address": "完整真實地址",
-      "openingHours": "營業時間",
-      "paymentMethods": "明確支付方式",
-      "reason": "精簡一行推薦理由",
-      "nearStop": "鄰近哪一站"
-    }
-  ]
-}`;
-
-        const systemPrompt = `你是極度嚴謹、精簡務實的台灣旅遊行程查核與規劃工具。
-【最高鐵則（違反即失敗）】：
-1. 必須使用 Google 搜尋工具逐一查核每一間店家／地標的「真實完整地址（含縣市、區、路名門牌）」與「真實營業時間」，嚴禁憑記憶猜測或編造門牌。
-2. 必須使用 Google 搜尋工具查核每一間店家實際支援的「支付方式」（例如：僅收現金、現金／LINE Pay、現金／刷卡／Apple Pay）。【嚴禁】出現「現場確認」「依現場指示」「依店家公告」「依現場為主」等敷衍字眼！只有在網路上確實查無任何公開支付資訊的極小型攤販，才允許填寫「公開資訊未註明（建議備現金）」。
-3. 依據查核後的真實地址地理位置排序，避免走回頭路，並據實計算每段交通方式、步行／搭車時間與台幣車資整數（步行填 0）。
-4. ${payPrefNote}
-5. 集章規則：${stampRule}
-6. 文字全程使用台灣繁體中文、精簡條列，絕不寫客套廢話或形容詞堆砌。
-7. 【輸出格式強制規定】：你只能輸出「單一純 JSON 物件」，完全符合以下結構，不可附加任何 markdown 說明或前後文字：
-${jsonTemplate}`;
-
-        const userPrompt = `行程名稱：${form.title}
-出發日期：${form.startDate || '未指定'}
-天數：${form.days} 天
-每日時間：${form.startTime}–${form.endTime}
-出發地：${form.origin || '依第一站出發'}
-期望支付方式（選填）：${form.payPrefs.length ? form.payPrefs.join('、') : '未指定'}
-地點清單（請逐一用 Google 搜尋查核真實地址、營業時間與支付方式）：
-${form.places}
-偏好與備註：${form.prefs || '無'}`;
-
-        // 優先請求：開啟 Google 即時搜尋工具（不傳 responseMimeType 以防 400 衝突）
-        const searchPayload = {
-          contents: [{ parts: [{ text: userPrompt }] }],
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          tools: [{ google_search: {} }]
-        };
-
-        let result = null;
-        let searchVerified = false;
-        let searchSourceCount = 0;
-
-        try {
-          const res = await fetchWithBackoff(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(searchPayload)
-          });
-          result = await res.json();
-          const gm = result?.candidates?.[0]?.groundingMetadata;
-          const chunks = gm?.groundingChunks || gm?.groundingAttributions || [];
-          searchSourceCount = Array.isArray(chunks) ? chunks.length : 0;
-          searchVerified = true;
-        } catch (err) {
-          // 若 400 錯誤是因為金鑰方案或環境不支援 google_search 工具，自動降級重試並明確標示未經查核
-          const bodyLower = String(err.rawBody || err.message || '').toLowerCase();
-          const isToolUnsupported = err.status === 400 && (bodyLower.includes('google_search') || bodyLower.includes('tool') || bodyLower.includes('grounding'));
-          if (!isToolUnsupported) {
-            if (err.status === 400 || err.status === 403) {
-              throw new Error(`金鑰權限錯誤 (${err.status})，請到「行程庫」確認 Gemini API Key。`);
-            }
-            throw err;
-          }
-
-          // 降級重試（不帶搜尋工具）
-          const fallbackRes = await fetchWithBackoff(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: userPrompt }] }],
-              systemInstruction: { parts: [{ text: systemPrompt }] },
-              generationConfig: { responseMimeType: 'application/json' }
-            })
-          });
-          result = await fallbackRes.json();
-          searchVerified = false;
-        }
-
-        const parts = result?.candidates?.[0]?.content?.parts || [];
-        const rawText = parts.map(p => p.text || '').join('\n').trim();
-        if (!rawText) throw new Error('模型未回傳有效路線內容');
-
-        const parsedRaw = extractJsonObject(rawText);
-        const parsed = normalizeTripData(parsedRaw);
-        if (!parsed || !parsed.days.length) throw new Error('回傳行程格式不完整');
-
-        parsed.id = 'trip-' + Date.now();
-        parsed.startDate = form.startDate || '';
-        parsed.passportMode = form.passportMode;
-        parsed.searchVerified = searchVerified;
-        parsed.searchSourceCount = searchSourceCount;
-        if (form.passportMode === 'all') {
-          parsed.days.forEach(d => d.stops.forEach(s => { s.isStampSpot = true; }));
-        }
-        return parsed;
-      }
-
-      // -------------------- 14. 分頁切換與全域渲染 --------------------
+      // -------------------- 15. 分頁切換與全域渲染 --------------------
       function switchTab(tabName) {
         state.activeTab = tabName;
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
@@ -3397,7 +3826,7 @@ ${form.places}
         renderLibraryTab();
       }
 
-      // -------------------- 15. 事件綁定 --------------------
+      // -------------------- 16. 事件綁定 --------------------
       function bindEvents() {
         document.querySelectorAll('.nav-btn').forEach(btn => {
           btn.addEventListener('click', () => switchTab(btn.dataset.tab));
@@ -3412,7 +3841,9 @@ ${form.places}
 
         document.getElementById('plannerLoadDemoBtn').addEventListener('click', loadDemoTripManually);
 
-        // 行程頁
+        // 行程頁互動
+        document.getElementById('reverifyAllBtn').addEventListener('click', reverifyAllStopsInActiveTrip);
+
         document.getElementById('dayTabsContainer').addEventListener('click', e => {
           const btn = e.target.closest('[data-action="select-day"]');
           if (!btn) return;
@@ -3433,11 +3864,37 @@ ${form.places}
           const act = btn.dataset.action;
           if (act === 'toggle-stop') toggleStopStamp(btn.dataset.stopId, false);
           else if (act === 'open-expense') openExpenseModal(btn.dataset.stopId);
+          else if (act === 'reverify-stop') reverifySingleStop(btn.dataset.stopId);
+          else if (act === 'edit-stop') openEditStopModal(btn.dataset.stopId);
           else if (act === 'toggle-hl') {
             state.checkedHighlights[btn.dataset.hkey] = !state.checkedHighlights[btn.dataset.hkey];
             saveState();
             renderItineraryTab();
           } else if (act === 'copy-address') copyToClipboard(btn.dataset.address, '已複製地址');
+        });
+
+        // 手動編輯站點 Modal
+        const editModal = document.getElementById('editStopModal');
+        document.getElementById('closeEditStopBtn').addEventListener('click', closeEditStopModal);
+        document.getElementById('cancelEditStopBtn').addEventListener('click', closeEditStopModal);
+        editModal.addEventListener('click', e => { if (e.target === editModal) closeEditStopModal(); });
+        document.getElementById('editStopForm').addEventListener('submit', e => {
+          e.preventDefault();
+          const trip = getActiveTrip();
+          const found = trip && state.activeEditStopId ? findStopInTrip(trip, state.activeEditStopId) : null;
+          if (!found) return;
+          const addr = document.getElementById('editStopAddress').value.trim();
+          const hours = document.getElementById('editStopHours').value.trim();
+          const pay = document.getElementById('editStopPayment').value.trim();
+          found.stop.address = addr;
+          found.stop.hours = hours;
+          found.stop.payment = sanitizePaymentText(pay);
+          found.stop.verified = Boolean(addr);
+          found.stop.verifyReason = addr ? '' : '未填寫地址';
+          saveState();
+          closeEditStopModal();
+          renderItineraryTab();
+          showToast('已儲存站點修改');
         });
 
         // 文字匯入 Modal
@@ -3567,7 +4024,7 @@ ${form.places}
           if (btn) addRecommendationToItinerary(btn.dataset.recId);
         });
 
-        // 規劃表單
+        // 規劃表單互動
         const customDaysInput = document.getElementById('inputDaysCustom');
         function setDays(val) {
           const n = Math.min(7, Math.max(1, Number(val) || 1));
@@ -3613,19 +4070,20 @@ ${form.places}
         });
 
         document.getElementById('fillExampleBtn').addEventListener('click', () => {
-          document.getElementById('inputTripName').value = '台南中西區散步';
+          document.getElementById('inputTripName').value = '花蓮一日散步';
+          document.getElementById('inputCityHint').value = '花蓮市';
           setDays(1);
           document.getElementById('inputStartTime').value = '11:00';
-          document.getElementById('inputEndTime').value = '18:00';
-          document.getElementById('inputOrigin').value = '台南火車站';
+          document.getElementById('inputEndTime').value = '18:30';
           document.getElementById('inputPlaces').value =
-            '林百貨（台南／集章）\n臺南市美術館二館（集章）\n富盛號碗粿\n神農街（集章）\n藍晒圖文創園區（集章）';
-          document.getElementById('inputCustomPref').value = '公車與步行為主、不走回頭路';
+            '豆茶寮（集章）\n花蓮文創園區（集章）\n松園別館（集章）\n廟口紅茶';
+          document.getElementById('inputCustomPref').value = '不走回頭路、步調輕鬆';
           showToast('已填入範例清單');
         });
 
         document.getElementById('plannerGoLibraryBtn').addEventListener('click', () => switchTab('library'));
 
+        // 送出規劃：執行兩階段逐店 Google 地圖查核與鎖定排程
         document.getElementById('plannerForm').addEventListener('submit', async e => {
           e.preventDefault();
           const errBox = document.getElementById('plannerErrorBox');
@@ -3634,55 +4092,105 @@ ${form.places}
           errBox.classList.add('hidden');
           goLibBtn.classList.add('hidden');
 
-          const places = document.getElementById('inputPlaces').value.trim();
-          if (!places) {
-            errText.textContent = '請輸入地點清單（每行一個）。';
+          const rawPlaces = document.getElementById('inputPlaces').value.trim();
+          const parsedLines = rawPlaces.split(/\r?\n/).map((line, idx) => parsePlaceLine(line, idx)).filter(Boolean);
+          if (!parsedLines.length) {
+            errText.textContent = '請輸入地點／店家清單（每行一個）。';
             errBox.classList.remove('hidden');
             return;
           }
 
-          const apiKey = getSavedApiKey() || '';
+          const apiKey = getSavedApiKey();
+          if (!apiKey) {
+            errText.textContent = '尚未設定 Gemini API Key，請先至右下角「行程庫」填入你的金鑰（僅存於本機）。';
+            goLibBtn.classList.remove('hidden');
+            errBox.classList.remove('hidden');
+            return;
+          }
+
           const title = document.getElementById('inputTripName').value.trim() || `${state.plannerDays} 日路線`;
+          const cityHint = document.getElementById('inputCityHint').value.trim();
           const startDate = document.getElementById('inputStartDate').value || '';
           const startTime = document.getElementById('inputStartTime').value || '10:00';
           const endTime = document.getElementById('inputEndTime').value || '18:30';
-          const origin = document.getElementById('inputOrigin').value.trim();
           const customPref = document.getElementById('inputCustomPref').value.trim();
           const prefs = [...state.plannerPrefs, customPref].filter(Boolean).join('、');
 
-          const loadingModal = document.getElementById('loadingModal');
-          const stepEl = document.getElementById('loadingStepText');
-          const steps = [
-            '正在透過 Google 搜尋查核店家地址與支付方式…',
-            '核對各店家真實門牌與營業時間…',
-            '依真實地點排序不走回頭路並估算車資…',
-            '建立集章護照與順路推薦清單…'
-          ];
-          let sIdx = 0;
-          stepEl.textContent = steps[0];
-          loadingModal.classList.remove('hidden');
-          const timer = setInterval(() => {
-            sIdx = (sIdx + 1) % steps.length;
-            stepEl.textContent = steps[sIdx];
-          }, 2200);
+          const genBtn = document.getElementById('generateBtn');
+          const progPanel = document.getElementById('plannerProgressPanel');
+          const progStage = document.getElementById('plannerProgressStage');
+          const progDetail = document.getElementById('plannerProgressDetail');
+          const progPct = document.getElementById('plannerProgressPct');
+          const progFill = document.getElementById('plannerProgressFill');
+
+          genBtn.disabled = true;
+          progPanel.classList.remove('hidden');
+
+          const totalPlaces = parsedLines.length;
+          let completedSearch = 0;
+
+          const updateStage1UI = (label) => {
+            const pct = Math.round((completedSearch / totalPlaces) * 75);
+            progStage.textContent = `Stage 1｜Google 地圖資訊查核 (${completedSearch}/${totalPlaces})`;
+            progDetail.textContent = `Google 地圖資訊查核中 (${completedSearch}/${totalPlaces})：${label}...`;
+            progPct.textContent = `${pct}%`;
+            progFill.style.width = `${Math.max(8, pct)}%`;
+          };
+          updateStage1UI(parsedLines[0].cleanName);
 
           try {
-            const newTrip = await generateRouteWithGemini({
-              title, startDate, days: state.plannerDays, startTime, endTime, origin,
-              passportMode: state.plannerPassportMode, payPrefs: [...state.plannerPayPrefs], places, prefs
-            }, apiKey);
+            // Stage 1：逐店並行（上限 4）呼叫 Google Search Grounding
+            const verifiedPlaces = await runWithConcurrency(parsedLines, 4, async (item) => {
+              try {
+                const v = await verifyPlaceWithSearch(item.cleanName, cityHint, apiKey);
+                completedSearch++;
+                updateStage1UI(v.name || item.cleanName);
+                return { ...item, ...v };
+              } catch (err) {
+                completedSearch++;
+                updateStage1UI(item.cleanName);
+                if (err.status === 400 || err.status === 401 || err.status === 403) throw err;
+                return {
+                  ...item,
+                  name: item.cleanName,
+                  address: '',
+                  district: '',
+                  hours: '',
+                  payment: UNKNOWN_PAYMENT,
+                  category: '',
+                  note: '',
+                  verified: false,
+                  verifyReason: err.message || '查核連線失敗',
+                  groundingSources: []
+                };
+              }
+            });
+
+            // Stage 2：依據查核後的真實地址排程與計算車資，並於程式碼層級鎖定 Stage 1 資料
+            progStage.textContent = 'Stage 2｜動線排序與車資估算';
+            progDetail.textContent = '依據真實地址排序動線與估算交通費...';
+            progPct.textContent = '86%';
+            progFill.style.width = '86%';
+
+            const newTrip = await planRouteWithVerifiedData({
+              title, cityHint, startDate, days: state.plannerDays, startTime, endTime,
+              passportMode: state.plannerPassportMode, payPrefs: [...state.plannerPayPrefs], prefs
+            }, verifiedPlaces, apiKey);
+
+            progPct.textContent = '100%';
+            progFill.style.width = '100%';
 
             state.trips.unshift(newTrip);
             safeSwitchTrip(newTrip.id);
           } catch (err) {
             errText.textContent = `無法產生路線：${err.message || '請確認 API Key 與網路連線'}`;
-            if (!apiKey || String(err.message).includes('金鑰') || String(err.message).includes('403')) {
+            if (err.status === 400 || err.status === 401 || err.status === 403) {
               goLibBtn.classList.remove('hidden');
             }
             errBox.classList.remove('hidden');
           } finally {
-            clearInterval(timer);
-            loadingModal.classList.add('hidden');
+            genBtn.disabled = false;
+            progPanel.classList.add('hidden');
           }
         });
 
@@ -3784,7 +4292,7 @@ ${form.places}
         installModal.addEventListener('click', e => { if (e.target === installModal) toggleInstall(false); });
       }
 
-      // -------------------- 16. 初始化 --------------------
+      // -------------------- 17. 初始化 --------------------
       function init() {
         rescueAndLoadState();
         bindEvents();
