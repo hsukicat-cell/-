@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
   <title>路線手札</title>
 
-  <!-- iPhone 16 Pro Max / PWA 加入主畫面專屬設定 -->
+  <!-- 跨系統 PWA / 手機桌面全螢幕設定 -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="路線手札" />
@@ -43,10 +43,10 @@
     :root {
       --bg-void: #050505;
       --bg-card: #111113;
-      --bg-elevated: #18181B;
-      --border-subtle: rgba(255, 255, 255, 0.10);
+      --border-subtle: rgba(255, 255, 255, 0.1);
       --neon-green: #39FF14;
       --neon-orange: #FF5E00;
+      --pad-x: clamp(0.75rem, 3.8vw, 1.125rem);
     }
 
     * {
@@ -57,83 +57,113 @@
     html, body {
       margin: 0;
       padding: 0;
+      width: 100%;
+      overflow-x: hidden;
       background-color: #000000;
       color: #FFFFFF;
       font-family: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
       overscroll-behavior-y: none;
       -webkit-font-smoothing: antialiased;
+      -webkit-overflow-scrolling: touch;
     }
 
-    /* 鎖定 iPhone 16 Pro Max 440px 邏輯寬度外殼，桌機與大平板置中呈現 */
+    /* 全機型自適應主容器：手機滿版（320px–480px），大螢幕與桌機居中 */
     .app-shell {
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
+      min-height: 100vh;
       min-height: 100dvh;
       margin: 0 auto;
       background-color: var(--bg-void);
-      border-left: 1px solid rgba(255, 255, 255, 0.06);
-      border-right: 1px solid rgba(255, 255, 255, 0.06);
       position: relative;
+      overflow-x: hidden;
     }
 
-    /* 動態島 (Dynamic Island) 與底部 Home 指示條安全區 */
+    @media (min-width: 481px) {
+      .app-shell {
+        border-left: 1px solid rgba(255, 255, 255, 0.08);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    /* 四邊完整安全區適配（動態島、挖孔、底部手勢條） */
     .header-safe {
       padding-top: calc(0.75rem + env(safe-area-inset-top));
-    }
-    .main-safe {
-      padding-bottom: calc(5.75rem + env(safe-area-inset-bottom));
-    }
-    .nav-safe {
-      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: calc(var(--pad-x) + env(safe-area-inset-left));
+      padding-right: calc(var(--pad-x) + env(safe-area-inset-right));
     }
 
-    /* iOS Safari 輸入框強制 16px，避免聚焦時自動縮放畫面 */
+    .main-safe {
+      padding-left: calc(var(--pad-x) + env(safe-area-inset-left));
+      padding-right: calc(var(--pad-x) + env(safe-area-inset-right));
+      padding-bottom: calc(5.75rem + env(safe-area-inset-bottom));
+    }
+
+    .nav-safe {
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    /* 流體字級 */
+    .text-fluid-title { font-size: clamp(0.9375rem, 4vw, 1.0625rem); }
+    .text-fluid-card  { font-size: clamp(0.875rem, 3.8vw, 0.96875rem); }
+    .text-fluid-stat  { font-size: clamp(1rem, 4.4vw, 1.1875rem); }
+
+    /* 輸入元件固定 16px 防止 iOS Safari 自動縮放 */
     input, textarea, select {
       font-size: 16px !important;
     }
 
-    input[type="time"]::-webkit-calendar-picker-indicator {
+    input[type="time"]::-webkit-calendar-picker-indicator,
+    input[type="date"]::-webkit-calendar-picker-indicator {
       filter: invert(1);
-      opacity: 0.65;
+      opacity: 0.7;
     }
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* 極細微透白邊框 */
+    /* 極細白框線 */
     .border-hairline {
-      border: 1px solid rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* 螢光綠微細光暈（僅限線條與圓點） */
+    /* 螢光綠細線微光（僅限 1.5px 線條、2px 進度條與小圓點） */
     .line-glow-green {
-      box-shadow: 0 0 6px rgba(57, 255, 20, 0.35);
+      box-shadow: 0 0 6px rgba(57, 255, 20, 0.32);
     }
 
-    /* 深黑點陣護照紙張與左側車縫裝訂線 */
+    /* 深黑點陣護照紙紋與左側車縫裝訂線 */
     .passport-paper {
       background-color: #0B0B0D;
       background-image:
         linear-gradient(to right, rgba(255, 255, 255, 0.07) 0px, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-        radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+        radial-gradient(rgba(255, 255, 255, 0.11) 1px, transparent 1px);
       background-size: 100% 100%, 15px 15px;
-      background-position: 18px 0, 0 0;
+      background-position: 16px 0, 0 0;
     }
 
     .binding-stitch {
       background-image: repeating-linear-gradient(
         to bottom,
-        rgba(255, 255, 255, 0.32) 0px,
-        rgba(255, 255, 255, 0.32) 5px,
+        rgba(255, 255, 255, 0.28) 0px,
+        rgba(255, 255, 255, 0.28) 5px,
         transparent 5px,
         transparent 12px
       );
     }
 
-    /* ==================== 鏤空雙層木頭章與擬真重壓落印動畫 ==================== */
+    /* 響應式印章尺寸 */
+    .stamp-ring-box {
+      width: clamp(78px, 23vw, 96px);
+      height: clamp(78px, 23vw, 96px);
+    }
+
+    /* ==================== 鏤空雙層木頭章落印動畫 ==================== */
     @keyframes stampSlam {
       0% {
-        transform: scale(2.25) rotate(calc(var(--tilt, -5deg) - 14deg));
+        transform: scale(2.15) rotate(calc(var(--tilt, -5deg) - 14deg));
         opacity: 0;
         filter: blur(2px);
       }
@@ -143,7 +173,7 @@
         filter: blur(0px);
       }
       74% {
-        transform: scale(1.05) rotate(calc(var(--tilt, -5deg) - 1deg));
+        transform: scale(1.04) rotate(calc(var(--tilt, -5deg) - 1deg));
         opacity: 1;
       }
       100% {
@@ -152,31 +182,22 @@
       }
     }
 
-    /* 嚴格鏤空：深黑點陣底透出，僅雙層圓框、圖示與文字為螢光橘 */
-    .hollow-stamp {
+    .stamp-tilted {
       transform: rotate(var(--tilt, -5deg));
-      border: 2px solid #FF5E00;
-      color: #FF5E00;
-      background-color: rgba(255, 94, 0, 0.05);
-      box-shadow:
-        0 0 10px rgba(255, 94, 0, 0.22),
-        inset 0 0 0 3px #0B0B0D,
-        inset 0 0 0 4px rgba(255, 94, 0, 0.65);
+      filter: drop-shadow(0 0 6px rgba(255, 94, 0, 0.24));
     }
 
     .stamp-slam-active {
       animation: stampSlam 0.44s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
-    /* 落印微小粒子（螢光橘與純白） */
+    /* 落印微粒噴濺 */
     @keyframes inkBurst {
       0% {
         transform: translate(0, 0) scale(0.4) rotate(0deg);
         opacity: 1;
       }
-      75% {
-        opacity: 0.9;
-      }
+      75% { opacity: 0.9; }
       100% {
         transform: translate(var(--tx), var(--ty)) scale(1.05) rotate(var(--rot));
         opacity: 0;
@@ -192,19 +213,11 @@
       animation: inkBurst 0.56s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* 集滿護照紙花（黑/白/螢光綠/螢光橘） */
+    /* 集滿紙花 */
     @keyframes confettiFall {
-      0% {
-        transform: translateY(-16px) rotate(0deg);
-        opacity: 1;
-      }
-      85% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100dvh) rotate(620deg);
-        opacity: 0;
-      }
+      0% { transform: translateY(-16px) rotate(0deg); opacity: 1; }
+      85% { opacity: 1; }
+      100% { transform: translateY(100vh) rotate(620deg); opacity: 0; }
     }
 
     .confetti-piece {
@@ -228,21 +241,21 @@
 
   <div class="app-shell flex flex-col">
 
-    <!-- ==================== 頂部固定標頭（避開動態島） ==================== -->
-    <header class="sticky top-0 z-30 bg-void/95 backdrop-blur-md border-b border-white/10 px-4 pb-2.5 header-safe">
-      <div class="flex items-center justify-between gap-2">
+    <!-- ==================== 頂部固定標頭 ==================== -->
+    <header class="sticky top-0 z-30 bg-void/95 backdrop-blur-md border-b border-white/10 pb-2.5 header-safe">
+      <div class="flex items-center justify-between gap-2 min-w-0">
         <div class="min-w-0 flex-1">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 min-w-0">
             <span class="w-1.5 h-1.5 rounded-full bg-neonGreen line-glow-green shrink-0"></span>
-            <h1 class="text-[15px] font-bold tracking-tight text-white">路線手札</h1>
-            <span id="headerClock" class="text-[11px] font-medium text-muted tabular-nums">--:--</span>
+            <h1 class="text-fluid-title font-bold tracking-tight text-white truncate">路線手札</h1>
+            <span id="headerClock" class="text-[11px] font-medium text-muted tabular-nums shrink-0">--:--</span>
           </div>
-          <div class="flex items-center gap-2 mt-0.5 text-[11px] text-muted truncate">
-            <span id="headerTripTitle" class="text-white/85 font-medium truncate">2026/11/20 台北一日繞路</span>
-            <span class="text-white/20">·</span>
-            <span class="inline-flex items-center gap-1 shrink-0 text-neonOrange font-semibold">
+          <div class="flex items-center gap-1.5 mt-0.5 text-[11px] text-muted min-w-0">
+            <span id="headerTripTitle" class="text-white/80 font-medium truncate">尚未建立行程</span>
+            <span id="headerStampWrap" class="hidden items-center gap-1 shrink-0 text-neonOrange font-semibold">
+              <span class="text-white/25">·</span>
               <span class="w-1.5 h-1.5 rounded-full bg-neonOrange"></span>
-              <span id="headerStampCount" class="tabular-nums">0/6</span>
+              <span id="headerStampCount" class="tabular-nums">0/0</span>
             </span>
           </div>
         </div>
@@ -250,9 +263,9 @@
         <button
           id="openInstallBtn"
           type="button"
-          class="shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-card border-hairline text-[11px] font-semibold text-white active:scale-95 transition hover:border-white/25"
+          class="shrink-0 inline-flex items-center justify-center gap-1 min-h-[44px] px-3 rounded-xl bg-card border-hairline text-[11px] font-semibold text-white active:scale-95 transition hover:border-white/25"
         >
-          <svg class="w-3.5 h-3.5 text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg class="w-3.5 h-3.5 text-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
           </svg>
           <span>加到桌面</span>
@@ -261,40 +274,50 @@
     </header>
 
     <!-- ==================== 主內容區 ==================== -->
-    <main class="flex-1 px-4 pt-3.5 main-safe">
+    <main class="flex-1 pt-3.5 main-safe min-w-0">
 
-      <!-- ==================== TAB 1: 規劃 ==================== -->
-      <section id="tab-planner" class="tab-panel hidden tab-animate">
+      <!-- ==================== TAB 1: 規劃 (Plan) ==================== -->
+      <section id="tab-planner" class="tab-panel tab-animate">
         <div class="bg-card rounded-2xl border-hairline p-4">
-          <div class="flex items-center justify-between gap-2 pb-3 mb-4 border-b border-white/10">
-            <div>
-              <h2 class="text-[15px] font-bold text-white">新增行程（1–7 天）</h2>
-              <p class="text-[11px] text-muted mt-0.5">輸入地點與起訖時間，自動排序並條列重點</p>
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-white/10">
+            <div class="min-w-0">
+              <h2 class="text-fluid-title font-bold text-white">規劃行程（1–7 天）</h2>
+              <p class="text-[11px] text-muted mt-0.5">輸入地點清單，自動排序動線並標註車資與支付方式</p>
             </div>
             <button
               id="fillExampleBtn"
               type="button"
-              class="shrink-0 px-2.5 py-1.5 rounded-lg bg-elevated border-hairline text-[11px] font-semibold text-white active:scale-95 transition hover:border-white/30"
+              class="shrink-0 min-h-[44px] px-3 rounded-xl bg-elevated border-hairline text-[11px] font-semibold text-white active:scale-95 transition hover:border-white/30"
             >
-              範例：台南三日
+              填入範例文字
             </button>
           </div>
 
           <form id="plannerForm" class="space-y-4">
-            <!-- 行程名稱 -->
-            <div>
-              <label for="inputTripName" class="block text-xs font-semibold text-muted mb-1.5">行程名稱</label>
-              <input
-                id="inputTripName"
-                type="text"
-                placeholder="例：台南三日路線"
-                class="w-full px-3.5 py-2.5 rounded-xl bg-void border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/40 transition"
-              />
+            <!-- 行程名稱 + 出發日期 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="inputTripName" class="block text-xs font-semibold text-muted mb-1.5">行程名稱</label>
+                <input
+                  id="inputTripName"
+                  type="text"
+                  placeholder="例：台南一日散步"
+                  class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl bg-void border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/40 transition"
+                />
+              </div>
+              <div>
+                <label for="inputStartDate" class="block text-xs font-semibold text-muted mb-1.5">出發日期（選填）</label>
+                <input
+                  id="inputStartDate"
+                  type="date"
+                  class="w-full min-h-[44px] px-3 py-2 rounded-xl bg-void border-hairline text-white focus:outline-none focus:border-white/40 transition"
+                />
+              </div>
             </div>
 
             <!-- 天數 1-7 -->
             <div>
-              <div class="flex items-center justify-between mb-1.5">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
                 <label class="text-xs font-semibold text-muted">天數（1–7 天）</label>
                 <div class="flex items-center gap-1.5">
                   <span class="text-[11px] text-muted">自訂</span>
@@ -304,206 +327,272 @@
                     min="1"
                     max="7"
                     value="1"
-                    class="w-14 px-2 py-1 rounded-lg bg-void border-hairline text-center font-semibold text-white focus:outline-none focus:border-white/40"
+                    aria-label="自訂天數"
+                    class="w-16 min-h-[44px] px-2 py-1 rounded-xl bg-void border-hairline text-center font-semibold text-white focus:outline-none focus:border-white/40"
                   />
                 </div>
               </div>
               <div id="dayQuickBtns" class="grid grid-cols-5 gap-1.5">
-                <button type="button" data-days="1" class="day-quick-btn py-2 rounded-xl text-xs font-semibold border transition bg-white text-black border-white">1 天</button>
-                <button type="button" data-days="2" class="day-quick-btn py-2 rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">2 天</button>
-                <button type="button" data-days="3" class="day-quick-btn py-2 rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">3 天</button>
-                <button type="button" data-days="5" class="day-quick-btn py-2 rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">5 天</button>
-                <button type="button" data-days="7" class="day-quick-btn py-2 rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">7 天</button>
+                <button type="button" data-days="1" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-white text-void border-white">1 天</button>
+                <button type="button" data-days="2" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">2 天</button>
+                <button type="button" data-days="3" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">3 天</button>
+                <button type="button" data-days="5" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">5 天</button>
+                <button type="button" data-days="7" class="day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">7 天</button>
               </div>
             </div>
 
-            <!-- 每日開始 / 結束時間 -->
-            <div class="grid grid-cols-2 gap-3">
-              <div>
+            <!-- 每日起訖時間 -->
+            <div class="grid grid-cols-2 gap-2.5">
+              <div class="min-w-0">
                 <label for="inputStartTime" class="block text-xs font-semibold text-muted mb-1.5">每日開始</label>
                 <input
                   id="inputStartTime"
                   type="time"
                   value="10:00"
-                  class="w-full px-3 py-2.5 rounded-xl bg-void border-hairline font-medium text-white focus:outline-none focus:border-white/40"
+                  class="w-full min-h-[44px] px-3 py-2 rounded-xl bg-void border-hairline font-medium text-white focus:outline-none focus:border-white/40"
                 />
               </div>
-              <div>
+              <div class="min-w-0">
                 <label for="inputEndTime" class="block text-xs font-semibold text-muted mb-1.5">每日結束</label>
                 <input
                   id="inputEndTime"
                   type="time"
                   value="18:30"
-                  class="w-full px-3 py-2.5 rounded-xl bg-void border-hairline font-medium text-white focus:outline-none focus:border-white/40"
+                  class="w-full min-h-[44px] px-3 py-2 rounded-xl bg-void border-hairline font-medium text-white focus:outline-none focus:border-white/40"
                 />
               </div>
             </div>
 
-            <!-- 出發地址 -->
+            <!-- 出發地點 -->
             <div>
-              <label for="inputOrigin" class="block text-xs font-semibold text-muted mb-1.5">出發地址</label>
+              <label for="inputOrigin" class="block text-xs font-semibold text-muted mb-1.5">出發地（選填）</label>
               <input
                 id="inputOrigin"
                 type="text"
-                placeholder="例：台北車站 / 台南友愛街旅館"
-                class="w-full px-3.5 py-2.5 rounded-xl bg-void border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/40 transition"
+                placeholder="例：台南火車站 / 住宿地點"
+                class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl bg-void border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/40 transition"
               />
             </div>
 
-            <!-- 交通方式 -->
+            <!-- 地點清單 -->
             <div>
-              <label class="block text-xs font-semibold text-muted mb-1.5">交通方式</label>
-              <div id="transportModeGroup" class="grid grid-cols-2 gap-2">
-                <button type="button" data-mode="捷運為主" class="transport-btn py-2.5 px-2 rounded-xl text-xs font-semibold border transition bg-white text-black border-white">捷運為主</button>
-                <button type="button" data-mode="公車+捷運" class="transport-btn py-2.5 px-2 rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">公車+捷運</button>
-                <button type="button" data-mode="步行+YouBike" class="transport-btn py-2.5 px-2 rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">步行+YouBike</button>
-                <button type="button" data-mode="騎車/開車" class="transport-btn py-2.5 px-2 rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">騎車/開車</button>
-              </div>
-            </div>
-
-            <!-- 想去的地點清單 -->
-            <div>
-              <div class="flex items-center justify-between mb-1.5">
-                <label for="inputPlaces" class="text-xs font-semibold text-muted">地點／店家清單 <span class="text-neonOrange">*</span></label>
-                <span class="text-[10px] text-muted/70">可註明必達時間或集章點</span>
+              <div class="flex flex-wrap items-center justify-between gap-1 mb-1.5">
+                <label for="inputPlaces" class="text-xs font-semibold text-muted">地點清單 <span class="text-neonOrange">*</span></label>
+                <span class="text-[10px] text-muted/75">每行一個，可註明必達時間或集章</span>
               </div>
               <textarea
                 id="inputPlaces"
                 rows="5"
-                placeholder="每行一個地點，例如：&#10;林百貨（伴手禮／集章）&#10;臺南市美術館二館（集章）&#10;漁光島（Day 2 16:30 必達）"
+                placeholder="林百貨（伴手禮／集章）&#10;臺南市美術館二館（集章）&#10;富盛號碗粿&#10;神農街（集章）"
                 class="w-full px-3.5 py-2.5 rounded-xl bg-void border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/40 transition leading-relaxed"
               ></textarea>
             </div>
 
-            <!-- 集章護照模式（嚴守低刺眼細框） -->
+            <!-- 集章模式（低刺眼 1px 細框） -->
             <div>
-              <label class="block text-xs font-semibold text-muted mb-1.5">集章護照模式</label>
+              <label class="block text-xs font-semibold text-muted mb-1.5">集章模式</label>
               <div id="passportModeGroup" class="grid grid-cols-2 gap-2">
-                <button type="button" data-pmode="auto" class="pmode-btn py-2.5 px-2 rounded-xl text-xs font-semibold border transition bg-neonOrange/[0.08] text-neonOrange border-neonOrange">自動挑選集章點</button>
-                <button type="button" data-pmode="all" class="pmode-btn py-2.5 px-2 rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">全站皆可蓋章</button>
+                <button type="button" data-pmode="auto" class="pmode-btn min-h-[44px] px-2 rounded-xl text-xs font-semibold border transition bg-neonOrange/[0.08] text-neonOrange border-neonOrange">自動挑選集章點</button>
+                <button type="button" data-pmode="all" class="pmode-btn min-h-[44px] px-2 rounded-xl text-xs font-semibold border transition bg-void text-muted border-white/10">全站皆可蓋章</button>
               </div>
             </div>
 
-            <!-- 偏好備註 -->
+            <!-- 期望支付方式（選填，不阻擋送出） -->
             <div>
-              <label class="block text-xs font-semibold text-muted mb-1.5">偏好備註</label>
-              <div id="prefTagGroup" class="flex flex-wrap gap-1.5 mb-2">
-                <button type="button" data-pref="蔬食友善" class="pref-btn px-3 py-1 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">蔬食友善</button>
-                <button type="button" data-pref="不走回頭路" class="pref-btn px-3 py-1 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">不走回頭路</button>
-                <button type="button" data-pref="書店/文具" class="pref-btn px-3 py-1 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">書店/文具</button>
-                <button type="button" data-pref="咖啡/甜品" class="pref-btn px-3 py-1 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">咖啡/甜品</button>
-                <button type="button" data-pref="步調輕鬆" class="pref-btn px-3 py-1 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">步調輕鬆</button>
+              <div class="flex flex-wrap items-center justify-between gap-1 mb-1">
+                <label class="text-xs font-semibold text-muted">期望支付方式（選填）</label>
+                <span class="text-[10px] text-muted/75">不選也可送出</span>
               </div>
+              <p class="text-[11px] text-muted/80 mb-2 leading-relaxed">
+                僅作為 AI 推薦地點與車資計算參考；各店家實際支付方式一律自動標註。
+              </p>
+              <div id="paymentPrefGroup" class="flex flex-wrap gap-2">
+                <button type="button" data-pay="TPASS 月票" class="pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">TPASS 月票</button>
+                <button type="button" data-pay="悠遊卡/一卡通" class="pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">悠遊卡/一卡通</button>
+                <button type="button" data-pay="現金" class="pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">現金</button>
+                <button type="button" data-pay="信用卡/行動支付" class="pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">信用卡/行動支付</button>
+              </div>
+            </div>
+
+            <!-- 偏好標籤 -->
+            <div>
+              <label class="block text-xs font-semibold text-muted mb-1.5">偏好標籤</label>
+              <div id="prefTagGroup" class="flex flex-wrap gap-2">
+                <button type="button" data-pref="蔬食友善" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">蔬食友善</button>
+                <button type="button" data-pref="不走回頭路" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">不走回頭路</button>
+                <button type="button" data-pref="書店/文具" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">書店/文具</button>
+                <button type="button" data-pref="咖啡/甜品" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">咖啡/甜品</button>
+                <button type="button" data-pref="步調輕鬆" class="pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border border-white/10 bg-void text-muted transition">步調輕鬆</button>
+              </div>
+            </div>
+
+            <!-- 其他備註 -->
+            <div>
+              <label for="inputCustomPref" class="block text-xs font-semibold text-muted mb-1.5">其他備註（選填）</label>
               <input
                 id="inputCustomPref"
                 type="text"
-                placeholder="其他條件（例：少走路、18:30 前結束）"
-                class="w-full px-3.5 py-2 rounded-xl bg-void border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/40 transition"
+                placeholder="例：大眾運輸為主、少走路、避開週一公休"
+                class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl bg-void border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/40 transition"
               />
             </div>
 
-            <!-- 錯誤提示 -->
-            <div id="plannerErrorBox" class="hidden rounded-xl bg-elevated border border-neonOrange/60 px-3.5 py-2.5 text-xs text-white leading-relaxed"></div>
+            <!-- 錯誤與金鑰引導框 -->
+            <div id="plannerErrorBox" class="hidden rounded-xl bg-elevated border border-neonOrange/65 px-3.5 py-3 text-xs text-white leading-relaxed space-y-2.5">
+              <div id="plannerErrorText"></div>
+              <button
+                id="plannerGoLibraryBtn"
+                type="button"
+                class="hidden min-h-[44px] px-4 rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+              >
+                前往行程庫設定 API Key →
+              </button>
+            </div>
 
-            <!-- 主要行動按鈕：純白底黑字 -->
+            <!-- 純白主行動按鈕 -->
             <button
               id="generateBtn"
               type="submit"
-              class="w-full py-3.5 rounded-xl bg-white text-black text-sm font-bold active:scale-[0.98] transition flex items-center justify-center gap-2"
+              class="w-full min-h-[48px] py-3 rounded-xl bg-white text-void text-sm font-bold active:scale-[0.98] transition flex items-center justify-center gap-2"
             >
-              <span>產生路線</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-              </svg>
+              <span>產生路線 →</span>
             </button>
+
+            <!-- 手動載入台南示範行程 -->
+            <div class="pt-1 text-center">
+              <button
+                id="plannerLoadDemoBtn"
+                type="button"
+                class="min-h-[44px] px-4 text-xs font-medium text-muted hover:text-white underline underline-offset-4 decoration-white/25 transition"
+              >
+                載入台南示範行程（含交通費與示範記帳）
+              </button>
+            </div>
           </form>
         </div>
       </section>
 
-      <!-- ==================== TAB 2: 行程（螢光綠細線時間軸） ==================== -->
-      <section id="tab-itinerary" class="tab-panel tab-animate">
-        <!-- Day 1 ~ Day N 切換列 -->
-        <div id="dayTabsContainer" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 mb-2"></div>
+      <!-- ==================== TAB 2: 行程 (Itinerary) ==================== -->
+      <section id="tab-itinerary" class="tab-panel hidden tab-animate">
+        <!-- 空白狀態 -->
+        <div id="itineraryEmpty" class="hidden"></div>
 
-        <!-- 當日進度卡（螢光綠極細進度條） -->
-        <div class="bg-card rounded-2xl border-hairline p-3.5 mb-4">
-          <div class="flex items-center justify-between gap-2 mb-2.5">
-            <div class="min-w-0">
-              <div id="daySummaryLabel" class="text-xs font-semibold text-white truncate">Day 1</div>
-              <div id="dayProgressText" class="text-[11px] text-muted mt-0.5 tabular-nums">完成 0 / 9 站</div>
+        <!-- 有行程時的內容 -->
+        <div id="itineraryContent">
+          <!-- 多日切換膠囊 -->
+          <div id="dayTabsContainer" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 mb-2"></div>
+
+          <!-- 頂部雙欄財務摘要卡片（左：預估交通費｜右：地標消費） -->
+          <div class="grid grid-cols-2 gap-2.5 mb-3">
+            <!-- 左欄：預估交通費 -->
+            <div class="bg-card rounded-2xl border-hairline p-3.5 flex flex-col justify-between min-w-0">
+              <div class="flex items-center gap-1.5 text-[11px] text-muted">
+                <span class="w-1.5 h-1.5 rounded-full bg-neonGreen line-glow-green shrink-0"></span>
+                <span class="font-semibold truncate">預估交通費</span>
+              </div>
+              <div class="mt-2">
+                <div id="tripTotalFare" class="text-fluid-stat font-bold text-neonGreen tabular-nums leading-none">NT$0</div>
+                <div id="dayFareSubtotal" class="text-[10px] text-muted mt-1.5 truncate">全程預估車資</div>
+              </div>
             </div>
+
+            <!-- 右欄：地標消費（點擊開啟花費明細總覽 Modal） -->
             <button
-              id="jumpPassportBtn"
+              id="openExpenseOverviewBtn"
               type="button"
-              class="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-neonOrange/[0.08] border border-neonOrange/70 text-neonOrange text-[11px] font-semibold active:scale-95 transition"
+              class="bg-card rounded-2xl border-hairline p-3.5 flex flex-col justify-between text-left min-w-0 active:scale-[0.98] transition hover:border-white/25"
             >
-              <span class="w-1.5 h-1.5 rounded-full bg-neonOrange"></span>
-              <span>集章護照</span>
+              <div class="w-full flex items-center justify-between gap-1 text-[11px] text-muted">
+                <span class="font-semibold truncate">地標消費</span>
+                <span class="text-white/75 font-semibold shrink-0">明細 ›</span>
+              </div>
+              <div class="mt-2 w-full">
+                <div id="tripTotalExpense" class="text-fluid-stat font-bold text-white tabular-nums leading-none">NT$0</div>
+                <div id="dayExpenseSubtotal" class="text-[10px] text-muted mt-1.5 truncate">點擊查看分類統計</div>
+              </div>
             </button>
           </div>
-          <div class="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
-            <div id="dayProgressBar" class="h-full bg-neonGreen line-glow-green transition-all duration-300" style="width: 0%;"></div>
-          </div>
-        </div>
 
-        <!-- 時間軸容器 -->
-        <div id="timelineContainer" class="space-y-4"></div>
+          <!-- 當日進度條卡片 -->
+          <div class="bg-card rounded-2xl border-hairline p-3.5 mb-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+              <div class="min-w-0 flex-1">
+                <div id="daySummaryLabel" class="text-xs font-semibold text-white truncate">Day 1</div>
+                <div id="dayProgressText" class="text-[11px] text-muted mt-0.5 tabular-nums">完成 0 / 0 站</div>
+              </div>
+              <button
+                id="jumpPassportBtn"
+                type="button"
+                class="shrink-0 inline-flex items-center justify-center gap-1.5 min-h-[44px] px-3 rounded-xl bg-neonOrange/[0.08] border border-neonOrange/75 text-neonOrange text-xs font-semibold active:scale-95 transition"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-neonOrange"></span>
+                <span>集章護照</span>
+              </button>
+            </div>
+            <div class="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
+              <div id="dayProgressBar" class="h-full bg-neonGreen line-glow-green transition-all duration-300" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <!-- 螢光綠時間軸 -->
+          <div id="timelineContainer" class="space-y-4"></div>
+        </div>
       </section>
 
-      <!-- ==================== TAB 3: 護照（鏤空螢光橘木頭章） ==================== -->
+      <!-- ==================== TAB 3: 護照 (Passport) ==================== -->
       <section id="tab-passport" class="tab-panel hidden tab-animate">
-        <div class="passport-paper rounded-2xl border-hairline relative overflow-hidden">
-          <!-- 左側車縫裝訂線 -->
-          <div class="binding-stitch absolute left-2.5 top-4 bottom-4 w-[2px] pointer-events-none"></div>
+        <div id="passportEmpty" class="hidden"></div>
 
-          <div class="pl-6 pr-4 py-4">
-            <!-- 護照標頭 -->
-            <div class="flex items-start justify-between gap-2 pb-3 border-b border-dashed border-white/15">
-              <div class="min-w-0">
+        <div id="passportContent" class="passport-paper rounded-2xl border-hairline relative overflow-hidden">
+          <div class="binding-stitch absolute left-2 top-4 bottom-4 w-[2px] pointer-events-none"></div>
+
+          <div class="pl-5 pr-3.5 py-4">
+            <div class="flex flex-wrap items-start justify-between gap-2 pb-3 border-b border-dashed border-white/15">
+              <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-1.5 text-[10px] font-semibold tracking-widest uppercase text-muted">
                   <span class="w-1.5 h-1.5 rounded-full bg-neonOrange"></span>
                   <span>STAMP PASSPORT</span>
                 </div>
-                <h2 id="passportTitle" class="text-[15px] font-bold text-white mt-0.5 truncate">2026/11/20 台北一日繞路</h2>
-                <p class="text-[11px] text-muted mt-0.5">點擊暗框蓋章，與行程同步</p>
+                <h2 id="passportTitle" class="text-fluid-title font-bold text-white mt-0.5 truncate"></h2>
+                <p class="text-[11px] text-muted mt-0.5">點擊格子蓋章，與行程頁即時同步</p>
               </div>
               <div class="shrink-0 text-right bg-card border-hairline rounded-xl px-3 py-1.5">
-                <div id="passportCounterBig" class="text-base font-bold text-neonOrange tabular-nums leading-none">0/6</div>
+                <div id="passportCounterBig" class="text-base font-bold text-neonOrange tabular-nums leading-none">0/0</div>
                 <div class="text-[10px] text-muted mt-1">已蓋章</div>
               </div>
             </div>
 
-            <!-- 細進度條 -->
+            <!-- 2px 螢光綠進度條 -->
             <div class="mt-3">
               <div class="flex items-center justify-between text-[11px] mb-1.5">
-                <span id="passportProgressText" class="text-muted">進度 0 / 6</span>
-                <span id="passportProgressPct" class="text-neonOrange font-semibold tabular-nums">0%</span>
+                <span id="passportProgressText" class="text-muted">集章進度 0 / 0</span>
+                <span id="passportProgressPct" class="text-neonGreen font-semibold tabular-nums">0%</span>
               </div>
               <div class="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
-                <div id="passportProgressBar" class="h-full bg-neonOrange transition-all duration-500" style="width: 0%;"></div>
+                <div id="passportProgressBar" class="h-full bg-neonGreen line-glow-green transition-all duration-500" style="width: 0%;"></div>
               </div>
             </div>
 
-            <!-- 篩選切換（低刺眼黑底＋細框） -->
+            <!-- 篩選切換 -->
             <div class="mt-3.5 grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-void border-hairline">
               <button
                 type="button"
                 id="pfBtnStamps"
-                class="py-1.5 rounded-lg text-xs font-semibold transition border border-neonOrange/70 bg-neonOrange/[0.08] text-neonOrange"
+                class="min-h-[44px] rounded-lg text-xs font-semibold transition border border-neonOrange/75 bg-neonOrange/[0.08] text-neonOrange"
               >
                 僅集章點
               </button>
               <button
                 type="button"
                 id="pfBtnAll"
-                class="py-1.5 rounded-lg text-xs font-semibold transition border border-transparent text-muted"
+                class="min-h-[44px] rounded-lg text-xs font-semibold transition border border-transparent text-muted"
               >
                 全部站點
               </button>
             </div>
 
-            <!-- 集滿精簡細框標記（絕非實心橘塊） -->
-            <div id="passportCompleteBanner" class="hidden mt-3.5 rounded-xl bg-card border border-neonOrange/80 px-3.5 py-2.5 flex items-center justify-between gap-2">
+            <!-- 集滿提示 -->
+            <div id="passportCompleteBanner" class="hidden mt-3.5 rounded-xl bg-card border border-neonOrange/80 px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2">
               <div class="flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-neonOrange"></span>
                 <span class="text-xs font-bold text-neonOrange">集章完成</span>
@@ -511,119 +600,154 @@
               <span class="text-[11px] text-muted">全數印章已收齊</span>
             </div>
 
-            <!-- 2 欄印章格 -->
-            <div id="passportGrid" class="mt-4 grid grid-cols-2 gap-3"></div>
+            <!-- 雙欄鏤空木頭章 SVG 網格 -->
+            <div id="passportGrid" class="mt-4 grid grid-cols-2 gap-2.5"></div>
           </div>
         </div>
       </section>
 
-      <!-- ==================== TAB 4: 推薦（目標速查） ==================== -->
+      <!-- ==================== TAB 4: 推薦 (Recommendations) ==================== -->
       <section id="tab-recommend" class="tab-panel hidden tab-animate">
-        <!-- 搜尋列 -->
-        <div class="relative mb-3">
-          <svg class="w-4 h-4 text-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          <input
-            id="recSearchInput"
-            type="search"
-            placeholder="搜尋：康普茶、水波爐、蔬食、貓..."
-            class="w-full pl-10 pr-9 py-2.5 rounded-xl bg-card border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/35 transition"
-          />
-          <button
-            id="recClearSearchBtn"
-            type="button"
-            class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-white p-1"
-            aria-label="清除搜尋"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
-        </div>
+        <div id="recommendEmpty" class="hidden"></div>
 
-        <!-- 天數篩選 -->
-        <div id="recDayFilters" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2"></div>
-
-        <!-- 分類篩選 -->
-        <div id="recCategoryFilters" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2.5 mb-1"></div>
-
-        <!-- 達成統計 -->
-        <div class="flex items-center justify-between text-[11px] text-muted px-0.5 mb-2.5">
-          <span>點擊項目勾選</span>
-          <span id="recCheckedSummary" class="font-semibold text-white tabular-nums">完成 0 / 0</span>
-        </div>
-
-        <!-- 推薦清單 -->
-        <div id="recListContainer" class="space-y-3"></div>
-      </section>
-
-      <!-- ==================== TAB 5: 行程庫（防線、Plan B、行程與 Key） ==================== -->
-      <section id="tab-library" class="tab-panel hidden tab-animate space-y-4">
-        <!-- 關鍵時間防線（精簡無大色塊） -->
-        <div class="bg-card rounded-2xl border-hairline p-4">
-          <div class="flex items-center justify-between gap-2 mb-3">
-            <div class="flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-neonOrange"></span>
-              <h2 class="text-sm font-bold text-white">關鍵時間防線</h2>
+        <div id="recommendContent">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3 px-0.5">
+            <div class="min-w-0">
+              <h2 class="text-fluid-title font-bold text-white">順路推薦地點</h2>
+              <p class="text-[11px] text-muted mt-0.5">皆標註店家支付方式，支援一鍵加入行程</p>
             </div>
+            <span id="recTotalBadge" class="px-2.5 py-1 rounded-lg bg-card border-hairline text-[11px] font-semibold text-white tabular-nums shrink-0">0 處</span>
+          </div>
+
+          <div class="relative mb-3">
+            <svg class="w-4 h-4 text-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input
+              id="recSearchInput"
+              type="search"
+              placeholder="搜尋店名、分類或支付方式..."
+              class="w-full min-h-[44px] pl-10 pr-11 py-2.5 rounded-xl bg-card border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/35 transition"
+            />
             <button
-              id="copyPlainTextBtn"
+              id="recClearSearchBtn"
               type="button"
-              class="px-2.5 py-1.5 rounded-lg bg-elevated border-hairline text-[11px] font-semibold text-white active:scale-95 transition hover:border-white/30"
+              class="hidden absolute right-1 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center text-muted hover:text-white"
+              aria-label="清除搜尋"
             >
-              複製純文字行程
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
             </button>
           </div>
-          <div id="deadlinesContainer" class="space-y-2"></div>
-        </div>
 
-        <!-- Plan B -->
-        <div class="bg-card rounded-2xl border-hairline p-4">
-          <div class="flex items-center gap-2 mb-2.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-neonGreen line-glow-green"></span>
-            <h2 class="text-sm font-bold text-white">Plan B 備案</h2>
-          </div>
-          <ul id="planBContainer" class="space-y-2"></ul>
+          <div id="recListContainer" class="space-y-3"></div>
         </div>
+      </section>
 
-        <!-- 已儲存行程 -->
+      <!-- ==================== TAB 5: 行程庫 (Library) ==================== -->
+      <section id="tab-library" class="tab-panel hidden tab-animate space-y-4">
+        <!-- 已儲存行程列表 -->
         <div class="bg-card rounded-2xl border-hairline p-4">
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="text-sm font-bold text-white">已儲存行程</h2>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h2 class="text-fluid-title font-bold text-white">已儲存行程</h2>
             <button
-              id="restoreDemoBtn"
+              id="loadDemoFromLibBtn"
               type="button"
-              class="text-[11px] font-medium text-muted hover:text-white transition"
+              class="min-h-[44px] px-3 rounded-xl bg-elevated border-hairline text-[11px] font-semibold text-white active:scale-95 transition hover:border-white/30"
             >
-              重置預設行程
+              載入台南示範行程
             </button>
           </div>
           <div id="tripLibraryList" class="space-y-2.5"></div>
         </div>
 
-        <!-- 選填：Gemini API Key（供 GitHub Pages 獨立使用） -->
+        <!-- Gemini API Key 設定 -->
         <div class="bg-card rounded-2xl border-hairline p-4">
-          <div class="flex items-center justify-between mb-1.5">
-            <h2 class="text-xs font-bold text-white">Gemini API Key（選填）</h2>
-            <span id="apiKeyStatus" class="text-[10px] text-muted">未設定</span>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+            <h2 class="text-sm font-bold text-white">Gemini API Key 設定</h2>
+            <span id="apiKeyStatus" class="text-[11px] text-muted">未設定</span>
           </div>
-          <p class="text-[11px] text-muted mb-2.5 leading-relaxed">
-            僅存於本機瀏覽器。部署至 GitHub Pages 後若需使用「規劃」功能可填入。
+          <p class="text-[11px] text-muted mb-3 leading-relaxed">
+            僅存於本機 localStorage，不會上傳或公開。免費取得：<span class="text-white/85 break-all">aistudio.google.com/apikey</span>
           </p>
-          <div class="flex gap-2">
+          <div class="space-y-2.5">
             <input
               id="inputApiKey"
               type="password"
-              placeholder="貼上 API Key（選填）"
-              class="flex-1 min-w-0 px-3 py-2 rounded-xl bg-void border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/35"
+              autocomplete="off"
+              placeholder="貼上 Gemini API Key..."
+              class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl bg-void border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/40 transition"
             />
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                id="saveApiKeyBtn"
+                type="button"
+                class="min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+              >
+                儲存金鑰
+              </button>
+              <button
+                id="clearApiKeyBtn"
+                type="button"
+                class="min-h-[44px] rounded-xl bg-void border-hairline text-muted hover:text-neonOrange hover:border-neonOrange/50 text-xs font-semibold active:scale-95 transition"
+              >
+                清除金鑰
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 資料備份與還原區 -->
+        <div class="bg-card rounded-2xl border-hairline p-4">
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <h2 class="text-sm font-bold text-white">資料備份與還原</h2>
+            <span class="text-[10px] text-muted">JSON 格式</span>
+          </div>
+          <p class="text-[11px] text-muted mb-3 leading-relaxed">
+            包含所有已規劃行程、記帳紀錄與集章狀態（不含 API Key），更新網頁前可先留存備份。
+          </p>
+
+          <!-- 匯出按鈕 -->
+          <div class="grid grid-cols-2 gap-2 mb-3">
             <button
-              id="saveApiKeyBtn"
+              id="exportCopyJsonBtn"
               type="button"
-              class="shrink-0 px-3.5 py-2 rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition"
+              class="min-h-[44px] rounded-xl bg-elevated border-hairline text-white text-xs font-semibold active:scale-95 transition hover:border-white/30"
             >
-              儲存
+              複製備份 JSON
+            </button>
+            <button
+              id="exportDownloadJsonBtn"
+              type="button"
+              class="min-h-[44px] rounded-xl bg-elevated border-hairline text-white text-xs font-semibold active:scale-95 transition hover:border-white/30"
+            >
+              下載備份檔
+            </button>
+          </div>
+
+          <!-- 匯入還原 -->
+          <div class="pt-3 border-t border-white/10 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <label for="importJsonInput" class="text-xs font-semibold text-muted">匯入還原</label>
+              <label class="min-h-[44px] px-3 inline-flex items-center rounded-xl bg-void border-hairline text-[11px] font-semibold text-white cursor-pointer active:scale-95 transition hover:border-white/30">
+                <span>選擇 JSON 檔</span>
+                <input id="importFileInput" type="file" accept=".json,application/json" class="hidden" />
+              </label>
+            </div>
+            <textarea
+              id="importJsonInput"
+              rows="3"
+              placeholder="或在此貼上備份 JSON 文字..."
+              class="w-full px-3 py-2 rounded-xl bg-void border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/40 transition"
+            ></textarea>
+            <div id="importStatusMsg" class="hidden text-xs rounded-xl px-3 py-2 bg-elevated border border-white/15"></div>
+            <button
+              id="applyImportJsonBtn"
+              type="button"
+              class="w-full min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+            >
+              還原備份資料
             </button>
           </div>
         </div>
@@ -631,45 +755,45 @@
 
     </main>
 
-    <!-- ==================== 固定底部 5 標籤列（純白選中＋極小圓點） ==================== -->
-    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[440px] z-30 bg-void/95 backdrop-blur-md border-t border-white/10 nav-safe">
+    <!-- ==================== 固定底部 5 標籤列 ==================== -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-30 bg-void/95 backdrop-blur-md border-t border-white/10 nav-safe">
       <div class="grid grid-cols-5 h-[62px]">
-        <button type="button" data-tab="planner" class="nav-btn relative flex flex-col items-center justify-center gap-1 text-muted transition">
+        <button type="button" data-tab="planner" class="nav-btn relative min-h-[44px] flex flex-col items-center justify-center gap-1 text-white transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
           <span class="text-[10px] font-semibold">規劃</span>
-          <span class="nav-dot hidden absolute bottom-1.5 w-1 h-1 rounded-full bg-white"></span>
+          <span class="nav-dot absolute bottom-1.5 w-1 h-1 rounded-full bg-white"></span>
         </button>
 
-        <button type="button" data-tab="itinerary" class="nav-btn relative flex flex-col items-center justify-center gap-1 text-white transition">
+        <button type="button" data-tab="itinerary" class="nav-btn relative min-h-[44px] flex flex-col items-center justify-center gap-1 text-muted transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
             <circle cx="6" cy="6" r="2.2"/><circle cx="6" cy="18" r="2.2"/><path d="M6 8.5v7M11 6h8M11 12h8M11 18h8"/>
           </svg>
           <span class="text-[10px] font-semibold">行程</span>
-          <span class="nav-dot absolute bottom-1.5 w-1 h-1 rounded-full bg-white"></span>
+          <span class="nav-dot hidden absolute bottom-1.5 w-1 h-1 rounded-full bg-white"></span>
         </button>
 
-        <button type="button" data-tab="passport" class="nav-btn relative flex flex-col items-center justify-center gap-1 text-muted transition">
+        <button type="button" data-tab="passport" class="nav-btn relative min-h-[44px] flex flex-col items-center justify-center gap-1 text-muted transition">
           <div class="relative">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5" stroke-dasharray="2.2 2"/>
             </svg>
-            <span id="navPassportDot" class="absolute -top-0.5 -right-1 w-1.5 h-1.5 rounded-full bg-neonOrange"></span>
+            <span id="navPassportDot" class="hidden absolute -top-0.5 -right-1 w-1.5 h-1.5 rounded-full bg-neonOrange"></span>
           </div>
           <span class="text-[10px] font-semibold">護照</span>
           <span class="nav-dot hidden absolute bottom-1.5 w-1 h-1 rounded-full bg-white"></span>
         </button>
 
-        <button type="button" data-tab="recommend" class="nav-btn relative flex flex-col items-center justify-center gap-1 text-muted transition">
+        <button type="button" data-tab="recommend" class="nav-btn relative min-h-[44px] flex flex-col items-center justify-center gap-1 text-muted transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
-            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+            <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/>
           </svg>
           <span class="text-[10px] font-semibold">推薦</span>
           <span class="nav-dot hidden absolute bottom-1.5 w-1 h-1 rounded-full bg-white"></span>
         </button>
 
-        <button type="button" data-tab="library" class="nav-btn relative flex flex-col items-center justify-center gap-1 text-muted transition">
+        <button type="button" data-tab="library" class="nav-btn relative min-h-[44px] flex flex-col items-center justify-center gap-1 text-muted transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
             <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
           </svg>
@@ -681,31 +805,169 @@
 
   </div>
 
-  <!-- ==================== 已蓋章詳情小卡 Modal ==================== -->
-  <div id="stampDetailModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-end sm:items-center justify-center p-4">
-    <div class="bg-card w-full max-w-[400px] rounded-2xl border-hairline p-5 shadow-2xl">
-      <div class="flex items-start justify-between gap-2 pb-3 border-b border-white/10">
-        <div class="min-w-0">
-          <div id="sdBadgeRow" class="flex flex-wrap items-center gap-1.5 mb-1"></div>
-          <h3 id="sdTitle" class="text-base font-bold text-white leading-snug"></h3>
-          <div id="sdStampedAt" class="text-[11px] font-semibold text-neonOrange mt-1 tabular-nums"></div>
+  <!-- ==================== 地標記帳 Modal ==================== -->
+  <div id="expenseModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4">
+    <div class="bg-card w-full max-w-[440px] rounded-2xl border-hairline shadow-2xl max-h-[88dvh] flex flex-col overflow-hidden">
+      <!-- 標題列 -->
+      <div class="px-4 py-3.5 border-b border-white/10 flex items-center justify-between gap-2 shrink-0">
+        <div class="min-w-0 flex-1">
+          <div class="text-[10px] font-semibold uppercase tracking-wider text-muted">地標記帳</div>
+          <h3 id="expModalStopName" class="text-sm font-bold text-white truncate mt-0.5">地標名稱</h3>
         </div>
-        <button id="closeStampDetailBtn" type="button" class="p-1.5 rounded-lg text-muted hover:text-white">
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="text-right">
+            <div class="text-[10px] text-muted">本站小計</div>
+            <div id="expModalStopSubtotal" class="text-sm font-bold text-white tabular-nums">NT$0</div>
+          </div>
+          <button id="closeExpenseModalBtn" type="button" class="min-w-[44px] min-h-[44px] -mr-2 flex items-center justify-center rounded-xl text-muted hover:text-white" aria-label="關閉記帳視窗">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 內容區（可捲動） -->
+      <div class="p-4 overflow-y-auto space-y-4">
+        <!-- 快速新增表單 -->
+        <form id="addExpenseForm" class="space-y-3 bg-void rounded-xl border-hairline p-3.5">
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label for="expAmountInput" class="block text-[11px] font-semibold text-muted mb-1">金額（NT$）<span class="text-neonOrange">*</span></label>
+              <input
+                id="expAmountInput"
+                type="number"
+                inputmode="numeric"
+                min="1"
+                step="1"
+                placeholder="例：150"
+                class="w-full min-h-[44px] px-3 py-2 rounded-xl bg-card border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/40 tabular-nums"
+              />
+            </div>
+            <div>
+              <label for="expItemInput" class="block text-[11px] font-semibold text-muted mb-1">品項備註（選填）</label>
+              <input
+                id="expItemInput"
+                type="text"
+                placeholder="拿鐵、門票、伴手禮"
+                class="w-full min-h-[44px] px-3 py-2 rounded-xl bg-card border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/40"
+              />
+            </div>
+          </div>
+
+          <!-- 付款方式快速標籤 -->
+          <div>
+            <label class="block text-[11px] font-semibold text-muted mb-1.5">付款方式</label>
+            <div id="expMethodGroup" class="flex flex-wrap gap-1.5">
+              <button type="button" data-expmethod="現金" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-white text-void border-white">現金</button>
+              <button type="button" data-expmethod="LINE Pay" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-card text-muted border-white/10">LINE Pay</button>
+              <button type="button" data-expmethod="信用卡" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-card text-muted border-white/10">信用卡</button>
+              <button type="button" data-expmethod="悠遊卡/一卡通" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-card text-muted border-white/10">悠遊卡/一卡通</button>
+              <button type="button" data-expmethod="其他" class="exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition bg-card text-muted border-white/10">其他</button>
+            </div>
+          </div>
+
+          <div id="expFormError" class="hidden text-xs text-neonOrange"></div>
+
+          <button
+            type="submit"
+            class="w-full min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+          >
+            新增這筆消費
+          </button>
+        </form>
+
+        <!-- 本站已記消費清單 -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-muted">本站消費紀錄</span>
+            <span id="expModalCount" class="text-[11px] text-muted tabular-nums">0 筆</span>
+          </div>
+          <div id="expModalList" class="space-y-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 花費明細總覽 Modal ==================== -->
+  <div id="overviewModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4">
+    <div class="bg-card w-full max-w-[440px] rounded-2xl border-hairline shadow-2xl max-h-[88dvh] flex flex-col overflow-hidden">
+      <!-- 標題列 -->
+      <div class="px-4 py-3.5 border-b border-white/10 flex items-center justify-between gap-2 shrink-0">
+        <div class="min-w-0">
+          <div class="text-[10px] font-semibold uppercase tracking-wider text-muted">EXPENSE OVERVIEW</div>
+          <h3 class="text-sm font-bold text-white mt-0.5">花費明細總覽</h3>
+        </div>
+        <button id="closeOverviewModalBtn" type="button" class="min-w-[44px] min-h-[44px] -mr-2 flex items-center justify-center rounded-xl text-muted hover:text-white" aria-label="關閉花費總覽">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
         </button>
       </div>
 
-      <div class="mt-3 space-y-3">
+      <!-- 內容區 -->
+      <div class="p-4 overflow-y-auto space-y-4">
+        <!-- 頂部三項統計 -->
+        <div class="grid grid-cols-3 gap-2">
+          <div class="rounded-xl bg-void border-hairline p-2.5 text-center">
+            <div class="text-[10px] text-muted">地標實支</div>
+            <div id="ovStopTotal" class="text-sm font-bold text-white tabular-nums mt-1">NT$0</div>
+          </div>
+          <div class="rounded-xl bg-void border-hairline p-2.5 text-center">
+            <div class="text-[10px] text-muted">預估交通</div>
+            <div id="ovTransitTotal" class="text-sm font-bold text-neonGreen tabular-nums mt-1">NT$0</div>
+          </div>
+          <div class="rounded-xl bg-void border border-white/25 p-2.5 text-center">
+            <div class="text-[10px] text-muted">預估總支出</div>
+            <div id="ovGrandTotal" class="text-sm font-bold text-white tabular-nums mt-1">NT$0</div>
+          </div>
+        </div>
+
+        <!-- 付款方式統計膠囊 -->
+        <div>
+          <div class="text-xs font-semibold text-muted mb-2">付款方式統計</div>
+          <div id="ovMethodSummary" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+        <!-- 依天數與地標分組列表 -->
+        <div>
+          <div class="text-xs font-semibold text-muted mb-2">各站消費明細</div>
+          <div id="ovGroupedList" class="space-y-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 已蓋章詳情 Modal ==================== -->
+  <div id="stampDetailModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-end sm:items-center justify-center p-4">
+    <div class="bg-card w-full max-w-[420px] rounded-2xl border-hairline p-5 shadow-2xl max-h-[85dvh] overflow-y-auto">
+      <div class="flex items-start justify-between gap-2 pb-3 border-b border-white/10">
+        <div class="min-w-0 flex-1">
+          <div id="sdBadgeRow" class="flex flex-wrap items-center gap-1.5 mb-1"></div>
+          <h3 id="sdTitle" class="text-base font-bold text-white leading-snug"></h3>
+          <div id="sdStampedAt" class="text-[11px] font-semibold text-neonOrange mt-1 tabular-nums"></div>
+        </div>
+        <button id="closeStampDetailBtn" type="button" class="min-w-[44px] min-h-[44px] -mr-2 -mt-2 flex items-center justify-center rounded-xl text-muted hover:text-white" aria-label="關閉">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="mt-3 space-y-2.5">
         <div class="text-xs text-muted flex items-start gap-1.5">
           <span class="w-1.5 h-1.5 rounded-full bg-neonGreen mt-1.5 shrink-0"></span>
-          <span id="sdAddress"></span>
+          <span id="sdAddress" class="break-words"></span>
+        </div>
+
+        <div class="text-xs text-white/90 bg-void border-hairline rounded-xl px-3 py-2 flex flex-wrap items-center gap-1.5">
+          <span class="text-[10px] font-semibold text-muted shrink-0">支付：</span>
+          <span id="sdPayment" class="font-medium text-white"></span>
         </div>
 
         <div class="rounded-xl bg-void border-hairline p-3">
-          <div class="text-[11px] font-semibold text-muted mb-1.5">重點目標</div>
-          <ul id="sdRecs" class="space-y-1.5 text-xs text-white/90"></ul>
+          <div class="text-[11px] font-semibold text-muted mb-1.5">重點條列</div>
+          <ul id="sdHighlights" class="space-y-1.5 text-xs text-white/90"></ul>
         </div>
       </div>
 
@@ -715,14 +977,14 @@
           href="#"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center justify-center py-2.5 rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition"
+          class="inline-flex items-center justify-center min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
         >
           Google 導航
         </a>
         <button
           id="sdUndoStampBtn"
           type="button"
-          class="inline-flex items-center justify-center py-2.5 rounded-xl bg-neonOrange/[0.08] border border-neonOrange/75 text-neonOrange text-xs font-semibold active:scale-95 transition"
+          class="inline-flex items-center justify-center min-h-[44px] rounded-xl bg-neonOrange/[0.08] border border-neonOrange/75 text-neonOrange text-xs font-semibold active:scale-95 transition"
         >
           取消蓋章
         </button>
@@ -741,10 +1003,10 @@
 
   <!-- ==================== 加到桌面教學 Modal ==================== -->
   <div id="installModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-end sm:items-center justify-center p-4">
-    <div class="bg-card w-full max-w-[400px] rounded-2xl border-hairline p-5 shadow-2xl">
+    <div class="bg-card w-full max-w-[420px] rounded-2xl border-hairline p-5 shadow-2xl">
       <div class="flex items-center justify-between mb-3">
         <h3 class="text-sm font-bold text-white">加入手機主畫面</h3>
-        <button id="closeInstallBtn" type="button" class="p-1.5 rounded-lg text-muted hover:text-white">
+        <button id="closeInstallBtn" type="button" class="min-w-[44px] min-h-[44px] -mr-2 flex items-center justify-center rounded-xl text-muted hover:text-white" aria-label="關閉">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
@@ -767,7 +1029,7 @@
           </ul>
         </div>
       </div>
-      <button id="okInstallBtn" type="button" class="mt-4 w-full py-2.5 rounded-xl bg-white text-black text-xs font-bold active:scale-95 transition">
+      <button id="okInstallBtn" type="button" class="mt-4 w-full min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition">
         關閉
       </button>
     </div>
@@ -777,12 +1039,12 @@
   <div id="deleteModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
     <div class="bg-card w-full max-w-xs rounded-2xl border-hairline p-5 text-center">
       <h3 class="text-sm font-bold text-white">刪除此行程？</h3>
-      <p id="deleteModalTripName" class="text-xs text-muted mt-1.5 leading-relaxed"></p>
+      <p id="deleteModalTripName" class="text-xs text-muted mt-1.5 leading-relaxed break-words"></p>
       <div class="grid grid-cols-2 gap-2.5 mt-5">
-        <button id="cancelDeleteBtn" type="button" class="py-2.5 rounded-xl bg-void border-hairline text-white text-xs font-semibold active:scale-95 transition">
+        <button id="cancelDeleteBtn" type="button" class="min-h-[44px] rounded-xl bg-void border-hairline text-white text-xs font-semibold active:scale-95 transition">
           取消
         </button>
-        <button id="confirmDeleteBtn" type="button" class="py-2.5 rounded-xl bg-neonOrange/[0.08] border border-neonOrange text-neonOrange text-xs font-bold active:scale-95 transition">
+        <button id="confirmDeleteBtn" type="button" class="min-h-[44px] rounded-xl bg-neonOrange/[0.08] border border-neonOrange text-neonOrange text-xs font-bold active:scale-95 transition">
           確定刪除
         </button>
       </div>
@@ -792,7 +1054,7 @@
   <!-- ==================== Toast 提示 ==================== -->
   <div
     id="toast"
-    class="pointer-events-none fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-elevated border border-white/20 text-white text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-200 whitespace-nowrap"
+    class="pointer-events-none fixed bottom-24 left-1/2 -translate-x-1/2 z-50 max-w-[88vw] px-4 py-2 rounded-full bg-elevated border border-white/20 text-white text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-200 text-center truncate"
   >
     已完成
   </div>
@@ -802,251 +1064,291 @@
     (function () {
       'use strict';
 
-      // -------------------- 1. 預載預設行程：2026/11/20 台北一日繞路 --------------------
-      function createDefaultTrip() {
+      // -------------------- 1. 台南示範行程（1 日 5 站，含交通費、支付方式與 2 筆示範記帳，僅手動觸發） --------------------
+      function createTainanDemoTrip() {
         return {
-          id: 'default-taipei-20261120',
-          title: '2026/11/20 台北一日繞路',
-          dateNote: '11/20（五）11:25–18:20',
+          id: 'demo-tainan-' + Date.now(),
+          title: '台南中西區一日散步（示範）',
+          startDate: '2026-11-28',
+          dateNote: '1 天｜10:30–18:00',
           passportMode: 'auto',
+          totalFare: 36,
+          fareSummary: '台南市區公車一段票與步行估算',
           days: [
             {
               dayNumber: 1,
               dateLabel: 'Day 1',
-              routeNote: '內湖 → 松山 → 北投 → 圓山 → 大安 → 南京復興',
+              routeNote: '中西區古蹟、展覽與老街',
+              dailyFare: 36,
               stops: [
                 {
-                  id: 's-1',
-                  name: '新各界家電生活館',
-                  district: '內湖區',
-                  address: '台北市內湖區行愛路172號1樓',
-                  startTime: '11:25',
-                  endTime: '12:05',
-                  transit: '公車藍26 約20分',
-                  isStampSpot: false,
-                  stampTitle: '新各界家電',
-                  stampIcon: '⚡',
-                  recommendations: [
-                    { category: '選品逛街', text: 'SHARP 水波爐實機' },
-                    { category: '選品逛街', text: "De'Longhi 咖啡機與奶泡機" },
-                    { category: '選品逛街', text: 'Panasonic 4K 顯示器與 SONY 影音' }
+                  id: 'tn-1',
+                  name: '林百貨',
+                  category: '選品逛街',
+                  district: '中西區',
+                  address: '台南市中西區忠義路二段63號',
+                  startTime: '10:30',
+                  endTime: '11:45',
+                  paymentMethods: '現金、刷卡、LINE Pay、街口支付',
+                  transitMode: '公車 2 路',
+                  transitDuration: '約 12 分',
+                  transitFare: 18,
+                  transitNote: '一段票',
+                  isStampSpot: true,
+                  stampTitle: '林百貨',
+                  stampIcon: '🏬',
+                  highlights: [
+                    '頂樓神社與指針式電梯',
+                    '1F 伴手禮、4F 文創選品'
+                  ],
+                  expenses: [
+                    { id: 'demo-exp-1', amount: 180, item: '帆布提袋伴手禮', method: 'LINE Pay', createdAt: '11:20' }
                   ]
                 },
                 {
-                  id: 's-2',
-                  name: '台北偶戲館',
-                  district: '松山區',
-                  address: '台北市松山區市民大道五段99號2樓',
-                  startTime: '12:05',
-                  endTime: '12:45',
-                  transit: '公車0東 約30分',
+                  id: 'tn-2',
+                  name: '臺南市美術館二館',
+                  category: '展覽文化',
+                  district: '中西區',
+                  address: '台南市中西區忠義路二段1號',
+                  startTime: '11:55',
+                  endTime: '13:30',
+                  paymentMethods: '現金、刷卡、LINE Pay、悠遊卡',
+                  transitMode: '步行',
+                  transitDuration: '約 5 分',
+                  transitFare: 0,
+                  transitNote: '步行',
                   isStampSpot: true,
-                  stampTitle: '台北偶戲館',
-                  stampIcon: '🎭',
-                  recommendations: [
-                    { category: '展覽文化', text: '《耍物仔》物件劇場特展' },
-                    { category: '展覽文化', text: '常設展《小小偶大世界》、互動操偶區' },
-                    { category: '選品逛街', text: '出口紀念品店' },
-                    { category: '提醒', text: '17:00 閉館' }
-                  ]
-                },
-                {
-                  id: 's-3',
-                  name: '臺北市藝文推廣處',
-                  district: '松山區',
-                  address: '台北市松山區八德路三段25號',
-                  startTime: '12:45',
-                  endTime: '13:10',
-                  transit: '步行 約14分',
-                  isStampSpot: true,
-                  stampTitle: '藝文推廣處',
+                  stampTitle: '南美二館',
                   stampIcon: '🖼️',
-                  recommendations: [
-                    { category: '展覽文化', text: '一樓《圖像的隱喻—張哲銘個展》（至 11/22）' },
-                    { category: '展覽文化', text: '《2026 中山青年藝術獎作品展》（至 11/26）' },
-                    { category: '提醒', text: '21:00 閉館' }
+                  highlights: [
+                    '五角碎形屋頂光影中庭',
+                    '週一休館／需購票入場'
+                  ],
+                  expenses: [
+                    { id: 'demo-exp-2', amount: 200, item: '常設展門票', method: '悠遊卡/一卡通', createdAt: '12:05' }
                   ]
                 },
                 {
-                  id: 's-4',
-                  name: '北投丁家青草茶',
-                  district: '北投區',
-                  address: '台北市北投區磺港路30號 C247',
-                  startTime: '13:10',
-                  endTime: '14:15',
-                  transit: '綠線轉紅線 約51分',
-                  isStampSpot: true,
-                  stampTitle: '丁家青草茶',
-                  stampIcon: '🌿',
-                  recommendations: [
-                    { category: '飲品美食', text: '招牌青草茶（微甜清爽）、古法苦茶' },
-                    { category: '選品逛街', text: '草本茶包' },
-                    { category: '展覽文化', text: '每月手刻章與插畫牆' },
-                    { category: '提醒', text: '15:00 打烊／僅收現金' }
-                  ]
+                  id: 'tn-3',
+                  name: '富盛號碗粿',
+                  category: '小吃美食',
+                  district: '中西區',
+                  address: '台南市中西區民族路三段11號',
+                  startTime: '13:45',
+                  endTime: '14:30',
+                  paymentMethods: '僅收現金',
+                  transitMode: '步行',
+                  transitDuration: '約 10 分',
+                  transitFare: 0,
+                  transitNote: '步行',
+                  isStampSpot: false,
+                  stampTitle: '富盛號',
+                  stampIcon: '🥣',
+                  highlights: [
+                    '黑豆醬油碗粿、魚羹',
+                    '17:00 打烊／售完為止'
+                  ],
+                  expenses: []
                 },
                 {
-                  id: 's-5',
-                  name: '北投唭哩岸慈生宮',
-                  district: '北投區',
-                  address: '台北市北投區立農街一段321號',
-                  startTime: '14:15',
-                  endTime: '14:45',
-                  transit: '公車216或紅線 約15–20分',
-                  isStampSpot: true,
-                  stampTitle: '唭哩岸慈生宮',
-                  stampIcon: '🏮',
-                  recommendations: [
-                    { category: '展覽文化', text: '1669 年五穀先帝古廟、廟宇雕飾' },
-                    { category: '展覽文化', text: '順拜五穀先帝與文昌帝君' }
-                  ]
-                },
-                {
-                  id: 's-6',
-                  name: '2026 Pinkoi 台味文具市集',
-                  district: '大同區',
-                  address: '台北市大同區承德路三段285-2號',
+                  id: 'tn-4',
+                  name: '神農街',
+                  category: '散步地標',
+                  district: '中西區',
+                  address: '台南市中西區神農街',
                   startTime: '14:45',
-                  endTime: '16:05',
-                  transit: '紅線至圓山站 約20分',
-                  isStampSpot: false,
-                  stampTitle: '台味文具市集',
-                  stampIcon: '✂️',
-                  recommendations: [
-                    { category: '選品逛街', text: 'PAPERWORK 紙本作業活版印刷與 2027 桌曆' },
-                    { category: '選品逛街', text: 'Vivianshen 貓咪柑仔店' },
-                    { category: '選品逛街', text: '2027 手帳' },
-                    { category: '提醒', text: '免費入場／19:00 結束' }
-                  ]
-                },
-                {
-                  id: 's-7',
-                  name: 'Coffee Commons 蟾蜍山食聚所',
-                  district: '大安區',
-                  address: '台北市大安區羅斯福路四段119巷78弄9號',
-                  startTime: '16:05',
-                  endTime: '17:05',
-                  transit: '紅線轉公車 約42分',
+                  endTime: '16:15',
+                  paymentMethods: '免費入場（周邊多收現金、LINE Pay）',
+                  transitMode: '步行',
+                  transitDuration: '約 6 分',
+                  transitFare: 0,
+                  transitNote: '步行',
                   isStampSpot: true,
-                  stampTitle: '蟾蜍山食聚所',
-                  stampIcon: '☕',
-                  recommendations: [
-                    { category: '飲品美食', text: '招牌康普茶咖啡（桂花包種康普茶＋濃縮）' },
-                    { category: '選品逛街', text: '自然生態選品' },
-                    { category: '提醒', text: '17:30 打烊／低消一杯飲品' }
-                  ]
+                  stampTitle: '神農街',
+                  stampIcon: '🏮',
+                  highlights: [
+                    '老屋木構街景與手作小店',
+                    '傍晚點燈後適合拍照'
+                  ],
+                  expenses: []
                 },
                 {
-                  id: 's-8',
-                  name: '書屋花甲×而立書店',
-                  district: '大安區',
-                  address: '台北市大安區羅斯福路三段283巷20號',
-                  startTime: '17:05',
-                  endTime: '17:45',
-                  transit: 'YouBike 約10分／步行26分',
+                  id: 'tn-5',
+                  name: '藍晒圖文創園區',
+                  category: '選品逛街',
+                  district: '南區',
+                  address: '台南市南區西門路一段689巷',
+                  startTime: '16:35',
+                  endTime: '18:00',
+                  paymentMethods: '免費入場（多數品牌支援刷卡、LINE Pay）',
+                  transitMode: '公車 5 路',
+                  transitDuration: '約 15 分',
+                  transitFare: 18,
+                  transitNote: '一段票',
                   isStampSpot: true,
-                  stampTitle: '書屋花甲書店',
-                  stampIcon: '🐈',
-                  recommendations: [
-                    { category: '飲品美食', text: '水果康普茶、手沖與手作甜點' },
-                    { category: '飲品美食', text: '每週現做蔬食主餐' },
-                    { category: '展覽文化', text: '店貓「方花甲」、二手書區' },
-                    { category: '提醒', text: '19:00 閉館' }
-                  ]
-                },
-                {
-                  id: 's-9',
-                  name: '春美冰菓室慶城本店',
-                  district: '松山區',
-                  address: '台北市松山區敦化北路120巷54號',
-                  startTime: '17:45',
-                  endTime: '18:20',
-                  transit: '綠線至南京復興站 約33分',
-                  isStampSpot: false,
-                  stampTitle: '春美冰菓室',
-                  stampIcon: '🍧',
-                  recommendations: [
-                    { category: '飲品美食', text: '芋頭牛奶冰' },
-                    { category: '飲品美食', text: '手工豆花、季節限定剉冰與甜湯' },
-                    { category: '提醒', text: '18:30 必達' }
-                  ]
+                  stampTitle: '藍晒圖',
+                  stampIcon: '📐',
+                  highlights: [
+                    '3D 藍晒圖入口裝置',
+                    '獨立選品店與手作工作室'
+                  ],
+                  expenses: []
                 }
               ]
             }
           ],
+          recommendations: [
+            {
+              id: 'rec-tn-1',
+              name: '蜷尾家甘味處',
+              category: '咖啡/甜品',
+              address: '台南市中西區正興街92號',
+              paymentMethods: '現金、LINE Pay',
+              reason: '距離神農街步行 5 分鐘，每日限定霜淇淋。',
+              nearStop: '神農街'
+            },
+            {
+              id: 'rec-tn-2',
+              name: '烏邦圖書店 UBUNTU',
+              category: '書店/文具',
+              address: '台南市中西區環河街129巷27號2樓',
+              paymentMethods: '現金、刷卡、LINE Pay',
+              reason: '運河旁純白獨立書店，適合避暑或雨天備案。',
+              nearStop: '神農街'
+            },
+            {
+              id: 'rec-tn-3',
+              name: '蝸牛巷',
+              category: '散步地標',
+              address: '台南市中西區永福路二段97巷',
+              paymentMethods: '免費入場',
+              reason: '林百貨旁安靜老巷弄，沿途有文學裝置。',
+              nearStop: '林百貨'
+            }
+          ],
           deadlines: [
-            { dayNumber: 1, time: '15:00', title: '丁家青草茶打烊', stopId: 's-4' },
-            { dayNumber: 1, time: '17:00', title: '台北偶戲館閉館', stopId: 's-2' },
-            { dayNumber: 1, time: '17:30', title: '蟾蜍山食聚所打烊', stopId: 's-7' },
-            { dayNumber: 1, time: '18:30', title: '春美冰菓室抵達', stopId: 's-9' }
+            { dayNumber: 1, time: '17:00', title: '富盛號碗粿打烊', stopId: 'tn-3' }
           ],
           planB: [
-            '若超過 12:25 才離開新各界，先略過臺北市藝文推廣處直衝北投；藝文推廣處開到 21:00 可傍晚補蓋。'
+            '若午後下雨，神農街可改去烏邦圖書店或南美館二館室內咖啡廳。'
           ]
         };
       }
 
-      // -------------------- 2. 狀態與 localStorage --------------------
-      const STORAGE_KEY = 'route_notebook_16pm_v1';
+      // -------------------- 2. 狀態與向下相容 localStorage --------------------
+      const STORAGE_KEY = 'route_notebook_universal_v1';
+      const LEGACY_KEYS = ['route_notebook_16pm_v2', 'route_notebook_16pm_v1', 'route_notebook_v1'];
       const API_KEY_STORAGE = 'route_notebook_gemini_key';
 
       let state = {
         trips: [],
         activeTripId: '',
         activeDayIndex: 0,
-        activeTab: 'itinerary',
-        completedStops: {},   // { 'tripId::stopId': true }
-        stampedRecords: {},   // { 'tripId::stopId': '11/20 12:38' }
-        checkedRecs: {},      // { 'tripId::stopId::recIdx': true }
-        stopNotes: {},        // { 'tripId::stopId': '...' }
-        openNotes: {},        // { 'tripId::stopId': true }
-        passportFilter: 'stamps', // 'stamps' | 'all'
+        activeTab: 'planner',
+        completedStops: {},
+        stampedRecords: {},
+        checkedHighlights: {},
+        passportFilter: 'stamps',
         recSearch: '',
-        recCategory: '全部',
-        recDayFilter: 'ALL',
-        // 表單狀態
+        // 規劃表單
         plannerDays: 1,
-        plannerTransport: '捷運為主',
         plannerPassportMode: 'auto',
         plannerPrefs: new Set(),
-        // Modal 暫存
+        plannerPayPrefs: new Set(),
+        // 彈窗狀態
         pendingDeleteTripId: null,
-        activeDetailStopId: null
+        activeDetailStopId: null,
+        activeExpenseStopId: null,
+        selectedExpenseMethod: '現金'
       };
+
+      /**
+       * 向下相容正規化：確保舊版行程與站點皆具備 expenses 陣列、paymentMethods、transitFare 等欄位
+       */
+      function normalizeTripData(trip) {
+        if (!trip || typeof trip !== 'object') return null;
+        if (!trip.id) trip.id = 'trip-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
+        if (!trip.title) trip.title = '未命名行程';
+        if (!Array.isArray(trip.days)) trip.days = [];
+        if (!Array.isArray(trip.recommendations)) trip.recommendations = [];
+        if (!Array.isArray(trip.deadlines)) trip.deadlines = [];
+        if (!Array.isArray(trip.planB)) trip.planB = [];
+
+        trip.days.forEach((day, dIdx) => {
+          if (!day.dayNumber) day.dayNumber = dIdx + 1;
+          if (!day.dateLabel) day.dateLabel = `Day ${day.dayNumber}`;
+          if (typeof day.dailyFare !== 'number') day.dailyFare = Number(day.dailyFare) || 0;
+          if (!Array.isArray(day.stops)) day.stops = [];
+
+          day.stops.forEach((stop, sIdx) => {
+            if (!stop.id) stop.id = `d${dIdx + 1}-s${sIdx + 1}`;
+            if (!stop.paymentMethods) stop.paymentMethods = '依現場為主';
+            if (typeof stop.transitFare !== 'number') stop.transitFare = Number(stop.transitFare) || 0;
+            if (!Array.isArray(stop.highlights)) stop.highlights = [];
+            // 核心：確保每個站點都有 expenses 陣列
+            if (!Array.isArray(stop.expenses)) {
+              stop.expenses = [];
+            } else {
+              stop.expenses = stop.expenses.map((exp, eIdx) => ({
+                id: exp.id || `exp-${Date.now()}-${eIdx}`,
+                amount: Math.max(0, Number(exp.amount) || 0),
+                item: exp.item || '消費',
+                method: exp.method || '現金',
+                createdAt: exp.createdAt || ''
+              }));
+            }
+          });
+        });
+
+        trip.recommendations.forEach((rec, rIdx) => {
+          if (!rec.id) rec.id = `rec-${rIdx + 1}`;
+          if (!rec.paymentMethods) rec.paymentMethods = '依現場為主';
+        });
+
+        return trip;
+      }
 
       function loadState() {
         try {
-          const raw = localStorage.getItem(STORAGE_KEY);
+          let raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            for (const oldKey of LEGACY_KEYS) {
+              const found = localStorage.getItem(oldKey);
+              if (found) {
+                raw = found;
+                break;
+              }
+            }
+          }
+
           if (raw) {
             const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed.trips) && parsed.trips.length > 0) {
-              state.trips = parsed.trips;
-              state.activeTripId = parsed.activeTripId || parsed.trips[0].id;
+            if (Array.isArray(parsed.trips)) {
+              state.trips = parsed.trips.map(normalizeTripData).filter(Boolean);
+              state.activeTripId = parsed.activeTripId || (state.trips[0] ? state.trips[0].id : '');
               state.completedStops = parsed.completedStops || {};
               state.stampedRecords = parsed.stampedRecords || {};
-              state.checkedRecs = parsed.checkedRecs || {};
-              state.stopNotes = parsed.stopNotes || {};
-              return;
+              state.checkedHighlights = parsed.checkedHighlights || {};
             }
           }
         } catch (err) {
           console.warn('localStorage 讀取失敗:', err);
         }
-        const def = createDefaultTrip();
-        state.trips = [def];
-        state.activeTripId = def.id;
-        saveState();
+
+        // 若尚無任何行程，預設停留在「規劃」空白表單
+        state.activeTab = state.trips.length > 0 ? 'itinerary' : 'planner';
       }
 
       function saveState() {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            version: 2,
             trips: state.trips,
             activeTripId: state.activeTripId,
             completedStops: state.completedStops,
             stampedRecords: state.stampedRecords,
-            checkedRecs: state.checkedRecs,
-            stopNotes: state.stopNotes
+            checkedHighlights: state.checkedHighlights
           }));
         } catch (err) {
           console.warn('localStorage 寫入失敗:', err);
@@ -1062,8 +1364,9 @@
       }
 
       function getActiveTrip() {
+        if (!state.trips.length) return null;
         let trip = state.trips.find(t => t.id === state.activeTripId);
-        if (!trip && state.trips.length > 0) {
+        if (!trip) {
           trip = state.trips[0];
           state.activeTripId = trip.id;
         }
@@ -1081,6 +1384,10 @@
         return list;
       }
 
+      function findStopInTrip(trip, stopId) {
+        return getAllStops(trip).find(i => i.stop.id === stopId) || null;
+      }
+
       function getPassportVisibleStops(trip) {
         const all = getAllStops(trip);
         if (state.passportFilter === 'stamps' && trip.passportMode !== 'all') {
@@ -1090,7 +1397,38 @@
         return all;
       }
 
-      // -------------------- 3. 工具函式 --------------------
+      // -------------------- 3. 財務計算與工具函式 --------------------
+      function computeDayFare(day) {
+        if (!day) return 0;
+        const sum = (day.stops || []).reduce((acc, s) => acc + (Number(s.transitFare) || 0), 0);
+        return sum > 0 ? sum : (Number(day.dailyFare) || 0);
+      }
+
+      function computeTripTotalFare(trip) {
+        if (!trip || !trip.days) return 0;
+        const sum = trip.days.reduce((acc, d) => acc + computeDayFare(d), 0);
+        return sum > 0 ? sum : (Number(trip.totalFare) || 0);
+      }
+
+      function computeStopExpense(stop) {
+        if (!stop || !Array.isArray(stop.expenses)) return 0;
+        return stop.expenses.reduce((acc, e) => acc + (Number(e.amount) || 0), 0);
+      }
+
+      function computeDayExpense(day) {
+        if (!day || !Array.isArray(day.stops)) return 0;
+        return day.stops.reduce((acc, s) => acc + computeStopExpense(s), 0);
+      }
+
+      function computeTripTotalExpense(trip) {
+        if (!trip || !Array.isArray(trip.days)) return 0;
+        return trip.days.reduce((acc, d) => acc + computeDayExpense(d), 0);
+      }
+
+      function formatNT(num) {
+        return 'NT$' + (Number(num) || 0).toLocaleString('zh-TW');
+      }
+
       let toastTimer = null;
       function showToast(msg) {
         const el = document.getElementById('toast');
@@ -1105,7 +1443,6 @@
         }, 1900);
       }
 
-      // iFrame / iOS Safari 相容複製
       function copyToClipboard(text, msg) {
         try {
           const ta = document.createElement('textarea');
@@ -1121,12 +1458,13 @@
           document.body.removeChild(ta);
           if (ok) {
             showToast(msg || '已複製');
-            return;
+            return true;
           }
         } catch (e) {
           console.warn('複製失敗:', e);
         }
         showToast('請長按手動複製');
+        return false;
       }
 
       function escapeHtml(str) {
@@ -1151,13 +1489,9 @@
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit',
-            second: '2-digit',
             hour12: false
           }).formatToParts(now).forEach(p => { parts[p.type] = p.value; });
           return {
-            hour: Number(parts.hour),
-            minute: Number(parts.minute),
-            second: Number(parts.second),
             hm: `${parts.hour}:${parts.minute}`,
             stampText: `${parts.month}/${parts.day} ${parts.hour}:${parts.minute}`
           };
@@ -1165,9 +1499,6 @@
           const d = new Date();
           const pad = n => String(n).padStart(2, '0');
           return {
-            hour: d.getHours(),
-            minute: d.getMinutes(),
-            second: d.getSeconds(),
             hm: `${pad(d.getHours())}:${pad(d.getMinutes())}`,
             stampText: `${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
           };
@@ -1185,33 +1516,61 @@
         return angles[Math.abs(hash) % angles.length];
       }
 
-      function generatePlainTextTrip(trip) {
-        if (!trip) return '';
-        const lines = [];
-        lines.push(`${trip.title}${trip.dateNote ? '｜' + trip.dateNote : ''}`);
-        lines.push('--------------------');
+      // 鏤空雙層木頭章 SVG 產生器（零實心大色塊）
+      function buildHollowStampSvg(icon, title, dateStr) {
+        const safeTitle = escapeHtml((title || '').slice(0, 6));
+        const safeIcon = escapeHtml(icon || '●');
+        const safeDate = escapeHtml(dateStr || '');
+        return `
+          <svg viewBox="0 0 100 100" class="w-full h-full select-none" aria-hidden="true">
+            <circle cx="50" cy="50" r="46" fill="rgba(255,94,0,0.04)" stroke="#FF5E00" stroke-width="2.2" />
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#FF5E00" stroke-width="1.1" stroke-dasharray="3 2" opacity="0.85" />
+            <text x="50" y="24" text-anchor="middle" fill="#FF5E00" font-size="7.5" font-weight="700" letter-spacing="1.6" opacity="0.9">STAMPED</text>
+            <text x="50" y="49" text-anchor="middle" font-size="18">${safeIcon}</text>
+            <text x="50" y="67" text-anchor="middle" fill="#FF5E00" font-size="10.5" font-weight="800">${safeTitle}</text>
+            <text x="50" y="80" text-anchor="middle" fill="#FF5E00" font-size="7.8" font-weight="600" opacity="0.88">${safeDate}</text>
+          </svg>
+        `;
+      }
 
-        (trip.days || []).forEach(day => {
-          lines.push(`\n[${day.dateLabel || ('Day ' + day.dayNumber)}] ${day.routeNote || ''}`);
-          (day.stops || []).forEach((s, idx) => {
-            const stampMark = s.isStampSpot ? ' [集章]' : '';
-            lines.push(`\n${idx + 1}. ${s.startTime}–${s.endTime} ${s.name}${stampMark}`);
-            lines.push(`   地址：${s.address}`);
-            if (s.transit) lines.push(`   交通：${s.transit}`);
-            (s.recommendations || []).forEach(r => lines.push(`   - ${r.text}`));
-          });
-        });
+      function buildEmptyStateHtml(title, desc) {
+        return `
+          <div class="bg-card rounded-2xl border-hairline p-6 text-center mt-2">
+            <div class="w-10 h-10 rounded-full bg-void border-hairline flex items-center justify-center mx-auto mb-3">
+              <span class="w-2 h-2 rounded-full bg-neonGreen line-glow-green"></span>
+            </div>
+            <h2 class="text-sm font-bold text-white">${escapeHtml(title)}</h2>
+            <p class="text-xs text-muted mt-1.5 leading-relaxed">${escapeHtml(desc)}</p>
+            <div class="mt-5 space-y-2">
+              <button
+                type="button"
+                data-action="empty-go-planner"
+                class="w-full min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+              >
+                前往規劃
+              </button>
+              <button
+                type="button"
+                data-action="empty-load-demo"
+                class="w-full min-h-[44px] rounded-xl bg-void border-hairline text-white/85 text-xs font-semibold active:scale-95 transition hover:border-white/30"
+              >
+                載入台南示範行程
+              </button>
+            </div>
+          </div>
+        `;
+      }
 
-        if (trip.deadlines && trip.deadlines.length) {
-          lines.push('\n--------------------');
-          lines.push('關鍵防線：');
-          trip.deadlines.forEach(d => lines.push(`- ${d.time}｜${d.title}`));
-        }
-        if (trip.planB && trip.planB.length) {
-          lines.push('\nPlan B：');
-          trip.planB.forEach(p => lines.push(`- ${p}`));
-        }
-        return lines.join('\n');
+      function loadDemoTripManually() {
+        const demo = createTainanDemoTrip();
+        state.trips.unshift(demo);
+        state.activeTripId = demo.id;
+        state.activeDayIndex = 0;
+        state.passportFilter = 'stamps';
+        saveState();
+        renderAll();
+        switchTab('itinerary');
+        showToast('已載入台南示範行程');
       }
 
       // -------------------- 4. 粒子與紙花動畫 --------------------
@@ -1222,7 +1581,7 @@
           const el = document.createElement('span');
           el.className = 'ink-particle';
           const angle = (Math.PI * 2 * i) / 12 + (Math.random() * 0.35 - 0.17);
-          const dist = 34 + Math.random() * 22;
+          const dist = 32 + Math.random() * 20;
           el.style.setProperty('--tx', `${Math.round(Math.cos(angle) * dist)}px`);
           el.style.setProperty('--ty', `${Math.round(Math.sin(angle) * dist)}px`);
           el.style.setProperty('--rot', `${Math.round(Math.random() * 180 - 90)}deg`);
@@ -1236,7 +1595,7 @@
 
       function launchConfetti() {
         const colors = ['#FFFFFF', '#18181B', '#39FF14', '#FF5E00'];
-        for (let i = 0; i < 44; i++) {
+        for (let i = 0; i < 36; i++) {
           const piece = document.createElement('div');
           piece.className = 'confetti-piece';
           const size = 5 + Math.random() * 5;
@@ -1248,18 +1607,18 @@
             piece.style.border = '1px solid rgba(255,255,255,0.4)';
           }
           piece.style.borderRadius = Math.random() > 0.45 ? '1px' : '50%';
-          piece.style.setProperty('--dur', `${1.9 + Math.random() * 1.3}s`);
-          piece.style.setProperty('--delay', `${Math.random() * 0.4}s`);
+          piece.style.setProperty('--dur', `${1.9 + Math.random() * 1.2}s`);
+          piece.style.setProperty('--delay', `${Math.random() * 0.35}s`);
           document.body.appendChild(piece);
-          setTimeout(() => piece.remove(), 3600);
+          setTimeout(() => piece.remove(), 3500);
         }
       }
 
-      // -------------------- 5. 雙向同步：完成與蓋章 --------------------
+      // -------------------- 5. 雙向同步蓋章 --------------------
       function toggleStopStamp(stopId, fromPassport = false) {
         const trip = getActiveTrip();
         if (!trip) return;
-        const found = getAllStops(trip).find(i => i.stop.id === stopId);
+        const found = findStopInTrip(trip, stopId);
         if (!found) return;
 
         const key = `${trip.id}::${stopId}`;
@@ -1278,7 +1637,7 @@
           if (isStampable) {
             state.stampedRecords[key] = getTaipeiNow().stampText;
             if (navigator.vibrate) {
-              try { navigator.vibrate(30); } catch (e) {}
+              try { navigator.vibrate(28); } catch (e) {}
             }
             showToast(`已蓋章：${found.stop.stampTitle || found.stop.name}`);
           } else {
@@ -1290,20 +1649,21 @@
         updateHeader();
         renderItineraryTab();
         renderPassportTab(!wasDone && isStampable ? stopId : null);
-        renderDeadlines();
 
         if (!wasDone && isStampable) {
-          if (fromPassport) {
-            const anchor = document.querySelector(`[data-passport-stamp="${CSS.escape(stopId)}"] .stamp-fx-anchor`);
-            if (anchor) spawnInkParticles(anchor);
-          }
+          const selector = fromPassport
+            ? `[data-passport-stamp="${CSS.escape(stopId)}"] .stamp-fx-anchor`
+            : `#stop-card-${CSS.escape(stopId)} .stop-stamp-btn-anchor`;
+          const anchor = document.querySelector(selector);
+          if (anchor) spawnInkParticles(anchor);
+
           const visibleAfter = getPassportVisibleStops(trip);
           const allDoneAfter = visibleAfter.length > 0 && visibleAfter.every(i => !!state.stampedRecords[`${trip.id}::${i.stop.id}`]);
           if (!allDoneBefore && allDoneAfter) {
             setTimeout(() => {
               launchConfetti();
               showToast('集章完成');
-            }, 280);
+            }, 260);
           }
         }
       }
@@ -1311,35 +1671,56 @@
       // -------------------- 6. 標頭與時鐘 --------------------
       function updateHeader() {
         const trip = getActiveTrip();
-        if (!trip) return;
+        const titleEl = document.getElementById('headerTripTitle');
+        const stampWrap = document.getElementById('headerStampWrap');
+        const navDot = document.getElementById('navPassportDot');
+
+        if (!trip) {
+          titleEl.textContent = '尚未建立行程';
+          stampWrap.classList.add('hidden');
+          stampWrap.classList.remove('inline-flex');
+          navDot.classList.add('hidden');
+          return;
+        }
+
         const all = getAllStops(trip);
         const pool = trip.passportMode === 'all'
           ? all
           : (all.filter(i => i.stop.isStampSpot).length > 0 ? all.filter(i => i.stop.isStampSpot) : all);
         const stampedCount = pool.filter(i => !!state.stampedRecords[`${trip.id}::${i.stop.id}`]).length;
 
-        document.getElementById('headerTripTitle').textContent = trip.title;
+        titleEl.textContent = trip.title;
         document.getElementById('headerStampCount').textContent = `${stampedCount}/${pool.length}`;
+        stampWrap.classList.remove('hidden');
+        stampWrap.classList.add('inline-flex');
+        navDot.classList.toggle('hidden', pool.length === 0 || stampedCount === pool.length);
       }
 
       function updateClock() {
-        const now = getTaipeiNow();
         const el = document.getElementById('headerClock');
-        if (el) el.textContent = now.hm;
-        if (state.activeTab === 'library') {
-          renderDeadlines();
-        }
+        if (el) el.textContent = getTaipeiNow().hm;
       }
 
-      // -------------------- 7. TAB 2: 行程（螢光綠細線時間軸） --------------------
+      // -------------------- 7. TAB 2: 行程（含雙欄財務卡片與地標記帳入口） --------------------
       function renderItineraryTab() {
         const trip = getActiveTrip();
-        if (!trip || !trip.days || trip.days.length === 0) return;
+        const emptyEl = document.getElementById('itineraryEmpty');
+        const contentEl = document.getElementById('itineraryContent');
+
+        if (!trip || !trip.days || trip.days.length === 0) {
+          emptyEl.innerHTML = buildEmptyStateHtml('尚無行程', '前往「規劃」輸入地點清單，或載入台南示範行程體驗記帳與集章功能。');
+          emptyEl.classList.remove('hidden');
+          contentEl.classList.add('hidden');
+          return;
+        }
+
+        emptyEl.classList.add('hidden');
+        contentEl.classList.remove('hidden');
 
         if (state.activeDayIndex >= trip.days.length) state.activeDayIndex = 0;
         const currentDay = trip.days[state.activeDayIndex];
 
-        // Day 切換膠囊
+        // 多日切換膠囊
         const dayTabsEl = document.getElementById('dayTabsContainer');
         if (trip.days.length > 1) {
           dayTabsEl.classList.remove('hidden');
@@ -1350,10 +1731,8 @@
                 type="button"
                 data-action="select-day"
                 data-day-idx="${idx}"
-                class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition active:scale-95 ${
-                  active
-                    ? 'bg-white border-white text-black'
-                    : 'bg-card border-white/10 text-muted'
+                class="shrink-0 min-h-[44px] px-4 rounded-full text-xs font-semibold border transition active:scale-95 ${
+                  active ? 'bg-white border-white text-void' : 'bg-card border-white/10 text-muted'
                 }"
               >
                 ${escapeHtml(d.dateLabel || ('Day ' + d.dayNumber))}
@@ -1365,7 +1744,23 @@
           dayTabsEl.innerHTML = '';
         }
 
-        // 當日細進度條
+        // 頂部雙欄財務摘要
+        const totalFare = computeTripTotalFare(trip);
+        const dayFare = computeDayFare(currentDay);
+        const totalExp = computeTripTotalExpense(trip);
+        const dayExp = computeDayExpense(currentDay);
+
+        document.getElementById('tripTotalFare').textContent = formatNT(totalFare);
+        document.getElementById('dayFareSubtotal').textContent = trip.days.length > 1
+          ? `本日小計 ${formatNT(dayFare)}`
+          : (trip.fareSummary || '全程預估車資');
+
+        document.getElementById('tripTotalExpense').textContent = formatNT(totalExp);
+        document.getElementById('dayExpenseSubtotal').textContent = trip.days.length > 1
+          ? `本日小計 ${formatNT(dayExp)}`
+          : (totalExp > 0 ? '點擊查看分類明細' : '尚無消費紀錄');
+
+        // 當日進度
         const stops = currentDay.stops || [];
         const doneCount = stops.filter(s => !!state.completedStops[`${trip.id}::${s.id}`]).length;
         const pct = stops.length > 0 ? Math.round((doneCount / stops.length) * 100) : 0;
@@ -1382,32 +1777,33 @@
           const isDone = !!state.completedStops[stopKey];
           const isStamped = !!state.stampedRecords[stopKey];
           const isStampable = stop.isStampSpot || trip.passportMode === 'all';
-          const noteVal = state.stopNotes[stopKey] || '';
-          const noteOpen = !!state.openNotes[stopKey] || noteVal.length > 0;
           const isLast = idx === stops.length - 1;
-          const recs = stop.recommendations || [];
+          const highlights = stop.highlights || [];
+          const paymentText = (stop.paymentMethods && stop.paymentMethods.trim()) ? stop.paymentMethods.trim() : '依現場為主';
 
-          const recsHtml = recs.map((r, rIdx) => {
-            const rKey = `${trip.id}::${stop.id}::${rIdx}`;
-            const checked = !!state.checkedRecs[rKey];
-            const isTip = r.category === '提醒';
+          const expenses = Array.isArray(stop.expenses) ? stop.expenses : [];
+          const stopExpSum = computeStopExpense(stop);
+          const transitLabel = [stop.transitMode, stop.transitDuration].filter(Boolean).join(' ');
+          const fareVal = typeof stop.transitFare === 'number' ? stop.transitFare : 0;
+
+          const highlightsHtml = highlights.map((text, hIdx) => {
+            const hKey = `${trip.id}::${stop.id}::${hIdx}`;
+            const checked = !!state.checkedHighlights[hKey];
             return `
               <li>
                 <button
                   type="button"
-                  data-action="toggle-rec"
-                  data-rkey="${escapeHtml(rKey)}"
-                  class="w-full text-left flex items-start gap-2 py-1 group"
+                  data-action="toggle-hl"
+                  data-hkey="${escapeHtml(hKey)}"
+                  class="w-full text-left flex items-start gap-2.5 py-1.5 min-h-[40px] group"
                 >
                   <span class="mt-0.5 w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 border transition ${
-                    checked
-                      ? 'bg-white border-white text-black'
-                      : 'border-white/25 bg-void group-hover:border-white/50'
+                    checked ? 'bg-white border-white text-void' : 'border-white/25 bg-void group-hover:border-white/50'
                   }">
                     ${checked ? `<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>` : ''}
                   </span>
-                  <span class="text-xs leading-snug ${checked ? 'line-through text-muted/50' : 'text-white/90'}">
-                    ${isTip ? '<span class="text-neonOrange font-semibold mr-1">[提醒]</span>' : ''}${escapeHtml(r.text)}
+                  <span class="text-xs leading-snug break-words ${checked ? 'line-through text-muted/50' : 'text-white/90'}">
+                    ${escapeHtml(text)}
                   </span>
                 </button>
               </li>
@@ -1415,50 +1811,113 @@
           }).join('');
 
           return `
-            <article id="stop-card-${escapeHtml(stop.id)}" class="relative pl-6">
-              <!-- 左側螢光綠垂直路線線條 -->
-              ${!isLast ? `<div class="absolute left-[7px] top-5 bottom-[-18px] w-[1.5px] bg-neonGreen/65 line-glow-green"></div>` : ''}
+            <article id="stop-card-${escapeHtml(stop.id)}" class="relative pl-5 min-w-0">
+              <!-- 左側 1.5px 螢光綠垂直線 -->
+              ${!isLast ? `<div class="absolute left-[6px] top-6 bottom-[-18px] w-[1.5px] bg-neonGreen/65 line-glow-green"></div>` : ''}
 
               <!-- 左側螢光綠圓點節點 -->
               <button
                 type="button"
                 data-action="toggle-stop"
                 data-stop-id="${escapeHtml(stop.id)}"
-                aria-label="標記完成 ${escapeHtml(stop.name)}"
-                class="absolute left-0 top-1.5 w-[15px] h-[15px] rounded-full flex items-center justify-center border-[1.5px] border-neonGreen transition active:scale-90 ${
-                  isDone ? 'bg-void line-glow-green' : 'bg-void'
+                aria-label="標記站點完成"
+                class="absolute left-[-1px] top-3.5 w-[15px] h-[15px] rounded-full border-2 flex items-center justify-center transition ${
+                  isDone ? 'bg-neonGreen border-neonGreen line-glow-green' : 'bg-void border-neonGreen'
                 }"
               >
-                <span class="w-[7px] h-[7px] rounded-full transition ${isDone ? 'bg-neonGreen' : 'bg-transparent'}"></span>
+                ${isDone ? `<span class="w-1.5 h-1.5 rounded-full bg-void"></span>` : ''}
               </button>
 
-              <!-- 螢光綠細外框交通膠囊 -->
-              ${stop.transit ? `
-                <div class="mb-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neonGreen/[0.04] border border-neonGreen/45 text-[11px] font-medium text-neonGreen">
-                  <span class="w-1 h-1 rounded-full bg-neonGreen"></span>
-                  <span>${escapeHtml(stop.transit)}</span>
+              <!-- 螢光綠 1px 細框交通＋車資膠囊 -->
+              ${transitLabel ? `
+                <div class="mb-2 flex flex-wrap items-center gap-1.5">
+                  <div class="inline-flex flex-wrap items-center gap-1.5 px-2.5 py-1 rounded-full bg-neonGreen/[0.04] border border-neonGreen/50 text-[11px] font-medium text-neonGreen max-w-full">
+                    <span class="w-1 h-1 rounded-full bg-neonGreen shrink-0"></span>
+                    <span>${escapeHtml(transitLabel)}</span>
+                    <span class="text-white/30">·</span>
+                    <span class="font-bold tabular-nums">NT$${fareVal}</span>
+                    ${stop.transitNote ? `<span class="text-neonGreen/80 text-[10px]">(${escapeHtml(stop.transitNote)})</span>` : ''}
+                  </div>
                 </div>
               ` : ''}
 
-              <!-- 深黑卡片 -->
-              <div class="rounded-2xl bg-card border-hairline overflow-hidden">
+              <!-- 深黑站點卡片 -->
+              <div class="rounded-2xl bg-card border-hairline overflow-hidden min-w-0">
                 <div class="p-3.5">
-                  <!-- 時間與深黑底螢光橘細框「蓋章／完成」按鈕 -->
-                  <div class="flex items-start justify-between gap-2 mb-1.5">
-                    <div class="flex flex-wrap items-center gap-1.5">
+                  <!-- 時間、分類、區域 -->
+                  <div class="flex flex-wrap items-center justify-between gap-1.5 mb-1.5">
+                    <div class="flex flex-wrap items-center gap-1.5 min-w-0">
                       <span class="text-xs font-bold tabular-nums text-white">${escapeHtml(stop.startTime)}–${escapeHtml(stop.endTime)}</span>
-                      ${stop.district ? `<span class="px-1.5 py-0.5 rounded bg-elevated text-[10px] font-medium text-muted">${escapeHtml(stop.district)}</span>` : ''}
+                      ${stop.category ? `<span class="px-1.5 py-0.5 rounded bg-elevated text-[10px] font-medium text-muted">${escapeHtml(stop.category)}</span>` : ''}
+                      ${stop.district ? `<span class="text-[10px] text-muted/80">${escapeHtml(stop.district)}</span>` : ''}
                     </div>
+                  </div>
+
+                  <!-- 店名與可點擊複製的地址 -->
+                  <h3 class="text-fluid-card font-bold leading-snug break-words ${isDone ? 'line-through text-muted' : 'text-white'}">
+                    ${escapeHtml(stop.name)}
+                  </h3>
+                  <button
+                    type="button"
+                    data-action="copy-address"
+                    data-address="${escapeHtml(stop.address)}"
+                    class="mt-1 text-left text-xs text-muted hover:text-white/90 leading-snug break-words inline-flex items-start gap-1 transition"
+                    title="點擊複製地址"
+                  >
+                    <span>${escapeHtml(stop.address)}</span>
+                    <svg class="w-3 h-3 mt-0.5 shrink-0 opacity-60" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                    </svg>
+                  </button>
+
+                  <!-- 必填：店家支付方式標籤 -->
+                  <div class="mt-2.5 flex flex-wrap items-center gap-1.5">
+                    <div class="inline-flex flex-wrap items-center gap-1 px-2.5 py-1 rounded-lg bg-void border-hairline text-[11px] max-w-full">
+                      <span class="text-muted font-semibold shrink-0">支付：</span>
+                      <span class="text-white/95 font-medium break-words">${escapeHtml(paymentText)}</span>
+                    </div>
+                  </div>
+
+                  <!-- 若該站已有消費紀錄：極簡單行顯示筆數與小計 -->
+                  ${expenses.length > 0 ? `
+                    <button
+                      type="button"
+                      data-action="open-expense"
+                      data-stop-id="${escapeHtml(stop.id)}"
+                      class="mt-2 w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-elevated/80 border border-white/15 text-[11px] active:scale-[0.99] transition"
+                    >
+                      <span class="text-white/90 font-medium tabular-nums">已記 ${expenses.length} 筆 · <strong class="text-white">${formatNT(stopExpSum)}</strong></span>
+                      <span class="text-muted">查看 ›</span>
+                    </button>
+                  ` : ''}
+
+                  <!-- 精簡條列重點 -->
+                  ${highlights.length ? `
+                    <div class="mt-2.5 pt-2 border-t border-white/10">
+                      <ul>${highlightsHtml}</ul>
+                    </div>
+                  ` : ''}
+
+                  <!-- 底部操作列：導航 / 蓋章 / 記帳 -->
+                  <div class="mt-3 pt-2.5 border-t border-white/10 grid grid-cols-3 gap-1.5">
+                    <a
+                      href="${getMapsUrl(stop.name, stop.address)}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="min-h-[44px] inline-flex items-center justify-center rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+                    >
+                      導航
+                    </a>
 
                     <button
                       type="button"
                       data-action="toggle-stop"
                       data-stop-id="${escapeHtml(stop.id)}"
-                      class="shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition active:scale-95 ${
+                      class="stop-stamp-btn-anchor relative min-h-[44px] inline-flex items-center justify-center gap-1 rounded-xl text-xs font-semibold border transition active:scale-95 ${
                         isStampable
                           ? (isStamped
                               ? 'bg-neonOrange/[0.08] border-neonOrange text-neonOrange'
-                              : 'bg-elevated border-neonOrange/55 text-neonOrange hover:bg-neonOrange/[0.08]')
+                              : 'bg-void border-neonOrange/65 text-neonOrange hover:bg-neonOrange/[0.08]')
                           : (isDone
                               ? 'bg-elevated border-white/40 text-white'
                               : 'bg-void border-white/15 text-muted hover:text-white')
@@ -1466,65 +1925,21 @@
                     >
                       ${isStampable
                         ? `<span class="w-1.5 h-1.5 rounded-full ${isStamped ? 'bg-neonOrange' : 'border border-neonOrange'}"></span><span>${isStamped ? '已蓋章' : '蓋章'}</span>`
-                        : `<span>${isDone ? '已完成 ✓' : '完成'}</span>`
+                        : `<span>${isDone ? '已完成' : '完成'}</span>`
                       }
                     </button>
-                  </div>
 
-                  <!-- 地點名稱與地址 -->
-                  <h3 class="text-[15px] font-bold leading-snug ${isDone ? 'line-through text-muted' : 'text-white'}">
-                    ${escapeHtml(stop.name)}
-                  </h3>
-                  <div class="text-xs text-muted mt-1 leading-snug">${escapeHtml(stop.address)}</div>
-
-                  <!-- 精簡條列必看／必買目標 -->
-                  ${recs.length ? `
-                    <div class="mt-3 pt-2.5 border-t border-white/10">
-                      <ul class="space-y-0.5">${recsHtml}</ul>
-                    </div>
-                  ` : ''}
-
-                  <!-- 本機筆記輸入框 -->
-                  <div class="${noteOpen ? 'mt-2.5' : 'hidden'}">
-                    <input
-                      type="text"
-                      data-action="stop-note"
-                      data-stop-id="${escapeHtml(stop.id)}"
-                      value="${escapeHtml(noteVal)}"
-                      placeholder="本機筆記（自動儲存）..."
-                      class="w-full px-3 py-2 rounded-xl bg-void border-hairline text-white placeholder:text-muted/50 focus:outline-none focus:border-white/35"
-                    />
-                  </div>
-
-                  <!-- 底部操作按鈕 -->
-                  <div class="mt-3 pt-2.5 border-t border-white/10 grid grid-cols-3 gap-1.5">
-                    <a
-                      href="${getMapsUrl(stop.name, stop.address)}"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center py-2 rounded-xl bg-white text-black text-[11px] font-bold active:scale-95 transition"
-                    >
-                      導航
-                    </a>
                     <button
                       type="button"
-                      data-action="copy-address"
-                      data-address="${escapeHtml(stop.address)}"
-                      class="inline-flex items-center justify-center py-2 rounded-xl bg-elevated border-hairline text-white text-[11px] font-semibold active:scale-95 transition"
-                    >
-                      複製地址
-                    </button>
-                    <button
-                      type="button"
-                      data-action="toggle-note"
+                      data-action="open-expense"
                       data-stop-id="${escapeHtml(stop.id)}"
-                      class="inline-flex items-center justify-center py-2 rounded-xl border text-[11px] font-semibold active:scale-95 transition ${
-                        noteVal
+                      class="min-h-[44px] inline-flex items-center justify-center rounded-xl border text-xs font-semibold tabular-nums active:scale-95 transition px-1.5 truncate ${
+                        expenses.length > 0
                           ? 'bg-elevated border-white/35 text-white'
-                          : 'bg-void border-white/10 text-muted hover:text-white'
+                          : 'bg-void border-white/15 text-white/85 hover:border-white/35'
                       }"
                     >
-                      ${noteVal ? '已寫筆記' : '筆記'}
+                      ${expenses.length > 0 ? formatNT(stopExpSum) : '+ 記帳'}
                     </button>
                   </div>
                 </div>
@@ -1534,20 +1949,252 @@
         }).join('');
       }
 
-      // -------------------- 8. TAB 3: 護照（鏤空螢光橘木頭章） --------------------
-      function renderPassportTab(justStampedStopId = null) {
+      // -------------------- 8. 地標記帳 Modal 邏輯 --------------------
+      function updateExpMethodButtons() {
+        document.querySelectorAll('.exp-method-btn').forEach(btn => {
+          const active = btn.dataset.expmethod === state.selectedExpenseMethod;
+          btn.className = `exp-method-btn min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition ${
+            active ? 'bg-white text-void border-white' : 'bg-card text-muted border-white/10'
+          }`;
+        });
+      }
+
+      function renderExpenseModalContent() {
+        const trip = getActiveTrip();
+        if (!trip || !state.activeExpenseStopId) return;
+        const found = findStopInTrip(trip, state.activeExpenseStopId);
+        if (!found) return;
+
+        const { stop } = found;
+        const expenses = Array.isArray(stop.expenses) ? stop.expenses : [];
+        const subtotal = computeStopExpense(stop);
+
+        document.getElementById('expModalStopName').textContent = stop.name;
+        document.getElementById('expModalStopSubtotal').textContent = formatNT(subtotal);
+        document.getElementById('expModalCount').textContent = `${expenses.length} 筆`;
+
+        const listEl = document.getElementById('expModalList');
+        if (expenses.length === 0) {
+          listEl.innerHTML = `
+            <div class="rounded-xl bg-void border-hairline p-4 text-center text-xs text-muted">
+              此地標尚未記錄消費
+            </div>
+          `;
+        } else {
+          listEl.innerHTML = expenses.map(exp => `
+            <div class="rounded-xl bg-void border-hairline px-3 py-2.5 flex items-center justify-between gap-2">
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-xs font-semibold text-white truncate">${escapeHtml(exp.item || '消費')}</span>
+                  <span class="px-1.5 py-0.5 rounded bg-elevated text-[10px] font-medium text-muted">${escapeHtml(exp.method || '現金')}</span>
+                </div>
+                ${exp.createdAt ? `<div class="text-[10px] text-muted/70 mt-0.5 tabular-nums">${escapeHtml(exp.createdAt)}</div>` : ''}
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-xs font-bold text-white tabular-nums">${formatNT(exp.amount)}</span>
+                <button
+                  type="button"
+                  data-action="delete-stop-exp"
+                  data-exp-id="${escapeHtml(exp.id)}"
+                  aria-label="刪除此筆消費"
+                  class="min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg bg-card border-hairline text-muted hover:text-neonOrange hover:border-neonOrange/50 active:scale-95 transition"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+
+      function openExpenseModal(stopId) {
+        const trip = getActiveTrip();
+        if (!trip || !findStopInTrip(trip, stopId)) return;
+        state.activeExpenseStopId = stopId;
+        state.selectedExpenseMethod = '現金';
+        document.getElementById('expAmountInput').value = '';
+        document.getElementById('expItemInput').value = '';
+        document.getElementById('expFormError').classList.add('hidden');
+        updateExpMethodButtons();
+        renderExpenseModalContent();
+        document.getElementById('expenseModal').classList.remove('hidden');
+      }
+
+      function closeExpenseModal() {
+        document.getElementById('expenseModal').classList.add('hidden');
+        state.activeExpenseStopId = null;
+      }
+
+      function deleteExpenseRecord(stopId, expId) {
         const trip = getActiveTrip();
         if (!trip) return;
+        const found = findStopInTrip(trip, stopId);
+        if (!found || !Array.isArray(found.stop.expenses)) return;
+
+        found.stop.expenses = found.stop.expenses.filter(e => e.id !== expId);
+        saveState();
+        renderItineraryTab();
+        renderLibraryTab();
+        if (state.activeExpenseStopId === stopId) renderExpenseModalContent();
+        if (!document.getElementById('overviewModal').classList.contains('hidden')) renderOverviewModal();
+        showToast('已刪除消費紀錄');
+      }
+
+      // -------------------- 9. 花費明細總覽 Modal 邏輯 --------------------
+      function renderOverviewModal() {
+        const trip = getActiveTrip();
+        if (!trip) return;
+
+        const stopTotal = computeTripTotalExpense(trip);
+        const transitTotal = computeTripTotalFare(trip);
+        const grandTotal = stopTotal + transitTotal;
+
+        document.getElementById('ovStopTotal').textContent = formatNT(stopTotal);
+        document.getElementById('ovTransitTotal').textContent = formatNT(transitTotal);
+        document.getElementById('ovGrandTotal').textContent = formatNT(grandTotal);
+
+        // 付款方式統計
+        const methodTotals = {};
+        getAllStops(trip).forEach(({ stop }) => {
+          (stop.expenses || []).forEach(e => {
+            const m = e.method || '現金';
+            methodTotals[m] = (methodTotals[m] || 0) + (Number(e.amount) || 0);
+          });
+        });
+
+        const methodEl = document.getElementById('ovMethodSummary');
+        const methodEntries = Object.entries(methodTotals).filter(([, v]) => v > 0);
+        if (methodEntries.length === 0) {
+          methodEl.innerHTML = `<span class="text-xs text-muted">尚無地標消費紀錄</span>`;
+        } else {
+          methodEl.innerHTML = methodEntries.map(([m, v]) => `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-void border-hairline text-xs">
+              <span class="text-muted">${escapeHtml(m)}</span>
+              <span class="font-bold text-white tabular-nums">${formatNT(v)}</span>
+            </span>
+          `).join('');
+        }
+
+        // 依天數與地標分組列表
+        const groupEl = document.getElementById('ovGroupedList');
+        const dayBlocks = (trip.days || []).map((day, dIdx) => {
+          const stopsWithOrWithout = day.stops || [];
+          const dayExp = computeDayExpense(day);
+          const stopRows = stopsWithOrWithout.map(stop => {
+            const exps = stop.expenses || [];
+            const sSum = computeStopExpense(stop);
+            if (exps.length === 0) {
+              return `
+                <div class="flex items-center justify-between gap-2 py-2 border-t border-white/[0.06] first:border-t-0">
+                  <span class="text-xs text-muted truncate">${escapeHtml(stop.name)}</span>
+                  <button
+                    type="button"
+                    data-action="ov-jump-exp"
+                    data-stop-id="${escapeHtml(stop.id)}"
+                    data-day-idx="${dIdx}"
+                    class="shrink-0 px-2.5 py-1 rounded-lg bg-void border-hairline text-[11px] text-white/80 hover:border-white/30"
+                  >
+                    + 補記
+                  </button>
+                </div>
+              `;
+            }
+
+            return `
+              <div class="py-2 border-t border-white/[0.06] first:border-t-0 space-y-1.5">
+                <div class="flex items-center justify-between gap-2">
+                  <button
+                    type="button"
+                    data-action="ov-jump-exp"
+                    data-stop-id="${escapeHtml(stop.id)}"
+                    data-day-idx="${dIdx}"
+                    class="text-xs font-bold text-white truncate hover:underline text-left"
+                  >
+                    ${escapeHtml(stop.name)}
+                  </button>
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-xs font-bold text-white tabular-nums">${formatNT(sSum)}</span>
+                    <button
+                      type="button"
+                      data-action="ov-jump-exp"
+                      data-stop-id="${escapeHtml(stop.id)}"
+                      data-day-idx="${dIdx}"
+                      class="px-2 py-0.5 rounded bg-elevated text-[10px] text-muted hover:text-white"
+                    >
+                      + 補記
+                    </button>
+                  </div>
+                </div>
+                <div class="space-y-1 pl-2 border-l border-white/10">
+                  ${exps.map(e => `
+                    <div class="flex items-center justify-between gap-2 text-[11px]">
+                      <div class="min-w-0 flex items-center gap-1.5">
+                        <span class="text-white/85 truncate">${escapeHtml(e.item || '消費')}</span>
+                        <span class="text-[10px] text-muted shrink-0">(${escapeHtml(e.method || '現金')})</span>
+                      </div>
+                      <div class="flex items-center gap-1.5 shrink-0">
+                        <span class="text-white/90 tabular-nums">${formatNT(e.amount)}</span>
+                        <button
+                          type="button"
+                          data-action="ov-del-exp"
+                          data-stop-id="${escapeHtml(stop.id)}"
+                          data-exp-id="${escapeHtml(e.id)}"
+                          class="w-6 h-6 inline-flex items-center justify-center rounded text-muted hover:text-neonOrange"
+                          aria-label="刪除"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          return `
+            <div class="rounded-xl bg-void border-hairline p-3">
+              <div class="flex items-center justify-between gap-2 pb-2 mb-1 border-b border-white/10">
+                <span class="text-xs font-bold text-white">${escapeHtml(day.dateLabel || ('Day ' + day.dayNumber))}</span>
+                <span class="text-[11px] text-muted tabular-nums">消費 ${formatNT(dayExp)} · 交通 ${formatNT(computeDayFare(day))}</span>
+              </div>
+              <div>${stopRows}</div>
+            </div>
+          `;
+        }).join('');
+
+        groupEl.innerHTML = dayBlocks || `<div class="text-xs text-muted text-center py-4">尚無行程站點</div>`;
+      }
+
+      function openOverviewModal() {
+        if (!getActiveTrip()) return;
+        renderOverviewModal();
+        document.getElementById('overviewModal').classList.remove('hidden');
+      }
+
+      // -------------------- 10. TAB 3: 護照（鏤空雙層木頭章 SVG） --------------------
+      function renderPassportTab(justStampedStopId = null) {
+        const trip = getActiveTrip();
+        const emptyEl = document.getElementById('passportEmpty');
+        const contentEl = document.getElementById('passportContent');
+
+        if (!trip) {
+          emptyEl.innerHTML = buildEmptyStateHtml('尚無集章護照', '建立行程後將自動產生專屬集章頁，與行程進度即時同步。');
+          emptyEl.classList.remove('hidden');
+          contentEl.classList.add('hidden');
+          return;
+        }
+
+        emptyEl.classList.add('hidden');
+        contentEl.classList.remove('hidden');
 
         document.getElementById('passportTitle').textContent = trip.title;
 
         const isStampsOnly = state.passportFilter === 'stamps';
-        const btnStamps = document.getElementById('pfBtnStamps');
-        const btnAll = document.getElementById('pfBtnAll');
-        btnStamps.className = `py-1.5 rounded-lg text-xs font-semibold transition border ${
+        document.getElementById('pfBtnStamps').className = `min-h-[44px] rounded-lg text-xs font-semibold transition border ${
           isStampsOnly ? 'border-neonOrange/75 bg-neonOrange/[0.08] text-neonOrange' : 'border-transparent text-muted'
         }`;
-        btnAll.className = `py-1.5 rounded-lg text-xs font-semibold transition border ${
+        document.getElementById('pfBtnAll').className = `min-h-[44px] rounded-lg text-xs font-semibold transition border ${
           !isStampsOnly ? 'border-neonOrange/75 bg-neonOrange/[0.08] text-neonOrange' : 'border-transparent text-muted'
         }`;
 
@@ -1557,10 +2204,9 @@
         const pct = total > 0 ? Math.round((collected / total) * 100) : 0;
 
         document.getElementById('passportCounterBig').textContent = `${collected}/${total}`;
-        document.getElementById('passportProgressText').textContent = `進度 ${collected} / ${total}`;
+        document.getElementById('passportProgressText').textContent = `集章進度 ${collected} / ${total}`;
         document.getElementById('passportProgressPct').textContent = `${pct}%`;
         document.getElementById('passportProgressBar').style.width = `${pct}%`;
-
         document.getElementById('passportCompleteBanner').classList.toggle('hidden', !(total > 0 && collected === total));
 
         const grid = document.getElementById('passportGrid');
@@ -1582,41 +2228,34 @@
               data-passport-stamp="${escapeHtml(stop.id)}"
               data-action="${isStamped ? 'open-stamp-detail' : 'do-stamp'}"
               data-stop-id="${escapeHtml(stop.id)}"
-              class="group relative flex flex-col items-center justify-between p-3 rounded-2xl border transition active:scale-95 text-center min-h-[168px] overflow-visible ${
+              class="group relative flex flex-col items-center justify-between p-2.5 rounded-2xl border transition active:scale-95 text-center min-h-[168px] min-w-0 overflow-visible ${
                 isStamped
                   ? 'bg-transparent border-neonOrange/40'
-                  : 'bg-void/40 border-dashed border-white/15 hover:border-neonOrange/50'
+                  : 'bg-void/40 border-dashed border-white/15 hover:border-neonOrange/55'
               }"
             >
-              <div class="w-full flex items-center justify-between text-[10px] font-medium text-muted px-0.5">
+              <div class="w-full flex items-center justify-between gap-1 text-[10px] font-medium text-muted px-0.5 min-w-0">
                 <span class="truncate">${escapeHtml(topMeta)}</span>
                 <span class="shrink-0 font-mono">#${String(idx + 1).padStart(2, '0')}</span>
               </div>
 
-              <!-- 中央鏤空圓形木頭章 -->
-              <div class="stamp-fx-anchor relative my-2 w-[88px] h-[88px] flex items-center justify-center">
+              <div class="stamp-fx-anchor relative my-2 stamp-ring-box flex items-center justify-center shrink-0">
                 ${isStamped ? `
-                  <div
-                    class="hollow-stamp w-[86px] h-[86px] rounded-full flex flex-col items-center justify-center p-1.5 select-none ${animateNow ? 'stamp-slam-active' : ''}"
-                    style="--tilt: ${tilt}deg;"
-                  >
-                    <span class="text-[7px] font-bold tracking-widest uppercase leading-none opacity-85">STAMPED</span>
-                    <span class="text-base leading-none my-0.5">${escapeHtml(stop.stampIcon || '●')}</span>
-                    <span class="text-[10px] font-bold leading-tight line-clamp-1 px-0.5">${escapeHtml(stampLabel)}</span>
-                    <span class="text-[8px] font-semibold tabular-nums mt-0.5 leading-none opacity-85">${escapeHtml(stampedTime.split(' ')[0])}</span>
+                  <div class="w-full h-full stamp-tilted ${animateNow ? 'stamp-slam-active' : ''}" style="--tilt: ${tilt}deg;">
+                    ${buildHollowStampSvg(stop.stampIcon, stampLabel, stampedTime.split(' ')[0])}
                   </div>
                 ` : `
-                  <div class="w-[82px] h-[82px] rounded-full border border-dashed border-white/20 flex items-center justify-center p-1 group-hover:border-neonOrange/60 transition">
+                  <div class="w-[90%] h-[90%] rounded-full border border-dashed border-white/20 flex items-center justify-center p-1 group-hover:border-neonOrange/60 transition">
                     <div class="w-full h-full rounded-full border border-dashed border-white/10 flex flex-col items-center justify-center">
-                      <span class="text-base opacity-30 group-hover:opacity-60 transition">${escapeHtml(stop.stampIcon || '○')}</span>
-                      <span class="text-[10px] font-medium text-muted mt-1 group-hover:text-neonOrange transition">點擊蓋章</span>
+                      <span class="text-sm opacity-30 group-hover:opacity-60 transition">${escapeHtml(stop.stampIcon || '○')}</span>
+                      <span class="text-[10px] font-medium text-muted mt-0.5 group-hover:text-neonOrange transition">點擊蓋章</span>
                     </div>
                   </div>
                 `}
               </div>
 
-              <div class="w-full">
-                <div class="text-xs font-semibold leading-snug line-clamp-2 ${isStamped ? 'text-white' : 'text-white/75'}">
+              <div class="w-full min-w-0">
+                <div class="text-xs font-semibold leading-snug line-clamp-2 break-words ${isStamped ? 'text-white' : 'text-white/75'}">
                   ${escapeHtml(stop.name)}
                 </div>
                 <div class="text-[10px] tabular-nums mt-0.5 ${isStamped ? 'text-neonOrange font-semibold' : 'text-muted/60'}">
@@ -1631,7 +2270,7 @@
       function openStampDetailModal(stopId) {
         const trip = getActiveTrip();
         if (!trip) return;
-        const found = getAllStops(trip).find(i => i.stop.id === stopId);
+        const found = findStopInTrip(trip, stopId);
         if (!found) return;
 
         const { stop, day } = found;
@@ -1640,281 +2279,271 @@
 
         document.getElementById('sdBadgeRow').innerHTML = `
           <span class="px-2 py-0.5 rounded bg-neonOrange/[0.08] border border-neonOrange/60 text-neonOrange text-[10px] font-semibold">${escapeHtml(stop.stampTitle || stop.name)}</span>
-          ${stop.district ? `<span class="px-2 py-0.5 rounded bg-elevated text-muted text-[10px] font-medium">${escapeHtml(stop.district)}</span>` : ''}
+          ${stop.category ? `<span class="px-2 py-0.5 rounded bg-elevated text-muted text-[10px] font-medium">${escapeHtml(stop.category)}</span>` : ''}
           ${trip.days.length > 1 ? `<span class="px-2 py-0.5 rounded bg-elevated text-white text-[10px] font-medium">${escapeHtml(day.dateLabel || ('Day ' + day.dayNumber))}</span>` : ''}
         `;
         document.getElementById('sdTitle').textContent = stop.name;
         document.getElementById('sdStampedAt').textContent = `蓋章時間：${stampedTime}`;
         document.getElementById('sdAddress').textContent = stop.address;
+        document.getElementById('sdPayment').textContent = stop.paymentMethods || '依現場為主';
         document.getElementById('sdNavLink').href = getMapsUrl(stop.name, stop.address);
 
-        const recs = stop.recommendations || [];
-        document.getElementById('sdRecs').innerHTML = recs.length
-          ? recs.map(r => `<li class="flex items-start gap-1.5"><span class="text-muted">•</span><span>${escapeHtml(r.text)}</span></li>`).join('')
+        const hl = stop.highlights || [];
+        document.getElementById('sdHighlights').innerHTML = hl.length
+          ? hl.map(h => `<li class="flex items-start gap-1.5"><span class="text-muted">•</span><span>${escapeHtml(h)}</span></li>`).join('')
           : `<li class="text-muted">無紀錄項目</li>`;
 
         document.getElementById('stampDetailModal').classList.remove('hidden');
       }
 
-      // -------------------- 9. TAB 4: 推薦（目標速查） --------------------
-      const REC_CATEGORIES = ['全部', '飲品美食', '展覽文化', '選品逛街', '提醒'];
+      // -------------------- 11. TAB 4: 推薦 --------------------
+      function addRecommendationToItinerary(recId) {
+        const trip = getActiveTrip();
+        if (!trip || !trip.days || !trip.days.length) return;
+        const rec = (trip.recommendations || []).find(r => r.id === recId);
+        if (!rec) return;
+
+        const dayIdx = Math.min(state.activeDayIndex, trip.days.length - 1);
+        const targetDay = trip.days[dayIdx];
+        if ((targetDay.stops || []).some(s => s.name === rec.name)) {
+          showToast('此地點已在當日行程中');
+          return;
+        }
+
+        targetDay.stops.push({
+          id: 'added-' + Date.now(),
+          name: rec.name,
+          category: rec.category || '順路延伸',
+          district: '',
+          address: rec.address || rec.name,
+          startTime: '彈性',
+          endTime: '備案',
+          paymentMethods: rec.paymentMethods || '依現場為主',
+          transitMode: '順路延伸',
+          transitDuration: rec.nearStop ? `近 ${rec.nearStop}` : '依現場動線',
+          transitFare: 0,
+          transitNote: '自訂加入',
+          isStampSpot: trip.passportMode === 'all',
+          stampTitle: rec.name.slice(0, 6),
+          stampIcon: '★',
+          highlights: rec.reason ? [rec.reason] : ['由順路推薦加入'],
+          expenses: []
+        });
+
+        saveState();
+        updateHeader();
+        renderItineraryTab();
+        renderPassportTab();
+        renderRecommendTab();
+        showToast(`已加入 ${targetDay.dateLabel || ('Day ' + targetDay.dayNumber)}`);
+      }
 
       function renderRecommendTab() {
         const trip = getActiveTrip();
-        if (!trip) return;
+        const emptyEl = document.getElementById('recommendEmpty');
+        const contentEl = document.getElementById('recommendContent');
 
-        const dayBox = document.getElementById('recDayFilters');
-        if (trip.days.length > 1) {
-          dayBox.classList.remove('hidden');
-          const dayBtns = [{ val: 'ALL', label: '全部天數' }].concat(
-            trip.days.map(d => ({ val: String(d.dayNumber), label: d.dateLabel || ('Day ' + d.dayNumber) }))
-          );
-          dayBox.innerHTML = dayBtns.map(b => {
-            const active = String(state.recDayFilter) === b.val;
-            return `
-              <button type="button" data-action="rec-day" data-val="${b.val}"
-                class="shrink-0 px-3 py-1 rounded-full text-[11px] font-semibold border transition ${
-                  active ? 'bg-white border-white text-black' : 'bg-card border-white/10 text-muted'
-                }">${escapeHtml(b.label)}</button>
-            `;
-          }).join('');
-        } else {
-          dayBox.classList.add('hidden');
-          state.recDayFilter = 'ALL';
+        if (!trip) {
+          emptyEl.innerHTML = buildEmptyStateHtml('尚無推薦地點', '建立行程後，系統會依據動線整理順路地點與店家支付方式。');
+          emptyEl.classList.remove('hidden');
+          contentEl.classList.add('hidden');
+          return;
         }
 
-        const catBox = document.getElementById('recCategoryFilters');
-        catBox.innerHTML = REC_CATEGORIES.map(cat => {
-          const active = state.recCategory === cat;
-          return `
-            <button type="button" data-action="rec-cat" data-cat="${cat}"
-              class="shrink-0 px-3 py-1 rounded-full text-xs font-semibold border transition active:scale-95 ${
-                active ? 'bg-white border-white text-black' : 'bg-card border-white/10 text-muted'
-              }">${cat}</button>
-          `;
-        }).join('');
+        emptyEl.classList.add('hidden');
+        contentEl.classList.remove('hidden');
 
+        const recs = trip.recommendations || [];
         const q = state.recSearch.trim().toLowerCase();
-        let totalCount = 0;
-        let checkedCount = 0;
-        const groups = [];
+        const filtered = q
+          ? recs.filter(r => [r.name, r.category, r.address, r.paymentMethods, r.reason, r.nearStop].join(' ').toLowerCase().includes(q))
+          : recs;
 
-        trip.days.forEach((day, dIdx) => {
-          if (state.recDayFilter !== 'ALL' && String(day.dayNumber) !== String(state.recDayFilter)) return;
-          (day.stops || []).forEach(stop => {
-            const recs = (stop.recommendations || []).map((r, rIdx) => ({ ...r, rIdx }));
-            recs.forEach(r => {
-              totalCount++;
-              if (state.checkedRecs[`${trip.id}::${stop.id}::${r.rIdx}`]) checkedCount++;
-            });
-
-            let filtered = recs;
-            if (state.recCategory !== '全部') {
-              filtered = filtered.filter(r => r.category === state.recCategory);
-            }
-            if (q) {
-              const stopMatch = [stop.name, stop.district, stop.address].join(' ').toLowerCase().includes(q);
-              if (!stopMatch) {
-                filtered = filtered.filter(r => r.text.toLowerCase().includes(q));
-              }
-            }
-            if (filtered.length > 0) {
-              groups.push({ stop, day, dIdx, items: filtered });
-            }
-          });
-        });
-
-        document.getElementById('recCheckedSummary').textContent = `完成 ${checkedCount} / ${totalCount}`;
+        document.getElementById('recTotalBadge').textContent = `${filtered.length} 處`;
 
         const listEl = document.getElementById('recListContainer');
-        if (groups.length === 0) {
+        if (filtered.length === 0) {
           listEl.innerHTML = `
             <div class="bg-card rounded-2xl border-hairline p-6 text-center">
-              <div class="text-sm font-semibold text-white">無符合項目</div>
-              <div class="text-xs text-muted mt-1">請嘗試其他關鍵字或分類</div>
+              <div class="text-sm font-semibold text-white">無符合的推薦地點</div>
+              <div class="text-xs text-muted mt-1">${q ? '請嘗試其他關鍵字' : '此行程未附帶順路推薦'}</div>
             </div>
           `;
           return;
         }
 
-        listEl.innerHTML = groups.map(({ stop, day, dIdx, items }) => {
-          const itemsHtml = items.map(item => {
-            const rKey = `${trip.id}::${stop.id}::${item.rIdx}`;
-            const checked = !!state.checkedRecs[rKey];
-            const isTip = item.category === '提醒';
-            return `
-              <button
-                type="button"
-                data-action="toggle-rec"
-                data-rkey="${escapeHtml(rKey)}"
-                class="w-full text-left flex items-start gap-2.5 p-2.5 rounded-xl border transition active:scale-[0.99] ${
-                  checked
-                    ? 'bg-void border-white/10 text-muted/60'
-                    : 'bg-void border-white/10 text-white hover:border-white/25'
-                }"
-              >
-                <span class="mt-0.5 w-4 h-4 rounded flex items-center justify-center shrink-0 border ${
-                  checked ? 'bg-white border-white text-black' : 'border-white/25'
-                }">
-                  ${checked ? `<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>` : ''}
-                </span>
-                <span class="text-xs leading-snug ${checked ? 'line-through' : ''}">
-                  <span class="text-[10px] font-semibold mr-1.5 ${isTip ? 'text-neonOrange' : 'text-muted'}">[${escapeHtml(item.category)}]</span>${escapeHtml(item.text)}
-                </span>
-              </button>
-            `;
-          }).join('');
+        const allStopNames = new Set(getAllStops(trip).map(i => i.stop.name));
 
+        listEl.innerHTML = filtered.map(r => {
+          const payTxt = (r.paymentMethods && r.paymentMethods.trim()) ? r.paymentMethods.trim() : '依現場為主';
+          const alreadyIn = allStopNames.has(r.name);
           return `
-            <div class="bg-card rounded-2xl border-hairline p-3.5">
-              <div class="flex items-start justify-between gap-2 mb-2.5">
-                <div class="min-w-0">
-                  <div class="flex items-center gap-1.5 text-[11px] text-muted mb-0.5">
-                    ${trip.days.length > 1 ? `<span class="text-white font-semibold">${escapeHtml(day.dateLabel || ('Day ' + day.dayNumber))}</span>` : ''}
-                    <span class="tabular-nums">${escapeHtml(stop.startTime)}–${escapeHtml(stop.endTime)}</span>
-                  </div>
-                  <h3 class="text-sm font-bold text-white truncate">${escapeHtml(stop.name)}</h3>
-                </div>
+            <div class="bg-card rounded-2xl border-hairline p-3.5 min-w-0">
+              <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                ${r.category ? `<span class="px-2 py-0.5 rounded bg-elevated text-[10px] font-semibold text-white/85">${escapeHtml(r.category)}</span>` : ''}
+                ${r.nearStop ? `<span class="text-[10px] text-neonGreen">鄰近 ${escapeHtml(r.nearStop)}</span>` : ''}
+              </div>
+
+              <h3 class="text-fluid-card font-bold text-white leading-snug break-words">${escapeHtml(r.name)}</h3>
+              ${r.address ? `<div class="text-xs text-muted mt-0.5 break-words">${escapeHtml(r.address)}</div>` : ''}
+
+              <div class="mt-2.5 inline-flex flex-wrap items-center gap-1 px-2.5 py-1 rounded-lg bg-void border-hairline text-[11px] max-w-full">
+                <span class="text-muted font-semibold shrink-0">支付：</span>
+                <span class="text-white/95 font-medium break-words">${escapeHtml(payTxt)}</span>
+              </div>
+
+              <p class="text-xs text-white/85 mt-2.5 leading-relaxed break-words">${escapeHtml(r.reason || '')}</p>
+
+              <div class="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap gap-2">
+                <a
+                  href="${getMapsUrl(r.name, r.address)}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex-1 min-w-[100px] min-h-[44px] inline-flex items-center justify-center rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+                >
+                  導航
+                </a>
                 <button
                   type="button"
-                  data-action="jump-to-stop"
-                  data-day-idx="${dIdx}"
-                  data-stop-id="${escapeHtml(stop.id)}"
-                  class="shrink-0 text-[11px] font-medium text-neonGreen px-2 py-1 rounded-lg bg-neonGreen/[0.05] border border-neonGreen/40 active:scale-95 transition"
+                  data-action="add-rec"
+                  data-rec-id="${escapeHtml(r.id)}"
+                  class="flex-1 min-w-[100px] min-h-[44px] inline-flex items-center justify-center rounded-xl border text-xs font-semibold active:scale-95 transition ${
+                    alreadyIn
+                      ? 'bg-void border-neonGreen/45 text-neonGreen'
+                      : 'bg-elevated border-white/15 text-white hover:border-white/35'
+                  }"
                 >
-                  時間軸 →
+                  ${alreadyIn ? '已在行程中' : '加入行程'}
                 </button>
               </div>
-              <div class="space-y-1.5">${itemsHtml}</div>
             </div>
           `;
         }).join('');
       }
 
-      // -------------------- 10. TAB 5: 行程庫（防線倒數、Plan B、歷史行程、Key） --------------------
-      function renderDeadlines() {
-        const trip = getActiveTrip();
-        const dlEl = document.getElementById('deadlinesContainer');
-        if (!dlEl || !trip) return;
-
-        const deadlines = trip.deadlines || [];
-        if (deadlines.length === 0) {
-          dlEl.innerHTML = `<div class="text-xs text-muted">無時間防線</div>`;
-          return;
-        }
-
-        const now = getTaipeiNow();
-        const nowSec = now.hour * 3600 + now.minute * 60 + now.second;
-
-        dlEl.innerHTML = deadlines.map(d => {
-          const isDone = d.stopId && !!state.completedStops[`${trip.id}::${d.stopId}`];
-          const match = String(d.time || '').match(/^(\d{1,2}):(\d{2})$/);
-          let statusHtml = '';
-          let borderCls = 'border-white/10';
-
-          if (isDone) {
-            statusHtml = `<span class="text-[11px] font-semibold text-neonGreen">已完成</span>`;
-            borderCls = 'border-neonGreen/30';
-          } else if (match) {
-            const targetSec = Number(match[1]) * 3600 + Number(match[2]) * 60;
-            const diff = targetSec - nowSec;
-            if (diff <= 0) {
-              statusHtml = `<span class="text-[11px] font-medium text-muted">已過時間</span>`;
-            } else {
-              const h = Math.floor(diff / 3600);
-              const m = Math.floor((diff % 3600) / 60);
-              const urgent = diff <= 45 * 60;
-              const txt = h > 0 ? `剩 ${h}時${m}分` : `剩 ${m} 分`;
-              statusHtml = `<span class="px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums border ${
-                urgent
-                  ? 'bg-neonOrange/[0.08] border-neonOrange/75 text-neonOrange'
-                  : 'bg-elevated border-white/10 text-white'
-              }">${txt}</span>`;
-              if (urgent) borderCls = 'border-neonOrange/50';
-            }
-          }
-
-          return `
-            <div class="rounded-xl bg-void border ${borderCls} px-3 py-2.5 flex items-center justify-between gap-2">
-              <div class="min-w-0 flex items-center gap-2.5">
-                <span class="text-xs font-bold tabular-nums ${isDone ? 'text-neonGreen' : 'text-neonOrange'}">${escapeHtml(d.time)}</span>
-                <span class="text-xs font-medium text-white truncate">
-                  ${trip.days.length > 1 && d.dayNumber ? `[Day ${d.dayNumber}] ` : ''}${escapeHtml(d.title)}
-                </span>
-              </div>
-              <div class="shrink-0">${statusHtml}</div>
-            </div>
-          `;
-        }).join('');
-      }
-
+      // -------------------- 12. TAB 5: 行程庫（含累計消費與備份還原） --------------------
       function renderLibraryTab() {
         const trip = getActiveTrip();
-        renderDeadlines();
-
-        // Plan B
-        const pbEl = document.getElementById('planBContainer');
-        const planB = (trip && trip.planB) || [];
-        pbEl.innerHTML = planB.length === 0
-          ? `<li class="text-xs text-muted">無備案紀錄</li>`
-          : planB.map(p => `
-              <li class="flex items-start gap-2 text-xs text-white/90 leading-relaxed bg-void border-hairline rounded-xl p-3">
-                <span class="text-neonGreen font-bold">•</span>
-                <span>${escapeHtml(p)}</span>
-              </li>
-            `).join('');
-
-        // 已儲存行程
         const libEl = document.getElementById('tripLibraryList');
-        libEl.innerHTML = state.trips.map(t => {
-          const isActive = trip && t.id === trip.id;
-          const allStops = getAllStops(t);
-          const stampTotal = t.passportMode === 'all'
-            ? allStops.length
-            : (allStops.filter(i => i.stop.isStampSpot).length || allStops.length);
 
-          return `
-            <div class="rounded-xl bg-void border p-3.5 transition ${isActive ? 'border-white/35' : 'border-white/10'}">
-              <div class="flex items-center gap-2">
-                ${isActive ? `<span class="w-1.5 h-1.5 rounded-full bg-neonGreen"></span>` : ''}
-                <span class="text-[11px] text-muted">${(t.days || []).length} 天 · ${allStops.length} 站 · ${stampTotal} 印章</span>
-              </div>
-              <h3 class="text-sm font-bold text-white mt-1 truncate">${escapeHtml(t.title)}</h3>
-              ${t.dateNote ? `<div class="text-[11px] text-muted mt-0.5">${escapeHtml(t.dateNote)}</div>` : ''}
-
-              <div class="mt-3 flex items-center gap-2">
-                ${!isActive ? `
-                  <button type="button" data-action="switch-trip" data-trip-id="${escapeHtml(t.id)}"
-                    class="flex-1 py-2 rounded-lg bg-white text-black text-xs font-bold active:scale-95 transition">切換</button>
-                ` : `
-                  <button type="button" data-action="go-itinerary"
-                    class="flex-1 py-2 rounded-lg bg-elevated border-hairline text-white text-xs font-semibold active:scale-95 transition">目前使用中</button>
-                `}
-                <button type="button" data-action="copy-trip" data-trip-id="${escapeHtml(t.id)}"
-                  class="px-3 py-2 rounded-lg bg-card border-hairline text-white text-xs font-semibold active:scale-95 transition">複製文字</button>
-                <button type="button" data-action="ask-delete" data-trip-id="${escapeHtml(t.id)}" aria-label="刪除行程"
-                  class="p-2 rounded-lg bg-card border-hairline text-muted hover:text-neonOrange hover:border-neonOrange/50 active:scale-95 transition">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m5 0V4a1 1 0 011-1h2a1 1 0 011 1v2"/>
-                  </svg>
-                </button>
-              </div>
+        if (state.trips.length === 0) {
+          libEl.innerHTML = `
+            <div class="rounded-xl bg-void border-hairline p-4 text-center">
+              <div class="text-xs text-muted">尚未儲存任何行程</div>
+              <button
+                type="button"
+                data-action="empty-go-planner"
+                class="mt-3 min-h-[44px] px-4 rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition"
+              >
+                前往規劃新行程
+              </button>
             </div>
           `;
-        }).join('');
+        } else {
+          libEl.innerHTML = state.trips.map(t => {
+            const isActive = trip && t.id === trip.id;
+            const allStops = getAllStops(t);
+            const stampPool = t.passportMode === 'all'
+              ? allStops
+              : (allStops.filter(i => i.stop.isStampSpot).length > 0 ? allStops.filter(i => i.stop.isStampSpot) : allStops);
+            const stampedCount = stampPool.filter(i => !!state.stampedRecords[`${t.id}::${i.stop.id}`]).length;
+            const totalExp = computeTripTotalExpense(t);
+            const totalFare = computeTripTotalFare(t);
+            const dateLabel = [t.startDate, t.dateNote].filter(Boolean).join(' · ');
 
-        // API Key 狀態
+            return `
+              <div class="rounded-xl bg-void border p-3.5 transition min-w-0 ${isActive ? 'border-white/35' : 'border-white/10'}">
+                <div class="flex flex-wrap items-center justify-between gap-1.5">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    ${isActive ? `<span class="w-1.5 h-1.5 rounded-full bg-neonGreen shrink-0"></span>` : ''}
+                    <span class="text-[11px] text-muted truncate">${escapeHtml(dateLabel || ((t.days || []).length + ' 天行程'))}</span>
+                  </div>
+                  <span class="text-[11px] font-semibold text-neonOrange tabular-nums shrink-0">集章 ${stampedCount}/${stampPool.length}</span>
+                </div>
+
+                <h3 class="text-sm font-bold text-white mt-1 truncate">${escapeHtml(t.title)}</h3>
+
+                <div class="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-muted tabular-nums">
+                  <span>消費 <strong class="text-white">${formatNT(totalExp)}</strong></span>
+                  <span class="text-white/20">·</span>
+                  <span>交通預估 <strong class="text-neonGreen">${formatNT(totalFare)}</strong></span>
+                </div>
+
+                <div class="mt-3 flex flex-wrap items-center gap-2">
+                  ${!isActive ? `
+                    <button type="button" data-action="switch-trip" data-trip-id="${escapeHtml(t.id)}"
+                      class="flex-1 min-w-[96px] min-h-[44px] rounded-xl bg-white text-void text-xs font-bold active:scale-95 transition">切換使用</button>
+                  ` : `
+                    <button type="button" data-action="go-itinerary"
+                      class="flex-1 min-w-[96px] min-h-[44px] rounded-xl bg-elevated border-hairline text-white text-xs font-semibold active:scale-95 transition">目前使用中</button>
+                  `}
+                  <button type="button" data-action="ask-delete" data-trip-id="${escapeHtml(t.id)}" aria-label="刪除行程"
+                    class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl bg-card border-hairline text-muted hover:text-neonOrange hover:border-neonOrange/50 active:scale-95 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m5 0V4a1 1 0 011-1h2a1 1 0 011 1v2"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
         const savedKey = getSavedApiKey();
         const keyInput = document.getElementById('inputApiKey');
         const keyStatus = document.getElementById('apiKeyStatus');
-        if (keyInput && !keyInput.value && savedKey) keyInput.value = savedKey;
+        if (keyInput) keyInput.value = savedKey;
         if (keyStatus) {
-          keyStatus.textContent = savedKey ? '已儲存於本機' : '未設定（預覽環境免填）';
-          keyStatus.className = savedKey ? 'text-[10px] font-semibold text-neonGreen' : 'text-[10px] text-muted';
+          keyStatus.textContent = savedKey ? '已設定（本機）' : '未設定';
+          keyStatus.className = savedKey ? 'text-[11px] font-semibold text-neonGreen' : 'text-[11px] text-neonOrange';
         }
       }
 
-      // -------------------- 11. Gemini API 呼叫（含指數退避重試） --------------------
+      // 匯出 / 匯入備份 JSON
+      function buildBackupJson() {
+        return JSON.stringify({
+          app: 'route-notebook',
+          exportedAt: new Date().toISOString(),
+          version: 2,
+          trips: state.trips,
+          activeTripId: state.activeTripId,
+          completedStops: state.completedStops,
+          stampedRecords: state.stampedRecords,
+          checkedHighlights: state.checkedHighlights
+        }, null, 2);
+      }
+
+      function applyBackupJson(rawText) {
+        const msgEl = document.getElementById('importStatusMsg');
+        msgEl.classList.add('hidden');
+        try {
+          const parsed = JSON.parse(rawText);
+          if (!parsed || !Array.isArray(parsed.trips)) {
+            throw new Error('格式不正確，找不到 trips 陣列');
+          }
+          const normalized = parsed.trips.map(normalizeTripData).filter(Boolean);
+          state.trips = normalized;
+          state.activeTripId = parsed.activeTripId || (normalized[0] ? normalized[0].id : '');
+          state.activeDayIndex = 0;
+          state.completedStops = parsed.completedStops || {};
+          state.stampedRecords = parsed.stampedRecords || {};
+          state.checkedHighlights = parsed.checkedHighlights || {};
+          saveState();
+          renderAll();
+
+          msgEl.textContent = `已還原 ${normalized.length} 筆行程與記帳資料`;
+          msgEl.className = 'text-xs rounded-xl px-3 py-2 bg-elevated border border-neonGreen/50 text-neonGreen';
+          msgEl.classList.remove('hidden');
+          document.getElementById('importJsonInput').value = '';
+          showToast('備份還原完成');
+        } catch (err) {
+          msgEl.textContent = `還原失敗：${err.message || 'JSON 解析錯誤'}`;
+          msgEl.className = 'text-xs rounded-xl px-3 py-2 bg-elevated border border-neonOrange/65 text-neonOrange';
+          msgEl.classList.remove('hidden');
+        }
+      }
+
+      // -------------------- 13. Gemini API 呼叫（gemini-2.5-flash） --------------------
       async function fetchWithBackoff(url, options, maxRetries = 3) {
         const delays = [1000, 2000, 4000];
         let lastErr = null;
@@ -1927,41 +2556,53 @@
               continue;
             }
             const errTxt = await res.text().catch(() => '');
-            throw new Error(`連線錯誤 (${res.status})${errTxt ? '：' + errTxt.slice(0, 90) : ''}`);
+            if (res.status === 400 || res.status === 403) {
+              throw new Error(`金鑰權限錯誤 (${res.status})，請到「行程庫」確認或填入 Gemini API Key。`);
+            }
+            throw new Error(`連線錯誤 (${res.status})${errTxt ? '：' + errTxt.slice(0, 80) : ''}`);
           } catch (err) {
             lastErr = err;
-            if (attempt < maxRetries) {
+            if (attempt < maxRetries && !String(err.message).includes('金鑰權限錯誤')) {
               await new Promise(r => setTimeout(r, delays[attempt] || 4000));
+            } else {
+              break;
             }
           }
         }
-        throw lastErr || new Error('連線失敗，請稍後再試');
+        throw lastErr || new Error('連線失敗，請檢查網路狀態後重試');
       }
 
-      async function generateRouteWithGemini(form) {
-        const apiKey = getSavedApiKey() || ""; // Canvas 預覽環境維持空字串自動注入；GitHub Pages 可於行程庫填入
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+      async function generateRouteWithGemini(form, apiKey) {
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
 
         const stampRule = form.passportMode === 'all'
           ? '所有站點的 isStampSpot 皆為 true。'
           : '僅特色店家、展覽、地標或使用者註明集章的站點將 isStampSpot 設為 true，其餘為 false。';
 
-        const systemPrompt = `你是行程整理工具，規劃 1–7 天順路動線與條列重點。
+        const payPrefNote = form.payPrefs.length > 0
+          ? `使用者期望支付方式（選填偏好，僅作為推薦地點與車資估算參考）：${form.payPrefs.join('、')}。若含 TPASS 月票，涵蓋範圍內大眾運輸車資估為 0 並註明「月票涵蓋」。`
+          : '使用者未指定期望支付方式，請依一般大眾運輸或步行車資估算。';
+
+        const systemPrompt = `你是精簡務實的行程整理工具，負責規劃 1–7 天順路動線、估算車資與整理順路推薦。
 規則：
-1. 繁體中文（台灣用語），極簡條列式，無廢話、無形容詞堆砌、無 AI 套話（禁用「療癒、精彩、量身打造、不容錯過」等詞）。
-2. 依地理位置、交通順暢度與營業時間排序，不走回頭路，遵守每日起訖與必達時間。
-3. 每站包含：name、district、address、startTime、endTime、transit（簡短交通與分鐘數，如「紅線至圓山站 約20分」）、stampTitle（4–6字精簡印章名）、stampIcon（單一 emoji）、isStampSpot（${stampRule}）。
-4. recommendations 每項含 category（限定四選一：「飲品美食」、「展覽文化」、「選品逛街」、「提醒」）與 text（直接列品項、展名、低消、現金或打烊時間）。
-5. deadlines 列關鍵打烊或必達時間；planB 為精簡條列字串陣列。`;
+1. 全程台灣繁體中文，極簡條列，無廢話、無形容詞堆砌、無客套話。
+2. 依地理位置與營業時間排序，不走回頭路，遵守每日起訖時間。
+3. 【必填】每個行程站點與推薦地點皆必須填寫 paymentMethods（店家實際接受的支付方式，如「現金、LINE Pay」、「僅收現金」、「刷卡、行動支付」、「免費入場」；不確定填「依現場為主」）。
+4. 【交通費】每站必填 transitMode、transitDuration、transitFare（台幣整數，步行或月票涵蓋填 0）、transitNote（如「一段票」、「月票涵蓋」、「步行」）。每日提供 dailyFare，全程提供 totalFare 與簡短 fareSummary。
+5. ${payPrefNote}
+6. 集章規則：${stampRule}；每站提供 stampTitle（4–6字精簡印章名）與 stampIcon（單一 emoji）。
+7. highlights 為該站 2–3 項精簡重點（直接寫招牌品項、展名或打烊時間）。
+8. recommendations 提供 3–5 個順路地點，每筆必填 paymentMethods、簡短 reason 與 nearStop。`;
 
         const userPrompt = `行程名稱：${form.title}
+出發日期：${form.startDate || '未指定'}
 天數：${form.days} 天
 每日時間：${form.startTime}–${form.endTime}
-出發地址：${form.origin || '依第一站出發'}
-交通方式：${form.transport}
+出發地：${form.origin || '依第一站出發'}
+期望支付方式（選填）：${form.payPrefs.length ? form.payPrefs.join('、') : '未指定'}
 地點清單：
 ${form.places}
-偏好備註：${form.prefs || '無'}`;
+偏好與備註：${form.prefs || '無'}`;
 
         const payload = {
           contents: [{ parts: [{ text: userPrompt }] }],
@@ -1973,6 +2614,8 @@ ${form.places}
               properties: {
                 title: { type: "STRING" },
                 dateNote: { type: "STRING" },
+                totalFare: { type: "INTEGER" },
+                fareSummary: { type: "STRING" },
                 days: {
                   type: "ARRAY",
                   items: {
@@ -1981,6 +2624,7 @@ ${form.places}
                       dayNumber: { type: "INTEGER" },
                       dateLabel: { type: "STRING" },
                       routeNote: { type: "STRING" },
+                      dailyFare: { type: "INTEGER" },
                       stops: {
                         type: "ARRAY",
                         items: {
@@ -1988,51 +2632,51 @@ ${form.places}
                           properties: {
                             id: { type: "STRING" },
                             name: { type: "STRING" },
+                            category: { type: "STRING" },
                             district: { type: "STRING" },
                             address: { type: "STRING" },
                             startTime: { type: "STRING" },
                             endTime: { type: "STRING" },
-                            transit: { type: "STRING" },
+                            paymentMethods: { type: "STRING" },
+                            transitMode: { type: "STRING" },
+                            transitDuration: { type: "STRING" },
+                            transitFare: { type: "INTEGER" },
+                            transitNote: { type: "STRING" },
                             isStampSpot: { type: "BOOLEAN" },
                             stampTitle: { type: "STRING" },
                             stampIcon: { type: "STRING" },
-                            recommendations: {
-                              type: "ARRAY",
-                              items: {
-                                type: "OBJECT",
-                                properties: {
-                                  category: { type: "STRING" },
-                                  text: { type: "STRING" }
-                                },
-                                required: ["category", "text"]
-                              }
-                            }
+                            highlights: { type: "ARRAY", items: { type: "STRING" } }
                           },
-                          required: ["id", "name", "district", "address", "startTime", "endTime", "transit", "isStampSpot", "stampTitle", "stampIcon", "recommendations"]
+                          required: [
+                            "id", "name", "category", "district", "address",
+                            "startTime", "endTime", "paymentMethods",
+                            "transitMode", "transitDuration", "transitFare", "transitNote",
+                            "isStampSpot", "stampTitle", "stampIcon", "highlights"
+                          ]
                         }
                       }
                     },
-                    required: ["dayNumber", "dateLabel", "routeNote", "stops"]
+                    required: ["dayNumber", "dateLabel", "routeNote", "dailyFare", "stops"]
                   }
                 },
-                deadlines: {
+                recommendations: {
                   type: "ARRAY",
                   items: {
                     type: "OBJECT",
                     properties: {
-                      dayNumber: { type: "INTEGER" },
-                      time: { type: "STRING" },
-                      title: { type: "STRING" }
+                      id: { type: "STRING" },
+                      name: { type: "STRING" },
+                      category: { type: "STRING" },
+                      address: { type: "STRING" },
+                      paymentMethods: { type: "STRING" },
+                      reason: { type: "STRING" },
+                      nearStop: { type: "STRING" }
                     },
-                    required: ["dayNumber", "time", "title"]
+                    required: ["id", "name", "category", "address", "paymentMethods", "reason", "nearStop"]
                   }
-                },
-                planB: {
-                  type: "ARRAY",
-                  items: { type: "STRING" }
                 }
               },
-              required: ["title", "dateNote", "days", "deadlines", "planB"]
+              required: ["title", "dateNote", "totalFare", "fareSummary", "days", "recommendations"]
             }
           }
         };
@@ -2045,25 +2689,21 @@ ${form.places}
 
         const result = await res.json();
         const rawText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!rawText) throw new Error('未回傳有效路線資料');
+        if (!rawText) throw new Error('未回傳有效路線資料，請重試');
 
-        const parsed = JSON.parse(rawText);
-        if (!parsed.days || !Array.isArray(parsed.days) || parsed.days.length === 0) {
-          throw new Error('回傳格式不完整');
-        }
+        const parsed = normalizeTripData(JSON.parse(rawText));
+        if (!parsed || !parsed.days.length) throw new Error('回傳格式不完整，請重試');
 
         parsed.id = 'trip-' + Date.now();
+        parsed.startDate = form.startDate || '';
         parsed.passportMode = form.passportMode;
-        parsed.days.forEach((d, dIdx) => {
-          (d.stops || []).forEach((s, sIdx) => {
-            if (!s.id) s.id = `d${dIdx + 1}-s${sIdx + 1}`;
-            if (form.passportMode === 'all') s.isStampSpot = true;
-          });
-        });
+        if (form.passportMode === 'all') {
+          parsed.days.forEach(d => d.stops.forEach(s => { s.isStampSpot = true; }));
+        }
         return parsed;
       }
 
-      // -------------------- 12. 頁籤切換與全域渲染 --------------------
+      // -------------------- 14. 頁籤切換與全域渲染 --------------------
       function switchTab(tabName) {
         state.activeTab = tabName;
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
@@ -2094,14 +2734,24 @@ ${form.places}
         renderLibraryTab();
       }
 
-      // -------------------- 13. 事件綁定 --------------------
+      // -------------------- 15. 事件綁定 --------------------
       function bindEvents() {
         // 底部導覽列
         document.querySelectorAll('.nav-btn').forEach(btn => {
           btn.addEventListener('click', () => switchTab(btn.dataset.tab));
         });
 
-        // 行程頁
+        // 空白狀態代理按鈕
+        document.querySelector('main').addEventListener('click', e => {
+          const btn = e.target.closest('[data-action="empty-go-planner"], [data-action="empty-load-demo"]');
+          if (!btn) return;
+          if (btn.dataset.action === 'empty-go-planner') switchTab('planner');
+          else loadDemoTripManually();
+        });
+
+        document.getElementById('plannerLoadDemoBtn').addEventListener('click', loadDemoTripManually);
+
+        // 行程頁互動
         document.getElementById('dayTabsContainer').addEventListener('click', e => {
           const btn = e.target.closest('[data-action="select-day"]');
           if (!btn) return;
@@ -2109,43 +2759,103 @@ ${form.places}
           renderItineraryTab();
         });
 
+        document.getElementById('openExpenseOverviewBtn').addEventListener('click', openOverviewModal);
         document.getElementById('jumpPassportBtn').addEventListener('click', () => switchTab('passport'));
 
-        const timelineEl = document.getElementById('timelineContainer');
-        timelineEl.addEventListener('click', e => {
+        document.getElementById('timelineContainer').addEventListener('click', e => {
           const btn = e.target.closest('[data-action]');
           if (!btn) return;
-          const trip = getActiveTrip();
-          if (!trip) return;
           const action = btn.dataset.action;
-
           if (action === 'toggle-stop') {
             toggleStopStamp(btn.dataset.stopId, false);
-          } else if (action === 'toggle-rec') {
-            const key = btn.dataset.rkey;
-            state.checkedRecs[key] = !state.checkedRecs[key];
+          } else if (action === 'open-expense') {
+            openExpenseModal(btn.dataset.stopId);
+          } else if (action === 'toggle-hl') {
+            const key = btn.dataset.hkey;
+            state.checkedHighlights[key] = !state.checkedHighlights[key];
             saveState();
             renderItineraryTab();
-            renderRecommendTab();
           } else if (action === 'copy-address') {
             copyToClipboard(btn.dataset.address, '已複製地址');
-          } else if (action === 'toggle-note') {
-            const key = `${trip.id}::${btn.dataset.stopId}`;
-            state.openNotes[key] = !state.openNotes[key];
-            renderItineraryTab();
           }
         });
 
-        timelineEl.addEventListener('input', e => {
-          const input = e.target.closest('[data-action="stop-note"]');
-          if (!input) return;
-          const trip = getActiveTrip();
-          if (!trip) return;
-          state.stopNotes[`${trip.id}::${input.dataset.stopId}`] = input.value;
-          saveState();
+        // 地標記帳 Modal 互動
+        const expModal = document.getElementById('expenseModal');
+        document.getElementById('closeExpenseModalBtn').addEventListener('click', closeExpenseModal);
+        expModal.addEventListener('click', e => { if (e.target === expModal) closeExpenseModal(); });
+
+        document.getElementById('expMethodGroup').addEventListener('click', e => {
+          const btn = e.target.closest('.exp-method-btn');
+          if (!btn) return;
+          state.selectedExpenseMethod = btn.dataset.expmethod;
+          updateExpMethodButtons();
         });
 
-        // 護照頁
+        document.getElementById('addExpenseForm').addEventListener('submit', e => {
+          e.preventDefault();
+          const errEl = document.getElementById('expFormError');
+          errEl.classList.add('hidden');
+
+          const rawAmount = document.getElementById('expAmountInput').value.trim();
+          const amount = Math.round(Number(rawAmount));
+          if (!rawAmount || isNaN(amount) || amount <= 0) {
+            errEl.textContent = '請輸入大於 0 的消費金額。';
+            errEl.classList.remove('hidden');
+            return;
+          }
+
+          const trip = getActiveTrip();
+          if (!trip || !state.activeExpenseStopId) return;
+          const found = findStopInTrip(trip, state.activeExpenseStopId);
+          if (!found) return;
+
+          if (!Array.isArray(found.stop.expenses)) found.stop.expenses = [];
+          const itemName = document.getElementById('expItemInput').value.trim() || '消費';
+          found.stop.expenses.unshift({
+            id: 'exp-' + Date.now() + '-' + Math.random().toString(36).slice(2, 5),
+            amount,
+            item: itemName,
+            method: state.selectedExpenseMethod || '現金',
+            createdAt: getTaipeiNow().hm
+          });
+
+          saveState();
+          document.getElementById('expAmountInput').value = '';
+          document.getElementById('expItemInput').value = '';
+          renderExpenseModalContent();
+          renderItineraryTab();
+          renderLibraryTab();
+          showToast(`已新增 ${formatNT(amount)}`);
+        });
+
+        document.getElementById('expModalList').addEventListener('click', e => {
+          const btn = e.target.closest('[data-action="delete-stop-exp"]');
+          if (!btn || !state.activeExpenseStopId) return;
+          deleteExpenseRecord(state.activeExpenseStopId, btn.dataset.expId);
+        });
+
+        // 花費明細總覽 Modal 互動
+        const ovModal = document.getElementById('overviewModal');
+        const closeOv = () => ovModal.classList.add('hidden');
+        document.getElementById('closeOverviewModalBtn').addEventListener('click', closeOv);
+        ovModal.addEventListener('click', e => { if (e.target === ovModal) closeOv(); });
+
+        document.getElementById('ovGroupedList').addEventListener('click', e => {
+          const btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          if (btn.dataset.action === 'ov-del-exp') {
+            deleteExpenseRecord(btn.dataset.stopId, btn.dataset.expId);
+          } else if (btn.dataset.action === 'ov-jump-exp') {
+            const stopId = btn.dataset.stopId;
+            state.activeDayIndex = Number(btn.dataset.dayIdx) || 0;
+            closeOv();
+            renderItineraryTab();
+            openExpenseModal(stopId);
+          }
+        });
+
+        // 護照頁互動
         document.getElementById('pfBtnStamps').addEventListener('click', () => {
           state.passportFilter = 'stamps';
           renderPassportTab();
@@ -2154,33 +2864,24 @@ ${form.places}
           state.passportFilter = 'all';
           renderPassportTab();
         });
-
         document.getElementById('passportGrid').addEventListener('click', e => {
           const btn = e.target.closest('[data-action]');
           if (!btn) return;
-          if (btn.dataset.action === 'do-stamp') {
-            toggleStopStamp(btn.dataset.stopId, true);
-          } else if (btn.dataset.action === 'open-stamp-detail') {
-            openStampDetailModal(btn.dataset.stopId);
-          }
+          if (btn.dataset.action === 'do-stamp') toggleStopStamp(btn.dataset.stopId, true);
+          else if (btn.dataset.action === 'open-stamp-detail') openStampDetailModal(btn.dataset.stopId);
         });
 
         // 印章詳情 Modal
         const sdModal = document.getElementById('stampDetailModal');
-        const closeSd = () => {
-          sdModal.classList.add('hidden');
-          state.activeDetailStopId = null;
-        };
+        const closeSd = () => { sdModal.classList.add('hidden'); state.activeDetailStopId = null; };
         document.getElementById('closeStampDetailBtn').addEventListener('click', closeSd);
         sdModal.addEventListener('click', e => { if (e.target === sdModal) closeSd(); });
         document.getElementById('sdUndoStampBtn').addEventListener('click', () => {
-          if (state.activeDetailStopId) {
-            toggleStopStamp(state.activeDetailStopId, false);
-          }
+          if (state.activeDetailStopId) toggleStopStamp(state.activeDetailStopId, false);
           closeSd();
         });
 
-        // 推薦頁
+        // 推薦頁互動
         const recSearch = document.getElementById('recSearchInput');
         const recClear = document.getElementById('recClearSearchBtn');
         recSearch.addEventListener('input', () => {
@@ -2195,42 +2896,12 @@ ${form.places}
           renderRecommendTab();
           recSearch.focus();
         });
-
-        document.getElementById('recDayFilters').addEventListener('click', e => {
-          const btn = e.target.closest('[data-action="rec-day"]');
-          if (!btn) return;
-          state.recDayFilter = btn.dataset.val;
-          renderRecommendTab();
-        });
-
-        document.getElementById('recCategoryFilters').addEventListener('click', e => {
-          const btn = e.target.closest('[data-action="rec-cat"]');
-          if (!btn) return;
-          state.recCategory = btn.dataset.cat;
-          renderRecommendTab();
-        });
-
         document.getElementById('recListContainer').addEventListener('click', e => {
-          const btn = e.target.closest('[data-action]');
-          if (!btn) return;
-          if (btn.dataset.action === 'toggle-rec') {
-            const key = btn.dataset.rkey;
-            state.checkedRecs[key] = !state.checkedRecs[key];
-            saveState();
-            renderRecommendTab();
-            renderItineraryTab();
-          } else if (btn.dataset.action === 'jump-to-stop') {
-            state.activeDayIndex = Number(btn.dataset.dayIdx) || 0;
-            const stopId = btn.dataset.stopId;
-            switchTab('itinerary');
-            setTimeout(() => {
-              const card = document.getElementById(`stop-card-${stopId}`);
-              if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 120);
-          }
+          const btn = e.target.closest('[data-action="add-rec"]');
+          if (btn) addRecommendationToItinerary(btn.dataset.recId);
         });
 
-        // 規劃頁表單
+        // 規劃表單互動
         const customDaysInput = document.getElementById('inputDaysCustom');
         function setDays(val) {
           const n = Math.min(7, Math.max(1, Number(val) || 1));
@@ -2238,8 +2909,8 @@ ${form.places}
           customDaysInput.value = n;
           document.querySelectorAll('.day-quick-btn').forEach(btn => {
             const active = Number(btn.dataset.days) === n;
-            btn.className = `day-quick-btn py-2 rounded-xl text-xs font-semibold border transition ${
-              active ? 'bg-white text-black border-white' : 'bg-void text-muted border-white/10'
+            btn.className = `day-quick-btn min-h-[44px] rounded-xl text-xs font-semibold border transition ${
+              active ? 'bg-white text-void border-white' : 'bg-void text-muted border-white/10'
             }`;
           });
         }
@@ -2249,28 +2920,28 @@ ${form.places}
         });
         customDaysInput.addEventListener('change', () => setDays(customDaysInput.value));
 
-        document.getElementById('transportModeGroup').addEventListener('click', e => {
-          const btn = e.target.closest('.transport-btn');
-          if (!btn) return;
-          state.plannerTransport = btn.dataset.mode;
-          document.querySelectorAll('.transport-btn').forEach(b => {
-            const active = b.dataset.mode === state.plannerTransport;
-            b.className = `transport-btn py-2.5 px-2 rounded-xl text-xs font-semibold border transition ${
-              active ? 'bg-white text-black border-white' : 'bg-void text-muted border-white/10'
-            }`;
-          });
-        });
-
         document.getElementById('passportModeGroup').addEventListener('click', e => {
           const btn = e.target.closest('.pmode-btn');
           if (!btn) return;
           state.plannerPassportMode = btn.dataset.pmode;
           document.querySelectorAll('.pmode-btn').forEach(b => {
             const active = b.dataset.pmode === state.plannerPassportMode;
-            b.className = `pmode-btn py-2.5 px-2 rounded-xl text-xs font-semibold border transition ${
+            b.className = `pmode-btn min-h-[44px] px-2 rounded-xl text-xs font-semibold border transition ${
               active ? 'bg-neonOrange/[0.08] text-neonOrange border-neonOrange' : 'bg-void text-muted border-white/10'
             }`;
           });
+        });
+
+        document.getElementById('paymentPrefGroup').addEventListener('click', e => {
+          const btn = e.target.closest('.pay-btn');
+          if (!btn) return;
+          const pay = btn.dataset.pay;
+          if (state.plannerPayPrefs.has(pay)) state.plannerPayPrefs.delete(pay);
+          else state.plannerPayPrefs.add(pay);
+          const active = state.plannerPayPrefs.has(pay);
+          btn.className = `pay-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border transition ${
+            active ? 'bg-white text-void border-white' : 'bg-void text-muted border-white/10'
+          }`;
         });
 
         document.getElementById('prefTagGroup').addEventListener('click', e => {
@@ -2280,44 +2951,48 @@ ${form.places}
           if (state.plannerPrefs.has(pref)) state.plannerPrefs.delete(pref);
           else state.plannerPrefs.add(pref);
           const active = state.plannerPrefs.has(pref);
-          btn.className = `pref-btn px-3 py-1 rounded-full text-xs font-medium border transition ${
-            active ? 'bg-white text-black border-white' : 'bg-void text-muted border-white/10'
+          btn.className = `pref-btn min-h-[44px] px-3.5 rounded-full text-xs font-medium border transition ${
+            active ? 'bg-white text-void border-white' : 'bg-void text-muted border-white/10'
           }`;
         });
 
         document.getElementById('fillExampleBtn').addEventListener('click', () => {
-          document.getElementById('inputTripName').value = '台南三日路線';
-          setDays(3);
-          document.getElementById('inputStartTime').value = '10:00';
-          document.getElementById('inputEndTime').value = '18:30';
-          document.getElementById('inputOrigin').value = '台南中西區友愛街旅館';
+          document.getElementById('inputTripName').value = '台南中西區散步';
+          setDays(1);
+          document.getElementById('inputStartTime').value = '10:30';
+          document.getElementById('inputEndTime').value = '18:00';
+          document.getElementById('inputOrigin').value = '台南火車站';
           document.getElementById('inputPlaces').value =
             '林百貨（伴手禮／集章）\n' +
             '臺南市美術館二館（集章）\n' +
-            '蝸牛巷\n' +
+            '富盛號碗粿\n' +
             '神農街（集章）\n' +
-            '安平古堡與安平樹屋（集章）\n' +
-            '漁光島（Day 2 16:30 必達）\n' +
-            '國華街小吃（富盛號碗粿、蜷尾家）\n' +
-            '藍晒圖文創園區（集章）\n' +
-            '奇美博物館（Day 3 上午／集章）';
-          document.getElementById('inputCustomPref').value = '不走回頭路、咖啡與書店優先';
-          showToast('已填入台南三日範例');
+            '藍晒圖文創園區（集章）';
+          document.getElementById('inputCustomPref').value = '公車與步行為主、不走回頭路';
+          showToast('已填入範例清單');
         });
+
+        document.getElementById('plannerGoLibraryBtn').addEventListener('click', () => switchTab('library'));
 
         document.getElementById('plannerForm').addEventListener('submit', async e => {
           e.preventDefault();
           const errBox = document.getElementById('plannerErrorBox');
+          const errText = document.getElementById('plannerErrorText');
+          const goLibBtn = document.getElementById('plannerGoLibraryBtn');
           errBox.classList.add('hidden');
+          goLibBtn.classList.add('hidden');
 
           const places = document.getElementById('inputPlaces').value.trim();
           if (!places) {
-            errBox.textContent = '請輸入地點清單（每行一點）。';
+            errText.textContent = '請輸入地點清單（每行一個）。';
             errBox.classList.remove('hidden');
             return;
           }
 
+          // 優先讀取行程庫本機金鑰；若為空仍嘗試送出（相容預覽環境自動注入）
+          const apiKey = getSavedApiKey() || '';
           const title = document.getElementById('inputTripName').value.trim() || `${state.plannerDays} 日路線`;
+          const startDate = document.getElementById('inputStartDate').value || '';
           const startTime = document.getElementById('inputStartTime').value || '10:00';
           const endTime = document.getElementById('inputEndTime').value || '18:30';
           const origin = document.getElementById('inputOrigin').value.trim();
@@ -2326,38 +3001,42 @@ ${form.places}
 
           const loadingModal = document.getElementById('loadingModal');
           const stepEl = document.getElementById('loadingStepText');
-          const steps = ['排序地理位置與動線...', '計算交通方式與時間...', '整理各站條列目標...', '建立集章護照項目...'];
+          const steps = ['排序地理位置與動線...', '估算分段交通費...', '整理店家支付方式...', '建立集章護照...'];
           let sIdx = 0;
           stepEl.textContent = steps[0];
           loadingModal.classList.remove('hidden');
           const timer = setInterval(() => {
             sIdx = (sIdx + 1) % steps.length;
             stepEl.textContent = steps[sIdx];
-          }, 1800);
+          }, 1700);
 
           try {
             const newTrip = await generateRouteWithGemini({
               title,
+              startDate,
               days: state.plannerDays,
               startTime,
               endTime,
               origin,
-              transport: state.plannerTransport,
               passportMode: state.plannerPassportMode,
+              payPrefs: [...state.plannerPayPrefs],
               places,
               prefs
-            });
+            }, apiKey);
+
             state.trips.unshift(newTrip);
             state.activeTripId = newTrip.id;
             state.activeDayIndex = 0;
-            state.recDayFilter = 'ALL';
             state.passportFilter = newTrip.passportMode === 'all' ? 'all' : 'stamps';
             saveState();
             renderAll();
             switchTab('itinerary');
             showToast(`已建立：${newTrip.title}`);
           } catch (err) {
-            errBox.textContent = `無法產生路線：${err.message || '請檢查網路或於行程庫填入 API Key'}`;
+            errText.textContent = `無法產生路線：${err.message || '請確認 API Key 與網路連線'}`;
+            if (!apiKey || String(err.message).includes('金鑰')) {
+              goLibBtn.classList.remove('hidden');
+            }
             errBox.classList.remove('hidden');
           } finally {
             clearInterval(timer);
@@ -2365,26 +3044,65 @@ ${form.places}
           }
         });
 
-        // 行程庫頁
-        document.getElementById('copyPlainTextBtn').addEventListener('click', () => {
-          const trip = getActiveTrip();
-          if (trip) copyToClipboard(generatePlainTextTrip(trip), '已複製純文字行程');
-        });
+        // 行程庫互動
+        document.getElementById('loadDemoFromLibBtn').addEventListener('click', loadDemoTripManually);
 
         document.getElementById('saveApiKeyBtn').addEventListener('click', () => {
           const val = document.getElementById('inputApiKey').value.trim();
+          if (!val) { showToast('請輸入有效的 API Key'); return; }
           try {
-            if (val) {
-              localStorage.setItem(API_KEY_STORAGE, val);
-              showToast('已儲存 API Key');
-            } else {
-              localStorage.removeItem(API_KEY_STORAGE);
-              showToast('已清除 API Key');
-            }
-          } catch (e) {
-            showToast('儲存失敗');
-          }
+            localStorage.setItem(API_KEY_STORAGE, val);
+            showToast('已儲存 API Key 至本機');
+          } catch (e) { showToast('儲存失敗'); }
           renderLibraryTab();
+        });
+
+        document.getElementById('clearApiKeyBtn').addEventListener('click', () => {
+          try {
+            localStorage.removeItem(API_KEY_STORAGE);
+            document.getElementById('inputApiKey').value = '';
+            showToast('已清除 API Key');
+          } catch (e) { showToast('清除失敗'); }
+          renderLibraryTab();
+        });
+
+        document.getElementById('exportCopyJsonBtn').addEventListener('click', () => {
+          copyToClipboard(buildBackupJson(), '已複製備份 JSON');
+        });
+
+        document.getElementById('exportDownloadJsonBtn').addEventListener('click', () => {
+          try {
+            const blob = new Blob([buildBackupJson()], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `route-notebook-backup-${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('已下載備份檔');
+          } catch (e) {
+            showToast('下載失敗，請改用複製備份 JSON');
+          }
+        });
+
+        document.getElementById('importFileInput').addEventListener('change', e => {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            document.getElementById('importJsonInput').value = String(reader.result || '');
+            applyBackupJson(String(reader.result || ''));
+          };
+          reader.readAsText(file);
+          e.target.value = '';
+        });
+
+        document.getElementById('applyImportJsonBtn').addEventListener('click', () => {
+          const raw = document.getElementById('importJsonInput').value.trim();
+          if (!raw) { showToast('請先貼上備份 JSON 或選擇檔案'); return; }
+          applyBackupJson(raw);
         });
 
         document.getElementById('tripLibraryList').addEventListener('click', e => {
@@ -2392,20 +3110,15 @@ ${form.places}
           if (!btn) return;
           const action = btn.dataset.action;
           const tripId = btn.dataset.tripId;
-
           if (action === 'switch-trip') {
             state.activeTripId = tripId;
             state.activeDayIndex = 0;
-            state.recDayFilter = 'ALL';
             saveState();
             renderAll();
             switchTab('itinerary');
             showToast('已切換行程');
           } else if (action === 'go-itinerary') {
             switchTab('itinerary');
-          } else if (action === 'copy-trip') {
-            const target = state.trips.find(t => t.id === tripId);
-            if (target) copyToClipboard(generatePlainTextTrip(target), '已複製純文字行程');
           } else if (action === 'ask-delete') {
             const target = state.trips.find(t => t.id === tripId);
             if (!target) return;
@@ -2415,33 +3128,17 @@ ${form.places}
           }
         });
 
-        document.getElementById('restoreDemoBtn').addEventListener('click', () => {
-          const def = createDefaultTrip();
-          const idx = state.trips.findIndex(t => t.id === def.id);
-          if (idx >= 0) state.trips[idx] = def;
-          else state.trips.push(def);
-          state.activeTripId = def.id;
-          state.activeDayIndex = 0;
-          saveState();
-          renderAll();
-          showToast('已重置預設行程');
-        });
-
         // 刪除確認 Modal
         const delModal = document.getElementById('deleteModal');
-        const closeDel = () => {
-          state.pendingDeleteTripId = null;
-          delModal.classList.add('hidden');
-        };
+        const closeDel = () => { state.pendingDeleteTripId = null; delModal.classList.add('hidden'); };
         document.getElementById('cancelDeleteBtn').addEventListener('click', closeDel);
         delModal.addEventListener('click', e => { if (e.target === delModal) closeDel(); });
         document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
           const id = state.pendingDeleteTripId;
           if (id) {
             state.trips = state.trips.filter(t => t.id !== id);
-            if (state.trips.length === 0) state.trips = [createDefaultTrip()];
             if (state.activeTripId === id) {
-              state.activeTripId = state.trips[0].id;
+              state.activeTripId = state.trips[0] ? state.trips[0].id : '';
               state.activeDayIndex = 0;
             }
             saveState();
@@ -2460,11 +3157,12 @@ ${form.places}
         installModal.addEventListener('click', e => { if (e.target === installModal) toggleInstall(false); });
       }
 
-      // -------------------- 14. 初始化 --------------------
+      // -------------------- 16. 初始化 --------------------
       function init() {
         loadState();
         bindEvents();
         renderAll();
+        switchTab(state.activeTab);
         updateClock();
         setInterval(updateClock, 30000);
       }
